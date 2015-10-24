@@ -1,8 +1,11 @@
 package de.hsh.project.bomberman;
 
-public class Application {
+import de.hsh.project.bomberman.game.Game;
 
+import javax.swing.*;
+
+public class Application {
     public static void main(String[] args) {
-	// write your code here
+        SwingUtilities.invokeLater(Game::new);
     }
 }
