@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class Game extends JFrame {
 
-    private static Game THIS;
+    private static Game THIS; // lazy singleton
 
     public static void switchState(GameState state) {
         THIS.getContentPane().removeAll();
@@ -21,7 +21,7 @@ public class Game extends JFrame {
 
     public Game() {
         super("Bomberman");
-        THIS = this; // lazy singleton
+        THIS = this;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         setLayout(new BorderLayout());
