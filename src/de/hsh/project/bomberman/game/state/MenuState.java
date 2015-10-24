@@ -13,10 +13,12 @@ public abstract class MenuState extends GameState {
     private static BufferedImage BACKGROUND;
 
     public MenuState() {
-        try {
-            BACKGROUND = ImageIO.read(getClass().getResource("/res/images/menu-bg.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (BACKGROUND == null) {
+            try {
+                BACKGROUND = ImageIO.read(getClass().getResource("/res/images/menu-bg.jpg"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
