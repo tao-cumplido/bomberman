@@ -26,7 +26,7 @@ public abstract class MenuState extends GameState {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (BACKGROUND != null) {
-            g.drawImage(BACKGROUND, 0, 0, getWidth(), getHeight(), this);
+            g.drawImage(BACKGROUND, 0, 0, this);
         }
     }
 }

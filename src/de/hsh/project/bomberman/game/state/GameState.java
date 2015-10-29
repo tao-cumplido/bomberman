@@ -10,5 +10,6 @@ public abstract class GameState extends JPanel {
 
     public GameState() {
         setPreferredSize(new Dimension(640, 480));
+        setFocusable(true);
     }
 }
