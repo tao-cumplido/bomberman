@@ -6,7 +6,6 @@ import de.hsh.project.bomberman.game.state.TitleState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyListener;
 
 /**
  * Created by Tao on 24.10.2015.

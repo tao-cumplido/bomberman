@@ -26,6 +26,7 @@ public class HumanPlayer extends Player implements KeyListener {
 
     @Override
     public void update() {
+        super.update();
         int dx = keyLeftPressed ? - 5 : keyRightPressed ? 5 : 0;
         int dy = keyUpPressed ? - 5 : keyDownPressed ? 5 : 0;
         move(dx, dy);
@@ -41,18 +42,22 @@ public class HumanPlayer extends Player implements KeyListener {
 
         if (k == keyLeft) {
             keyLeftPressed = true;
+            sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
         }
 
         if (k == keyRight) {
             keyRightPressed = true;
+            sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
         }
 
         if (k == keyUp) {
             keyUpPressed = true;
+            sprite.playAnimation(PlayerAnimation.WALK_UP, true);
         }
 
         if (k == keyDown) {
             keyDownPressed = true;
+            sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
         }
     }
 
