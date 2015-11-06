@@ -21,6 +21,8 @@ public class Sprite {
     private int currentFrameIndex, ticks;
     private int frameWidth, frameHeight, frameDuration;
 
+    private int gridWidth, gridHeight;
+
     public Sprite(String imagePath, int frameWidth, int frameHeight, int frameDuration) {
         try {
             this.spriteSheet = ImageIO.read(getClass().getResource(imagePath));
@@ -32,6 +34,9 @@ public class Sprite {
             throw new IllegalArgumentException("Frames don't distribute equally over spritesheet.");
         }
 
+        gridWidth = this.spriteSheet.getWidth() / frameWidth;
+        gridHeight = this.spriteSheet.getHeight() / frameHeight;
+
         this.animations = new HashMap<>();
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
@@ -42,6 +47,16 @@ public class Sprite {
         ArrayList<Integer> frames = new ArrayList<>(frameOrder.length);
         Collections.addAll(frames, frameOrder);
         animations.put(id, frames);
+    }
+
+    public void addAnimation(AnimationID id) {
+        Integer[] frames = new Integer[gridWidth * gridHeight];
+
+        for (int i = 0; i < frames.length; i++) {
+            frames[i] = i;
+        }
+
+        addAnimation(id, frames);
     }
 
     public void playAnimation(AnimationID id, boolean loop) {
@@ -73,6 +88,9 @@ public class Sprite {
     }
 
     public BufferedImage getCurrentFrame() {
-        return spriteSheet.getSubimage(currentAnimation.get(currentFrameIndex) * frameWidth, 0, frameWidth, frameHeight);
+        int index = currentAnimation.get(currentFrameIndex);
+        int width = (index % gridWidth) * frameWidth;
+        int height = (index / gridWidth) * frameHeight;
+        return spriteSheet.getSubimage(width, height, frameWidth, frameHeight);
     }
 }
