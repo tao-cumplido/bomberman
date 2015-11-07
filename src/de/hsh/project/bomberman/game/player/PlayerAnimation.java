@@ -7,12 +7,12 @@ import de.hsh.project.bomberman.game.gfx.AnimationID;
  */
 public enum PlayerAnimation implements AnimationID {
     STAND_DOWN,
-    STAND_LEFT,
     STAND_UP,
+    STAND_LEFT,
     STAND_RIGHT,
 
     WALK_DOWN,
-    WALK_LEFT,
     WALK_UP,
+    WALK_LEFT,
     WALK_RIGHT
 }

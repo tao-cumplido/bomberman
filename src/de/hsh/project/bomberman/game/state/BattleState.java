@@ -1,6 +1,8 @@
 package de.hsh.project.bomberman.game.state;
 
 import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.board.BoardOne;
+import de.hsh.project.bomberman.game.board.GameBoard;
 import de.hsh.project.bomberman.game.player.HumanPlayer;
 import de.hsh.project.bomberman.game.player.Player;
 
@@ -12,13 +14,17 @@ import java.awt.image.BufferedImage;
  */
 public class BattleState extends GameState implements Runnable {
 
-    private boolean gameIsActive = true;
-    private BufferedImage buffer = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage dynamicBuffer = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage staticBuffer = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
 
     private Player[] player = new Player[4];
+    private GameBoard board;
 
     public BattleState() {
         player[0] = new HumanPlayer();
+
+        this.board = new BoardOne(player);
+
         addKeyListener((HumanPlayer)player[0]);
         new Thread(this).start();
     }
@@ -27,10 +33,9 @@ public class BattleState extends GameState implements Runnable {
     public void run() {
         long start, elapsed, wait;
 
-        while (gameIsActive) {
+        while (true) {
             start = System.nanoTime();
 
-            //processInput();
             update();
             draw();
             render();
@@ -46,23 +51,17 @@ public class BattleState extends GameState implements Runnable {
         }
     }
 
-    private void processInput() {
-
-    }
-
     private void update() {
-        player[0].update();
+        board.update();
     }
 
     private void draw() {
-        Graphics g = buffer.getGraphics();
-        g.setColor(Color.GREEN);
-        g.fillRect(0, 0, 640, 480);
-        g.drawImage(player[0].getFrame(), player[0].getX(), player[0].getY(), this);
+        Graphics g = dynamicBuffer.getGraphics();
+        g.drawImage(board.getBuffer(), 100, 100, this);
     }
 
     private void render() {
-        getGraphics().drawImage(buffer, 0, 0, this);
+        getGraphics().drawImage(dynamicBuffer, 0, 0, this);
     }
 
 }

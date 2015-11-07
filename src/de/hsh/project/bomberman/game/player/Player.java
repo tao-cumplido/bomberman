@@ -5,9 +5,7 @@ import de.hsh.project.bomberman.game.gfx.Sprite;
 import de.hsh.project.bomberman.game.powerup.PowerUp;
 import de.hsh.project.bomberman.game.powerup.Surprise;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -16,10 +14,10 @@ import java.util.ArrayList;
  */
 public abstract class Player {
 
-    private Point position = new Point(0, 0);
+    private Rectangle bounds = new Rectangle(16, 16, 16, 16);
     private int bombs;
     private int bombRange;
-    private int speed;
+    private int speed = 2;
     private boolean kickAbility;
     private boolean remoteControl;
     private int lifes;
@@ -51,20 +49,66 @@ public abstract class Player {
         sprite.update();
     }
 
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
     public BufferedImage getFrame() {
         return sprite.getCurrentFrame();
     }
 
     public int getX() {
-        return position.x;
+        return bounds.x;
     }
 
     public int getY() {
-        return position.y;
+        return bounds.y;
     }
 
     protected void move(int dx, int dy) {
-        position.x += dx;
-        position.y += dy;
+        bounds.x += dx;
+        bounds.y += dy;
+    }
+
+    protected void move(Direction d) {
+        switch (d) {
+            case LEFT:
+                bounds.x -= speed;
+                sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
+                break;
+            case RIGHT:
+                bounds.x += speed;
+                sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
+                break;
+            case UP:
+                bounds.y -= speed;
+                sprite.playAnimation(PlayerAnimation.WALK_UP, true);
+                break;
+            case DOWN:
+                bounds.y += speed;
+                sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
+                break;
+        }
+    }
+
+    protected void stop(Direction d) {
+        switch (d) {
+            case LEFT:
+                sprite.playAnimation(PlayerAnimation.STAND_LEFT, false);
+                break;
+            case RIGHT:
+                sprite.playAnimation(PlayerAnimation.STAND_RIGHT, false);
+                break;
+            case UP:
+                sprite.playAnimation(PlayerAnimation.STAND_UP, false);
+                break;
+            case DOWN:
+                sprite.playAnimation(PlayerAnimation.STAND_DOWN, false);
+                break;
+        }
     }
 }

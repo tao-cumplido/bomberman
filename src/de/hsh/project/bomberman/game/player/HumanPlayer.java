@@ -20,16 +20,20 @@ public class HumanPlayer extends Player implements KeyListener {
     private boolean keyUpPressed = false;
     private boolean keyDownPressed = false;
 
+    private Direction currentDirection = Direction.DOWN;
+
     public HumanPlayer() {
 
     }
 
     @Override
     public void update() {
+        if (keyLeftPressed || keyRightPressed || keyDownPressed || keyUpPressed) {
+            move(currentDirection);
+        } else {
+            stop(currentDirection);
+        }
         super.update();
-        int dx = keyLeftPressed ? - 5 : keyRightPressed ? 5 : 0;
-        int dy = keyUpPressed ? - 5 : keyDownPressed ? 5 : 0;
-        move(dx, dy);
     }
 
     @Override
@@ -42,22 +46,22 @@ public class HumanPlayer extends Player implements KeyListener {
 
         if (k == keyLeft) {
             keyLeftPressed = true;
-            sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
+            currentDirection = Direction.LEFT;
         }
 
         if (k == keyRight) {
             keyRightPressed = true;
-            sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
+            currentDirection = Direction.RIGHT;
         }
 
         if (k == keyUp) {
             keyUpPressed = true;
-            sprite.playAnimation(PlayerAnimation.WALK_UP, true);
+            currentDirection = Direction.UP;
         }
 
         if (k == keyDown) {
             keyDownPressed = true;
-            sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
+            currentDirection = Direction.DOWN;
         }
     }
 
@@ -67,18 +71,54 @@ public class HumanPlayer extends Player implements KeyListener {
 
         if (k == keyLeft) {
             keyLeftPressed = false;
+            if (keyRightPressed) {
+                currentDirection = Direction.RIGHT;
+            }
+            if (keyDownPressed) {
+                currentDirection = Direction.DOWN;
+            }
+            if (keyUpPressed) {
+                currentDirection = Direction.UP;
+            }
         }
 
         if (k == keyRight) {
             keyRightPressed = false;
+            if (keyLeftPressed) {
+                currentDirection = Direction.LEFT;
+            }
+            if (keyDownPressed) {
+                currentDirection = Direction.DOWN;
+            }
+            if (keyUpPressed) {
+                currentDirection = Direction.UP;
+            }
         }
 
         if (k == keyUp) {
             keyUpPressed = false;
+            if (keyDownPressed) {
+                currentDirection = Direction.DOWN;
+            }
+            if (keyLeftPressed) {
+                currentDirection = Direction.LEFT;
+            }
+            if (keyRightPressed) {
+                currentDirection = Direction.RIGHT;
+            }
         }
 
         if (k == keyDown) {
             keyDownPressed = false;
+            if (keyUpPressed) {
+                currentDirection = Direction.UP;
+            }
+            if (keyLeftPressed) {
+                currentDirection = Direction.LEFT;
+            }
+            if (keyRightPressed) {
+                currentDirection = Direction.RIGHT;
+            }
         }
     }
 }

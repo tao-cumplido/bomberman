@@ -5,5 +5,5 @@ package de.hsh.project.bomberman.game.tile;
  */
 public abstract class Tile {
 
-    public final static int TILE_SIZE = 32;
+    public final static int TILE_SIZE = 16;
 }
