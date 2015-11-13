@@ -1,8 +1,6 @@
 package de.hsh.project.bomberman.game;
 
-import de.hsh.project.bomberman.game.state.BattleState;
-import de.hsh.project.bomberman.game.state.GameState;
-import de.hsh.project.bomberman.game.state.TitleState;
+import de.hsh.project.bomberman.game.menu.TitleState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +27,6 @@ public class Game extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
         setVisible(true);
-        // switchState(new TitleState());
-        switchState(new BattleState());
+        switchState(new TitleState());
     }
 }
