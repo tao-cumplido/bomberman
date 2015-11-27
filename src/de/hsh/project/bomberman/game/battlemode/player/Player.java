@@ -18,20 +18,6 @@ import java.util.ArrayList;
  */
 public abstract class Player extends Tile {
 
-    public enum Direction {
-        NONE, LEFT, RIGHT, UP, DOWN;
-
-        public Direction[] allWithout(Direction direction) {
-            switch (direction) {
-                case LEFT:  return new Direction[] {RIGHT, UP, DOWN};
-                case RIGHT: return new Direction[] {LEFT, UP, DOWN};
-                case UP:    return new Direction[] {LEFT, RIGHT, DOWN};
-                case DOWN:  return new Direction[] {LEFT, RIGHT, UP};
-                default:    return new Direction[] {LEFT, RIGHT, UP, DOWN};
-            }
-        }
-    }
-
     private enum Animation implements AnimationID {
         STAND_DOWN,
         STAND_UP,
@@ -84,8 +70,8 @@ public abstract class Player extends Tile {
         return speed;
     }
 
-    protected void move(Direction d) {
-        switch (d) {
+    protected void move(Direction direction) {
+        switch (direction) {
             case LEFT:
                 translateX(-speed);
                 sprite.playAnimation(Animation.WALK_LEFT, true);
@@ -105,8 +91,8 @@ public abstract class Player extends Tile {
         }
     }
 
-    protected void stop(Direction d) {
-        switch (d) {
+    protected void stop(Direction direction) {
+        switch (direction) {
             case LEFT:
                 sprite.playAnimation(Animation.STAND_LEFT, false);
                 break;

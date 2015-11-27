@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
  */
 public abstract class Tile {
 
-    public static GameBoard BOARD;
+    protected static GameBoard BOARD;
 
     private Rectangle bounds;
 
