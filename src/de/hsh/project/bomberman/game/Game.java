@@ -27,6 +27,7 @@ public class Game extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
         setVisible(true);
-        switchState(new TitleState());
+        //switchState(new TitleState());
+        switchState(new de.hsh.project.bomberman.game.battlemode.BattleState());
     }
 }

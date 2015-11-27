@@ -1,7 +1,18 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
+import de.hsh.project.bomberman.game.battlemode.board.Tile;
+import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
+
 /**
  * Created by taocu on 26.10.2015.
  */
-public abstract class Bomb {
+public abstract class Bomb extends Tile {
+
+    protected enum Animation implements AnimationID {
+        DEFAULT
+    }
+
+    public Bomb(int gridX, int gridY, int range) {
+        super(gridX, gridY, true);
+    }
 }

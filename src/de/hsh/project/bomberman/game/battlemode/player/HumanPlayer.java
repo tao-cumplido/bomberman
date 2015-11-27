@@ -1,124 +1,74 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
  * Created by taocu on 26.10.2015.
  */
-public class HumanPlayer extends Player implements KeyListener {
+public class HumanPlayer extends Player {
 
-    private int keyLeft = KeyEvent.VK_LEFT;
-    private int keyRight = KeyEvent.VK_RIGHT;
-    private int keyUp = KeyEvent.VK_UP;
-    private int keyDown = KeyEvent.VK_DOWN;
-    private int keyDropBomb = KeyEvent.VK_SPACE;
-    private int keyTriggerBomb = KeyEvent.VK_SHIFT;
+    private Key keyLeft;
+    private Key keyRight;
+    private Key keyUp;
+    private Key keyDown;
+    private Key keyDropBomb;
+    private Key keyTriggerBomb;
 
-    private boolean keyLeftPressed = false;
-    private boolean keyRightPressed = false;
-    private boolean keyUpPressed = false;
-    private boolean keyDownPressed = false;
+    private Key[] directionKeys;
 
     private Direction currentDirection = Direction.DOWN;
 
-    public HumanPlayer() {
+    public HumanPlayer(InputMap inputMap, ActionMap actionMap) {
 
+        this.keyLeft = new Key(KeyEvent.VK_LEFT, Direction.LEFT);
+        this.keyRight = new Key(KeyEvent.VK_RIGHT, Direction.RIGHT);
+        this.keyUp = new Key(KeyEvent.VK_UP, Direction.UP);
+        this.keyDown = new Key(KeyEvent.VK_DOWN, Direction.DOWN);
+
+        directionKeys = new Key[] {keyLeft, keyRight, keyUp, keyDown};
+
+        for (Key key : directionKeys) {
+            inputMap.put(KeyStroke.getKeyStroke(key.getKeyCode(), 0), key.actionKeyPressed());
+            actionMap.put(key.actionKeyPressed(), new KeyAction((event) -> pressDirectionKey(key)));
+
+            inputMap.put(KeyStroke.getKeyStroke(key.getKeyCode(), 0, true), key.actionKeyReleased());
+            actionMap.put(key.actionKeyReleased(), new KeyAction((event) -> releaseDirectionKey(key)));
+        }
+    }
+
+    private void pressDirectionKey(Key key) {
+        key.press();
+        currentDirection = key.getDirection();
+    }
+
+    private void releaseDirectionKey(Key key) {
+        key.release();
+        for (Key other : directionKeys) {
+            if (other != key && other.isPressed()) {
+                currentDirection = other.getDirection();
+            }
+        }
+    }
+
+    private boolean anyDirectionPressed() {
+        for (Key key : directionKeys) {
+            if (key.isPressed()) return true;
+        }
+
+        return false;
     }
 
     @Override
     public void update() {
-        if (keyLeftPressed || keyRightPressed || keyDownPressed || keyUpPressed) {
+        if (anyDirectionPressed()) {
             move(currentDirection);
         } else {
             stop(currentDirection);
         }
         super.update();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int k = e.getKeyCode();
-
-        if (k == keyLeft) {
-            keyLeftPressed = true;
-            currentDirection = Direction.LEFT;
-        }
-
-        if (k == keyRight) {
-            keyRightPressed = true;
-            currentDirection = Direction.RIGHT;
-        }
-
-        if (k == keyUp) {
-            keyUpPressed = true;
-            currentDirection = Direction.UP;
-        }
-
-        if (k == keyDown) {
-            keyDownPressed = true;
-            currentDirection = Direction.DOWN;
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        int k = e.getKeyCode();
-
-        if (k == keyLeft) {
-            keyLeftPressed = false;
-            if (keyRightPressed) {
-                currentDirection = Direction.RIGHT;
-            }
-            if (keyDownPressed) {
-                currentDirection = Direction.DOWN;
-            }
-            if (keyUpPressed) {
-                currentDirection = Direction.UP;
-            }
-        }
-
-        if (k == keyRight) {
-            keyRightPressed = false;
-            if (keyLeftPressed) {
-                currentDirection = Direction.LEFT;
-            }
-            if (keyDownPressed) {
-                currentDirection = Direction.DOWN;
-            }
-            if (keyUpPressed) {
-                currentDirection = Direction.UP;
-            }
-        }
-
-        if (k == keyUp) {
-            keyUpPressed = false;
-            if (keyDownPressed) {
-                currentDirection = Direction.DOWN;
-            }
-            if (keyLeftPressed) {
-                currentDirection = Direction.LEFT;
-            }
-            if (keyRightPressed) {
-                currentDirection = Direction.RIGHT;
-            }
-        }
-
-        if (k == keyDown) {
-            keyDownPressed = false;
-            if (keyUpPressed) {
-                currentDirection = Direction.UP;
-            }
-            if (keyLeftPressed) {
-                currentDirection = Direction.LEFT;
-            }
-            if (keyRightPressed) {
-                currentDirection = Direction.RIGHT;
-            }
-        }
     }
 }

@@ -15,18 +15,18 @@ import java.awt.image.BufferedImage;
  */
 public class BattleState extends GameState implements Runnable {
 
-    private BufferedImage dynamicBuffer = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
-    private BufferedImage staticBuffer = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage dynamicBuffer = new BufferedImage(1216, 960, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage staticBuffer = new BufferedImage(1216, 960, BufferedImage.TYPE_INT_ARGB);
 
     private Player[] player = new Player[4];
     private GameBoard board;
 
     public BattleState() {
-        player[0] = new HumanPlayer();
+        player[0] = new HumanPlayer(getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap());
 
         this.board = new BoardOne(player);
 
-        addKeyListener((HumanPlayer)player[0]);
+        //addKeyListener((HumanPlayer)player[0]);
         new Thread(this).start();
     }
 
@@ -58,7 +58,7 @@ public class BattleState extends GameState implements Runnable {
 
     private void draw() {
         Graphics g = dynamicBuffer.getGraphics();
-        g.drawImage(board.getBuffer(), 100, 100, this);
+        g.drawImage(board.getBuffer(), 0, 0, this);
     }
 
     private void render() {

@@ -30,12 +30,21 @@ public class Sprite {
             e.printStackTrace();
         }
 
+        init(frameWidth, frameHeight, frameDuration);
+    }
+
+    public Sprite(BufferedImage spriteSheet, int frameWidth, int frameHeight, int frameDuration) {
+        this.spriteSheet = spriteSheet;
+        init(frameWidth, frameHeight, frameDuration);
+    }
+
+    private void init(int frameWidth, int frameHeight, int frameDuration) {
         if (this.spriteSheet.getWidth() % frameWidth != 0 || this.spriteSheet.getHeight() % frameHeight != 0) {
             throw new IllegalArgumentException("Frames don't distribute equally over spritesheet.");
         }
 
-        gridWidth = this.spriteSheet.getWidth() / frameWidth;
-        gridHeight = this.spriteSheet.getHeight() / frameHeight;
+        this.gridWidth = this.spriteSheet.getWidth() / frameWidth;
+        this.gridHeight = this.spriteSheet.getHeight() / frameHeight;
 
         this.animations = new HashMap<>();
         this.frameWidth = frameWidth;
@@ -47,6 +56,7 @@ public class Sprite {
         ArrayList<Integer> frames = new ArrayList<>(frameOrder.length);
         Collections.addAll(frames, frameOrder);
         animations.put(id, frames);
+        currentFrameIndex = 0;
     }
 
     public void addAnimation(AnimationID id) {
@@ -62,7 +72,7 @@ public class Sprite {
     public void playAnimation(AnimationID id, boolean loop) {
         ArrayList<Integer> animation = animations.get(id);
         if (currentAnimation != animation) {
-            currentAnimation = animations.get(id);
+            currentAnimation = animation;
             animationIsPlaying = true;
             animationLoops = loop;
             ticks = 0;
@@ -88,7 +98,10 @@ public class Sprite {
     }
 
     public BufferedImage getCurrentFrame() {
-        int index = currentAnimation.get(currentFrameIndex);
+        return getFrame(currentAnimation.get(currentFrameIndex));
+    }
+
+    public BufferedImage getFrame(int index) {
         int width = (index % gridWidth) * frameWidth;
         int height = (index / gridWidth) * frameHeight;
         return spriteSheet.getSubimage(width, height, frameWidth, frameHeight);
