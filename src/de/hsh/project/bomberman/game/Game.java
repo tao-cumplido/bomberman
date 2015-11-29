@@ -6,6 +6,8 @@ import de.hsh.project.bomberman.game.settings.SettingsMenuState;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Created by Tao on 24.10.2015.
@@ -25,7 +27,22 @@ public class Game extends JFrame {
     public Game() {
         super("Bomberman");
         THIS = this;
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        addWindowListener(new WindowAdapter() {
+//
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//                int i =JOptionPane.showConfirmDialog(null, "Do you want to exit the game?", "Exit?", JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE);
+//                if(i == JOptionPane.YES_OPTION){
+//
+//                    System.exit(0);
+//                }
+//
+//                return;
+//            }
+//
+//        });
 
         //Dialog displays in the middle
         setPreferredSize(new Dimension(920,540));
