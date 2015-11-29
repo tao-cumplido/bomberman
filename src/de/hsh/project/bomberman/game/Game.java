@@ -1,6 +1,8 @@
 package de.hsh.project.bomberman.game;
 
+import de.hsh.project.bomberman.game.battlemode.BattleState;
 import de.hsh.project.bomberman.game.menu.TitleState;
+import de.hsh.project.bomberman.game.settings.SettingsMenuState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +26,13 @@ public class Game extends JFrame {
         super("Bomberman");
         THIS = this;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        //Dialog displays in the middle
+        setPreferredSize(new Dimension(920,540));
+        int w=(getToolkit().getScreenSize().width -getPreferredSize().width)/2;
+        int h=(getToolkit().getScreenSize().height-getPreferredSize().height)/2;
+        setLocation(w, h);
+
         setResizable(false);
         setLayout(new BorderLayout());
         setVisible(true);
