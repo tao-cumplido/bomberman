@@ -15,8 +15,8 @@ public class HardBlock extends Tile {
 
     private static BufferedImage spriteSheet;
 
-    public HardBlock(int x, int y) {
-        super(x, y, true);
+    public HardBlock() {
+        super(true);
 
         if (spriteSheet == null) {
             try {

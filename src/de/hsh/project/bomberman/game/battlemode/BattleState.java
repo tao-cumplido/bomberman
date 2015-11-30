@@ -22,11 +22,10 @@ public class BattleState extends GameState implements Runnable {
     private GameBoard board;
 
     public BattleState() {
-        player[0] = new HumanPlayer(getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap());
+        player[0] = new HumanPlayer(0, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap());
 
         this.board = new BoardOne(player);
 
-        //addKeyListener((HumanPlayer)player[0]);
         new Thread(this).start();
     }
 
@@ -45,6 +44,7 @@ public class BattleState extends GameState implements Runnable {
             wait = 1000 / Game.FPS - elapsed / 1000_000;
 
             try {
+                if (wait < 0) System.out.println("Warning: loop too slow!");
                 Thread.sleep(wait < 0 ? 5 : wait);
             } catch (InterruptedException e) {
                 e.printStackTrace();

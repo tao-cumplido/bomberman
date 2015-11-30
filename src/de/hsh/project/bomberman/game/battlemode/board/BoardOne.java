@@ -9,5 +9,6 @@ public class BoardOne extends GameBoard {
 
     public BoardOne(Player[] player) {
         super(player);
+        player[0].setPosition(1, 1);
     }
 }

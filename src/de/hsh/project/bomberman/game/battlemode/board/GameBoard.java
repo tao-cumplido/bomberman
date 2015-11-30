@@ -3,13 +3,9 @@ package de.hsh.project.bomberman.game.battlemode.board;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by taocu on 26.10.2015.
@@ -24,8 +20,7 @@ public abstract class GameBoard {
     private BufferedImage staticBuffer;
     private BufferedImage dynamicBuffer;
 
-    private ArrayList<Tile> staticBounds;
-    private CopyOnWriteArrayList<Tile> tiles;
+    private Tile[][] grid;
 
     private Player[] player;
 
@@ -34,9 +29,8 @@ public abstract class GameBoard {
 
         this.player = player;
 
-        this.tiles = new CopyOnWriteArrayList<>();
+        this.grid = new Tile[GRID_WIDTH][GRID_HEIGHT];
 
-        this.staticBounds = new ArrayList<>();
         this.staticBuffer = new BufferedImage(GRID_WIDTH * TILE_SIZE, GRID_HEIGHT * TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
         this.dynamicBuffer = new BufferedImage(GRID_WIDTH * TILE_SIZE, GRID_HEIGHT * TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
 
@@ -57,86 +51,56 @@ public abstract class GameBoard {
         }
 
         for (int x = 0; x < GRID_WIDTH; x++) {
-            addStaticBlock(new HardBlock(x, 0), g);
-            addStaticBlock(new HardBlock(x, GRID_HEIGHT - 1), g);
+            put(new HardBlock(), x, 0);
+            put(new HardBlock(), x, GRID_HEIGHT - 1);
         }
 
         for (int y = 1; y < GRID_HEIGHT - 1; y++) {
-            addStaticBlock(new HardBlock(0, y), g);
-            addStaticBlock(new HardBlock(GRID_WIDTH - 1, y), g);
+            put(new HardBlock(), 0, y);
+            put(new HardBlock(), GRID_WIDTH - 1, y);
         }
 
         for (int x = 2; x < GRID_WIDTH - 2; x += 2) {
             for (int y = 2; y < GRID_HEIGHT - 2; y += 2) {
-                addStaticBlock(new HardBlock(x, y), g);
+                put(new HardBlock(), x, y);
             }
         }
     }
 
-    private void addStaticBlock(HardBlock block, Graphics g) {
-        staticBounds.add(block);
-        g.drawImage(block.getFrame(), block.getLeft(), block.getTop(), null);
-    }
-
     public void update() {
         player[0].update();
-        tiles.forEach(Tile::update);
+        for (Tile[] row : grid) for (Tile tile : row) if (tile != null) {
+            tile.update();
+        }
         resolveCollisions();
     }
 
-    public void put(Tile tile) {
-        tiles.add(tile);
-}
+    public void put(Tile tile, int x, int y) {
+        //tiles.add(tile);
+        if (grid[x][y] != null) {
+            System.out.println("Warning: grid[" + x + "][" + y + "] is not empty!");
+        }
+
+        grid[x][y] = tile;
+        tile.setPosition(x, y);
+    }
 
     public BufferedImage getBuffer() {
         Graphics g = dynamicBuffer.getGraphics();
         g.drawImage(staticBuffer, 0, 0, null);
-        tiles.forEach(tile -> g.drawImage(tile.getFrame(), tile.getLeft(), tile.getTop(), null));
+
+        for (Tile[] row : grid) for (Tile tile : row) if (tile != null) {
+            g.drawImage(tile.getFrame(), tile.getLeft(), tile.getTop(), null);
+        }
+
         g.drawImage(player[0].getFrame(), player[0].getLeft(), player[0].getTop() - TILE_SIZE, null);
         return dynamicBuffer;
     }
 
     private void resolveCollisions() {
-        for (Tile t : staticBounds) {
+        for (Tile[] row : grid) for (Tile tile : row) if (tile != null) {
             for (int i = 0; i < 1; i++) {
-                Rectangle collision = player[i].collides(t);
-
-                if (!collision.isEmpty()) {
-                    int dx = player[i].getLeft() % TILE_SIZE;
-                    int dy = player[i].getTop() % TILE_SIZE;
-
-                    if (collision.getWidth() < collision.getHeight()) {
-                        // horizontal collision
-                        if (dx > TILE_SIZE / 2) {
-                            // moving left
-                            player[i].translateX(TILE_SIZE - dx);
-                        } else {
-                            // moving right
-                            player[i].translateX(-dx);
-                        }
-
-                        if (player[i].getTop() < collision.y) {
-                            player[i].translateY(-player[i].getSpeed());
-                        } else if (player[i].getBottom() > collision.getMaxY()) {
-                            player[i].translateY(player[i].getSpeed());
-                        }
-                    } else {
-                        // vertical collision
-                        if (dy > TILE_SIZE / 2) {
-                            // moving up
-                            player[i].translateY(TILE_SIZE - dy);
-                        } else {
-                            // moving down
-                            player[i].translateY(-dy);
-                        }
-
-                        if (player[i].getLeft() < collision.x) {
-                            player[i].translateX(-player[i].getSpeed());
-                        } else if (player[i].getRight() > collision.getMaxX()) {
-                            player[i].translateX(player[i].getSpeed());
-                        }
-                    }
-                }
+                tile.onCollision(player[i]);
             }
         }
     }

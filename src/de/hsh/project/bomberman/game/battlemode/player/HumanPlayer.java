@@ -21,7 +21,8 @@ public class HumanPlayer extends Player {
 
     private Direction currentDirection = Direction.DOWN;
 
-    public HumanPlayer(InputMap inputMap, ActionMap actionMap) {
+    public HumanPlayer(int playerNumber, InputMap inputMap, ActionMap actionMap) {
+        super(playerNumber);
         directionKeys = new Key[] {
                 new Key(KeyEvent.VK_LEFT, Direction.LEFT, this::pressDirectionAction, this::releaseDirectionAction),
                 new Key(KeyEvent.VK_RIGHT, Direction.RIGHT, this::pressDirectionAction, this::releaseDirectionAction),

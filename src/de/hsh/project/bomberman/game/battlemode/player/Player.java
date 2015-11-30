@@ -32,7 +32,7 @@ public abstract class Player extends Tile {
 
     private int bombs;
     private int bombRange;
-    private int speed = 8;
+    private int speed = 12;
     private boolean kickAbility;
     private boolean remoteControl;
     private int lifes;
@@ -42,10 +42,10 @@ public abstract class Player extends Tile {
 
     private BufferedImage frame;
 
-    public Player() {
-        super(1, 1, false);
+    public Player(int playerNumber) {
+        super(false);
 
-        this.sprite = new Sprite("/res/images/bmw-dummy.png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, 6);
+        this.sprite = new Sprite("/res/images/bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, 6);
 
         sprite.addAnimation(Animation.STAND_DOWN, 0);
         sprite.addAnimation(Animation.STAND_UP, 3);
@@ -63,7 +63,7 @@ public abstract class Player extends Tile {
     protected void dropBomb() {
         int gridX = (getLeft() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
         int gridY = (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
-        BOARD.put(new FireBomb(gridX, gridY, bombRange));
+        BOARD.put(new FireBomb(bombRange), gridX, gridY);
     }
 
     public int getSpeed() {

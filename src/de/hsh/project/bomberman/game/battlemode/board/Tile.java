@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
+import de.hsh.project.bomberman.game.battlemode.player.Player;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -20,14 +21,52 @@ public abstract class Tile {
 
     public Tile() {}
 
-    public Tile(int gridX, int gridY, boolean solid) {
+    public Tile(boolean solid) {
         this.bounds = new Rectangle(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
         this.solid = solid;
-        setPosition(gridX, gridY);
     }
 
-    public Rectangle collides(Tile tile) {
-        return bounds.intersection(tile.bounds);
+    public Rectangle onCollision(Player player) {
+        Rectangle intersection = bounds.intersection(((Tile)player).bounds);
+
+        if(!intersection.isEmpty() && this.isSolid()) {
+            int dx = player.getLeft() % GameBoard.TILE_SIZE;
+            int dy = player.getTop() % GameBoard.TILE_SIZE;
+
+            if (intersection.getWidth() < intersection.getHeight()) {
+                // horizontal collision
+                if (dx > GameBoard.TILE_SIZE / 2) {
+                    // moving left
+                    player.translateX(GameBoard.TILE_SIZE - dx);
+                } else {
+                    // moving right
+                    player.translateX(-dx);
+                }
+
+                if (player.getTop() < intersection.y) {
+                    player.translateY(-player.getSpeed());
+                } else if (getBottom() > intersection.getMaxY()) {
+                    player.translateY(player.getSpeed());
+                }
+            } else {
+                // vertical collision
+                if (dy > GameBoard.TILE_SIZE / 2) {
+                    // moving up
+                    player.translateY(GameBoard.TILE_SIZE - dy);
+                } else {
+                    // moving down
+                    player.translateY(-dy);
+                }
+
+                if (player.getLeft() < intersection.x) {
+                    player.translateX(-player.getSpeed());
+                } else if (player.getRight() > intersection.getMaxX()) {
+                    player.translateX(player.getSpeed());
+                }
+            }
+        }
+
+        return intersection;
     }
 
     public boolean isSolid() {

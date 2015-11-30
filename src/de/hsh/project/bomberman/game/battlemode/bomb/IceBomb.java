@@ -5,7 +5,7 @@ package de.hsh.project.bomberman.game.battlemode.bomb;
  */
 public class IceBomb extends Bomb {
 
-    public IceBomb(int gridX, int gridY, int range) {
-        super(gridX, gridY, range);
+    public IceBomb(int range) {
+        super(range);
     }
 }

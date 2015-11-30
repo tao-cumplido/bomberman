@@ -10,7 +10,7 @@ import java.awt.*;
  */
 public class Game extends JFrame {
 
-    public static int FPS = 60;
+    public static int FPS = 30;
 
     private static Game THIS; // lazy singleton
 

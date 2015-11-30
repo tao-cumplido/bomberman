@@ -12,7 +12,7 @@ public abstract class Bomb extends Tile {
         DEFAULT
     }
 
-    public Bomb(int gridX, int gridY, int range) {
-        super(gridX, gridY, true);
+    public Bomb(int range) {
+        super(true);
     }
 }
