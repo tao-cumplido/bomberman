@@ -85,6 +85,10 @@ public abstract class GameBoard {
         tile.setPosition(x, y);
     }
 
+    public boolean fieldIsBlocked(int x, int y) {
+        return grid[x][y] != null && grid[x][y].isSolid();
+    }
+
     public BufferedImage getBuffer() {
         Graphics g = dynamicBuffer.getGraphics();
         g.drawImage(staticBuffer, 0, 0, null);

@@ -44,7 +44,7 @@ public class BattleState extends GameState implements Runnable {
             wait = 1000 / Game.FPS - elapsed / 1000_000;
 
             try {
-                if (wait < 0) System.out.println("Warning: loop too slow!");
+                //if (wait < 0) System.out.println("Warning: loop too slow!");
                 Thread.sleep(wait < 0 ? 5 : wait);
             } catch (InterruptedException e) {
                 e.printStackTrace();

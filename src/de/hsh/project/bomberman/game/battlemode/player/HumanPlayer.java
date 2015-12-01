@@ -1,7 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
@@ -19,7 +18,7 @@ public class HumanPlayer extends Player {
     private Key[] directionKeys;
     private Key[] allKeys;
 
-    private Direction currentDirection = Direction.DOWN;
+    private Direction intendedDirection = Direction.DOWN;
 
     public HumanPlayer(int playerNumber, InputMap inputMap, ActionMap actionMap) {
         super(playerNumber);
@@ -45,13 +44,13 @@ public class HumanPlayer extends Player {
     }
 
     private void pressDirectionAction(Key key) {
-        currentDirection = key.getDirection();
+        intendedDirection = key.getDirection();
     }
 
     private void releaseDirectionAction(Key key) {
         for (Key other : directionKeys) {
             if (other != key && other.isPressed()) {
-                currentDirection = other.getDirection();
+                intendedDirection = other.getDirection();
             }
         }
     }
@@ -75,9 +74,9 @@ public class HumanPlayer extends Player {
     @Override
     public void update() {
         if (anyDirectionPressed()) {
-            move(currentDirection);
+            move(intendedDirection);
         } else {
-            stop(currentDirection);
+            stop(intendedDirection);
         }
         super.update();
     }

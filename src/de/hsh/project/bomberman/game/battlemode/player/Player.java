@@ -42,6 +42,8 @@ public abstract class Player extends Tile {
 
     private BufferedImage frame;
 
+    private Direction facingDirection;
+
     public Player(int playerNumber) {
         super(false);
 
@@ -58,12 +60,41 @@ public abstract class Player extends Tile {
         sprite.addAnimation(Animation.WALK_RIGHT, 9, 10, 9, 11);
 
         sprite.playAnimation(Animation.STAND_DOWN, true);
+        this.facingDirection = Direction.DOWN;
+    }
+
+    public Direction getFacingDirection() {
+        return facingDirection;
+    }
+
+    public void translateX(int delta) {
+        bounds.x += delta;
+    }
+
+    public void translateY(int delta) {
+        bounds.y += delta;
+    }
+
+    @Override
+    public int getX() {
+        return (getLeft() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
+    }
+
+    @Override
+    public int getY() {
+        return (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
+    }
+
+    public void alignX() {
+        setX(getX());
+    }
+
+    public void alignY() {
+        setY(getY());
     }
 
     protected void dropBomb() {
-        int gridX = (getLeft() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
-        int gridY = (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
-        BOARD.put(new FireBomb(bombRange), gridX, gridY);
+        BOARD.put(new FireBomb(bombRange), getX(), getY());
     }
 
     public int getSpeed() {
@@ -71,6 +102,7 @@ public abstract class Player extends Tile {
     }
 
     protected void move(Direction direction) {
+        facingDirection = direction;
         switch (direction) {
             case LEFT:
                 translateX(-speed);
@@ -92,6 +124,7 @@ public abstract class Player extends Tile {
     }
 
     protected void stop(Direction direction) {
+        facingDirection = direction;
         switch (direction) {
             case LEFT:
                 sprite.playAnimation(Animation.STAND_LEFT, false);
