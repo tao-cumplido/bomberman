@@ -9,7 +9,7 @@ import java.awt.*;
 public abstract class GameState extends JPanel {
 
     public GameState() {
-        setPreferredSize(new Dimension(19*48, 15*48));
+        setPreferredSize(new Dimension(912, 720));
         setFocusable(true);
     }
 }

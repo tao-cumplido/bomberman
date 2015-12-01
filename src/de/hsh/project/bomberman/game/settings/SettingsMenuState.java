@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by taocu on 26.10.2015.
  */
-public class SettingsMenuState extends MenuState{
+public class SettingsMenuState extends MenuState {
 
     private JPanel tll;
     private JPanel s_player;

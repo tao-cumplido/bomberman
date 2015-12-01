@@ -30,7 +30,6 @@ public class TitleState extends MenuState {
     private JLabel illustration;
 
     public TitleState() {
-
         GridBagLayout layout;
         layout = new GridBagLayout();
         this.setLayout(layout);
@@ -50,7 +49,7 @@ public class TitleState extends MenuState {
         setHelpButton(helpButton);
         setHighScoreButton(highScoreButton);
         setNewGameButton(newGameButton);
-        setIllustration(illustration);
+        //setIllustration(illustration);
 
         this.add(titleLabel);
         this.add(creditsButton);
@@ -64,28 +63,25 @@ public class TitleState extends MenuState {
         bagConstraints.fill = GridBagConstraints.NORTH;
         bagConstraints.anchor = GridBagConstraints.CENTER;
 
-        addGridBag(layout, titleLabel, bagConstraints,0,0,2,1,0,1);
-        addGridBag(layout, newGameButton, bagConstraints,1,5,1,1,0,1);
-        addGridBag(layout,settingButton, bagConstraints,1,6,1,1,0,1);
-        addGridBag(layout,highScoreButton,bagConstraints,1,8,1,1,0,1);
-        addGridBag(layout,helpButton,bagConstraints,1,10,1,1,0,1);
-        addGridBag(layout,creditsButton,bagConstraints,1,12,1,1,0,1);
-        addGridBag(layout,illustration,bagConstraints,2,6,1,3,0,1);
+        addGridBag(layout, titleLabel, bagConstraints, 0, 0, 2, 1, 0, 1);
+        addGridBag(layout, newGameButton, bagConstraints, 1, 5, 1, 1, 0, 1);
+        addGridBag(layout, settingButton, bagConstraints, 1, 6, 1, 1, 0, 1);
+        addGridBag(layout, highScoreButton, bagConstraints, 1, 8, 1, 1, 0, 1);
+        addGridBag(layout, helpButton, bagConstraints, 1, 10, 1, 1, 0, 1);
+        addGridBag(layout, creditsButton, bagConstraints, 1, 12, 1, 1, 0, 1);
+        addGridBag(layout, illustration, bagConstraints, 2, 6, 1, 3, 0, 1);
 
     }
 
 
-
-    public void addGridBag(GridBagLayout layout,Component c,GridBagConstraints constraints,int x,int y,int w,int h,int wx,int wy)
-
-    {
+    public void addGridBag(GridBagLayout layout, Component c, GridBagConstraints constraints, int x, int y, int w, int h, int wx, int wy) {
         constraints.gridx = x;
         constraints.gridy = y;
         constraints.gridwidth = w;
         constraints.gridheight = h;
         constraints.weightx = wx;
         constraints.weighty = wy;
-        layout.setConstraints(c,constraints);
+        layout.setConstraints(c, constraints);
 
     }
 
@@ -94,7 +90,7 @@ public class TitleState extends MenuState {
         this.titleLabel = titleLabel;
         String title = "Bomberman";
         this.titleLabel.setText(title);
-        this.titleLabel.setFont(new Font(" Arial",Font.BOLD, 60));
+        this.titleLabel.setFont(new Font(" Arial", Font.BOLD, 60));
     }
 
     protected void setIllustration(JLabel illustration) {
@@ -105,62 +101,37 @@ public class TitleState extends MenuState {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.illustration.setIcon(new ImageIcon(image.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+        //this.illustration.setIcon(new ImageIcon(image.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
     }
 
     protected void setCreditsButton(JButton creditsButton) {
         this.creditsButton = creditsButton;
-        this.creditsButton.setPreferredSize(new Dimension(100,30));
-        this.creditsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Game.switchState(new CreditsState());
-            }
-        });
+        this.creditsButton.setPreferredSize(new Dimension(100, 30));
+        this.creditsButton.addActionListener((event) -> Game.switchState(new CreditsState()));
     }
 
     protected void setHelpButton(JButton helpButton) {
         this.helpButton = helpButton;
-        this.helpButton.setPreferredSize(new Dimension(100,30));
-        this.helpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Game.switchState(new HelpMenuState());
-            }
-        });
+        this.helpButton.setPreferredSize(new Dimension(100, 30));
+        this.helpButton.addActionListener((event) -> Game.switchState(new HelpMenuState()));
     }
 
     protected void setHighScoreButton(JButton highScoreButton) {
         this.highScoreButton = highScoreButton;
-        this.highScoreButton.setPreferredSize(new Dimension(100,30));
-        this.highScoreButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Game.switchState(new HighScoreMenuState());
-            }
-        });
+        this.highScoreButton.setPreferredSize(new Dimension(100, 30));
+        this.highScoreButton.addActionListener((event) -> Game.switchState(new HighScoreMenuState()));
     }
 
     protected void setNewGameButton(JButton newGameButton) {
         this.newGameButton = newGameButton;
-        this.newGameButton.setPreferredSize(new Dimension(100,30));
-        this.newGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Game.switchState(new BattleState());
-            }
-        });
+        this.newGameButton.setPreferredSize(new Dimension(100, 30));
+        this.newGameButton.addActionListener((event) -> Game.switchState(new BattleState()));
     }
 
 
-    protected void setSettingButton(JButton settingButton){
+    protected void setSettingButton(JButton settingButton) {
         this.settingButton = settingButton;
-        this.settingButton.setPreferredSize(new Dimension(100,30));
-        this.settingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ev) {
-                Game.switchState(new SettingsMenuState());
-            }
-        });
+        this.settingButton.setPreferredSize(new Dimension(100, 30));
+        this.settingButton.addActionListener((event) -> Game.switchState(new SettingsMenuState()));
     }
 }
