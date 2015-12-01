@@ -28,74 +28,71 @@ public abstract class Tile {
         this.solid = solid;
     }
 
-    public Rectangle onCollision(Player player) {
-        Rectangle intersection = bounds.intersection(player.bounds);
+    public boolean onCollision(Player player) {
+        boolean collides = !bounds.intersection(player.bounds).isEmpty();
 
-        if(!intersection.isEmpty() && this.isSolid()) {
-            /*int x = player.getX();
+        if(collides && this.isSolid() && player.isMoving()) {
+            int delta = player.getSpeed();
+            int x = player.getX();
             int y = player.getY();
+            int m = GameBoard.TILE_SIZE / 2;
             switch (player.getFacingDirection()) {
                 case LEFT:
                     if (this.getLeft() < player.getLeft()) {
-                        player.translateX(player.getSpeed());
+                        player.translateX(delta);
+                    }
+                    if (player.getTop() < this.getTop()) {
+                        if (player.getBottom() >= this.getTop() + m) y -= 1;
+                        if (!BOARD.fieldIsBlocked(x - 1, y)) player.translateY(-delta);
+                    }
+                    if (player.getBottom() > this.getBottom()) {
+                        if (player.getTop() < this.getBottom() - m) y += 1;
+                        if (!BOARD.fieldIsBlocked(x - 1, y)) player.translateY(delta);
                     }
                     break;
                 case RIGHT:
                     if (this.getRight() > player.getRight()) {
-                        player.translateX(-player.getSpeed());
+                        player.translateX(-delta);
+                    }
+                    if (player.getTop() < this.getTop()) {
+                        if (player.getBottom() >= this.getTop() + m) y -= 1;
+                        if (!BOARD.fieldIsBlocked(x + 1, y)) player.translateY(-delta);
+                    }
+                    if (player.getBottom() > this.getBottom()) {
+                        if (player.getTop() < this.getBottom() - m) y += 1;
+                        if (!BOARD.fieldIsBlocked(x + 1, y)) player.translateY(delta);
                     }
                     break;
                 case UP:
                     if (this.getTop() < player.getTop()) {
-                        player.translateY(player.getSpeed());
+                        player.translateY(delta);
+                    }
+                    if (player.getLeft() < this.getLeft()) {
+                        if (player.getRight() >= this.getLeft() + m) x -= 1;
+                        if (!BOARD.fieldIsBlocked(x, y - 1)) player.translateX(-delta);
+                    }
+                    if (player.getRight() > this.getRight()) {
+                        if (player.getLeft() < this.getRight() - m) x += 1;
+                        if (!BOARD.fieldIsBlocked(x, y - 1)) player.translateX(delta);
                     }
                     break;
                 case DOWN:
                     if (this.getBottom() > player.getBottom()) {
-                        player.translateY(-player.getSpeed());
+                        player.translateY(-delta);
+                    }
+                    if (player.getLeft() < this.getLeft()) {
+                        if (player.getRight() >= this.getLeft() + m) x -= 1;
+                        if (!BOARD.fieldIsBlocked(x, y + 1)) player.translateX(-delta);
+                    }
+                    if (player.getRight() > this.getRight()) {
+                        if (player.getLeft() < this.getRight() - m) x += 1;
+                        if (!BOARD.fieldIsBlocked(x, y + 1)) player.translateX(delta);
                     }
                     break;
-            }*/
-
-            int dx = player.getLeft() % GameBoard.TILE_SIZE;
-            int dy = player.getTop() % GameBoard.TILE_SIZE;
-
-            if (intersection.getWidth() < intersection.getHeight()) {
-                // horizontal collision
-                /*if (dx > GameBoard.TILE_SIZE / 2) {
-                    // moving left
-                    player.translateX(GameBoard.TILE_SIZE - dx);
-                } else {
-                    // moving right
-                    player.translateX(-dx);
-                }*/
-                player.alignX();
-
-                if (player.getTop() < intersection.y) {
-                    player.translateY(-player.getSpeed());
-                } else if (player.getBottom() > intersection.getMaxY()) {
-                    player.translateY(player.getSpeed());
-                }
-            } else {
-                // vertical collision
-                /*if (dy > GameBoard.TILE_SIZE / 2) {
-                    // moving up
-                    player.translateY(GameBoard.TILE_SIZE - dy);
-                } else {
-                    // moving down
-                    player.translateY(-dy);
-                }*/
-                player.alignY();
-
-                if (player.getLeft() < intersection.x) {
-                    player.translateX(-player.getSpeed());
-                } else if (player.getRight() > intersection.getMaxX()) {
-                    player.translateX(player.getSpeed());
-                }
             }
         }
 
-        return intersection;
+        return collides;
     }
 
     public boolean isSolid() {
