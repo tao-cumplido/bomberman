@@ -1,6 +1,9 @@
 package de.hsh.project.bomberman.game.highscore;
 
+import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.credits.CreditsState;
 import de.hsh.project.bomberman.game.menu.MenuState;
+import de.hsh.project.bomberman.game.menu.TitleState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,20 +15,16 @@ import java.util.ArrayList;
  */
 
 public class HighScoreMenuState extends MenuState {
-    public static void main(String[] args) {
-        HighScoreMenuState m = new HighScoreMenuState();
 
-    }
 
     public HighScoreMenuState(){
-
+        super();
         this.setLayout (new BorderLayout());
-        this.setSize(800, 500);
 
 
         EnterNameState hm = new EnterNameState();
         hm.addScore("Juan",7587587,"Easy",4,5);
-        hm.addScore("Santiago",325252424,"Hard",5,7);
+        hm.addScore("San",325252434,"Hard",5,7);
 
 
         JLabel p0 = new JLabel("Bomberman");
@@ -43,11 +42,12 @@ public class HighScoreMenuState extends MenuState {
         p0.setFont(new Font("",Font.ITALIC,32));
         show(p1,hm);
 
+        JButton menu = new JButton("<<");
+        menu.setFont(new Font("",Font.BOLD,32));
+        p2.add(menu);
+        setMenuBut(menu);
 
 
-
-        //v.pack();
-        this.setVisible(true);
     }
 
     public void show(JPanel p,EnterNameState h){
@@ -61,10 +61,14 @@ public class HighScoreMenuState extends MenuState {
             score.setHorizontalAlignment(JLabel.CENTER);
 
             if(i<pun.size()){
+                if(i==0){
+                    name.setFont(new Font("",Font.BOLD,24));
+                    score.setFont(new Font("",Font.BOLD,24));
+                }
                 name.setText(i+1+".            "+pun.get(i).getNam());
                 name.setToolTipText("Level: "+pun.get(i).getLevel()+" Lives: "+pun.get(i).getLives()+" Time: "+pun.get(i).getTime());
                 score.setText(Integer.toString(pun.get(i).getScore()));
-                score.setToolTipText("Level: "+pun.get(i).getLevel()+" Lives: "+pun.get(i).getLives()+" Time: "+pun.get(i).getTime());
+                score.setToolTipText("Level: " + pun.get(i).getLevel() + " Lives: " + pun.get(i).getLives() + " Time: " + pun.get(i).getTime());
             }
 
             p.add(name);
@@ -73,4 +77,7 @@ public class HighScoreMenuState extends MenuState {
         System.out.println(pun.size());
     }
 
+    protected void setMenuBut(JButton menuBut) {
+        menuBut.addActionListener((event) -> Game.switchState(new TitleState()));
+    }
 }

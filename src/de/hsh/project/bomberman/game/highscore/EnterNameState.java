@@ -11,7 +11,7 @@ import java.util.Collections;
 /**
  * Created by taocu on 26.10.2015.
  */
-public class EnterNameState extends JFrame {
+public class EnterNameState {
 
 
     private ArrayList<HighScore> scores;
