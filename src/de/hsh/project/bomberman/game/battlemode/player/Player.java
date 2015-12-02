@@ -43,6 +43,7 @@ public abstract class Player extends Tile {
     private BufferedImage frame;
 
     private Direction facingDirection;
+    private boolean moving;
 
     public Player(int playerNumber) {
         super(false);
@@ -59,12 +60,15 @@ public abstract class Player extends Tile {
         sprite.addAnimation(Animation.WALK_LEFT, 6, 7, 6, 8);
         sprite.addAnimation(Animation.WALK_RIGHT, 9, 10, 9, 11);
 
-        sprite.playAnimation(Animation.STAND_DOWN, true);
-        this.facingDirection = Direction.DOWN;
+        stop(Direction.DOWN);
     }
 
     public Direction getFacingDirection() {
         return facingDirection;
+    }
+
+    public boolean isMoving() {
+        return moving;
     }
 
     public void translateX(int delta) {
@@ -103,6 +107,7 @@ public abstract class Player extends Tile {
 
     protected void move(Direction direction) {
         facingDirection = direction;
+        moving = true;
         switch (direction) {
             case LEFT:
                 translateX(-speed);
@@ -125,6 +130,7 @@ public abstract class Player extends Tile {
 
     protected void stop(Direction direction) {
         facingDirection = direction;
+        moving = false;
         switch (direction) {
             case LEFT:
                 sprite.playAnimation(Animation.STAND_LEFT, false);
