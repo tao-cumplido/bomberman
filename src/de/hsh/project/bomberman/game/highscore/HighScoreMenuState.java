@@ -2,10 +2,9 @@ package de.hsh.project.bomberman.game.highscore;
 
 import de.hsh.project.bomberman.game.menu.MenuState;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
-
-import java.io.*;
-import java.util.Collections;
 
 
 /**
@@ -13,79 +12,65 @@ import java.util.Collections;
  */
 
 public class HighScoreMenuState extends MenuState {
+    public static void main(String[] args) {
+        HighScoreMenuState m = new HighScoreMenuState();
 
-
-    private ArrayList<HighScore> scores;
-    private static final String FILE_SCORE = "scores.dat";
-
-    ObjectOutputStream outputStream = null;
-    ObjectInputStream inputStream = null;
-
-    public HighScoreMenuState() {
-        scores = new ArrayList<HighScore>();
     }
 
-    public ArrayList<HighScore> getScores() {
-        loadScoreFile();
-        return scores;
+    public HighScoreMenuState(){
+
+        this.setLayout (new BorderLayout());
+        this.setSize(800, 500);
+
+
+        EnterNameState hm = new EnterNameState();
+        hm.addScore("Juan",7587587,"Easy",4,5);
+        hm.addScore("Santiago",325252424,"Hard",5,7);
+
+
+        JLabel p0 = new JLabel("Bomberman");
+        //p0.setToolTipText("Bomba");
+
+        JPanel p1 = new JPanel();
+        JPanel p2 = new JPanel();
+
+        this.add(p0,BorderLayout.NORTH);
+        this.add(p1,BorderLayout.CENTER);
+        p1.setLayout(new GridLayout(10,2));
+        this.add(p2,BorderLayout.SOUTH);
+
+        p0.setHorizontalAlignment(JLabel.CENTER);
+        p0.setFont(new Font("",Font.ITALIC,32));
+        show(p1,hm);
+
+
+
+
+        //v.pack();
+        this.setVisible(true);
     }
 
-    private void sort() {
-        Compare comparator = new Compare();
-        Collections.sort(scores, comparator);
-    }
+    public void show(JPanel p,EnterNameState h){
+        ArrayList<HighScore> pun = h.getScores();
 
-    public void addScore(String name, int score, String level, int lives, double time) {
-        loadScoreFile();
-        scores.add(new HighScore(name, score, level, lives, time));
+        for(int i=0;i<10;i++){
 
-        sort();
+            JLabel name= new JLabel();
+            name.setHorizontalAlignment(JLabel.CENTER);
+            JLabel score = new JLabel();
+            score.setHorizontalAlignment(JLabel.CENTER);
 
-        if (scores.size() > 10)
-            scores.remove(10);
-
-        updateScoreFile();
-    }
-
-    public void loadScoreFile() {
-        try {
-            inputStream = new ObjectInputStream(new FileInputStream(FILE_SCORE));
-            scores = (ArrayList<HighScore>) inputStream.readObject();
-        } catch (FileNotFoundException e) {
-            System.out.println("[Load] " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("[Load] " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.out.println("[Load] " + e.getMessage());
-        } finally {
-            try {
-                if (outputStream != null) {
-                    outputStream.flush();
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                System.out.println("[Load] " + e.getMessage());
+            if(i<pun.size()){
+                name.setText(i+1+".            "+pun.get(i).getNam());
+                name.setToolTipText("Level: "+pun.get(i).getLevel()+" Lives: "+pun.get(i).getLives()+" Time: "+pun.get(i).getTime());
+                score.setText(Integer.toString(pun.get(i).getScore()));
+                score.setToolTipText("Level: "+pun.get(i).getLevel()+" Lives: "+pun.get(i).getLives()+" Time: "+pun.get(i).getTime());
             }
+
+            p.add(name);
+            p.add(score);
         }
+        System.out.println(pun.size());
     }
 
-    public void updateScoreFile() {
-        try {
-            outputStream = new ObjectOutputStream(new FileOutputStream(FILE_SCORE));
-            outputStream.writeObject(scores);
-        } catch (FileNotFoundException e) {
-            System.out.println("[Update] " + e.getMessage() + ",the program will try and make a new file");
-        } catch (IOException e) {
-            System.out.println("[Update] " + e.getMessage());
-        } finally {
-            try {
-                if (outputStream != null) {
-                    outputStream.flush();
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                System.out.println("[Update] " + e.getMessage());
-            }
-        }
-    }
 }
