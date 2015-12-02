@@ -37,11 +37,10 @@ public abstract class Settings {
 
         try {
             String encoding = "GBK";
-            File file = new File(filePath);
-            if (file.isFile() && file.exists()) {
-                InputStreamReader read = new InputStreamReader(
-                        new FileInputStream(file), encoding);
-                BufferedReader bufferedReader = new BufferedReader(read);
+            InputStream inputStream = this.getClass().getResourceAsStream(filePath);
+            //if (file.isFile() && file.exists()) {
+               // InputStreamReader read = new InputStreamReader(inputStream, encoding);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 String lineTxt = null;
                 String[] mark;
                 while (!(lineTxt = bufferedReader.readLine()).equals("settings.conf")) {
@@ -84,10 +83,10 @@ public abstract class Settings {
                     }
                 }
                 bufferedReader.close();
-                read.close();
-            } else {
-                System.out.println("not found");
-            }
+               // read.close();
+            //} else {
+                //System.out.println("not found");
+           // }
         } catch (Exception e) {
             System.out.println("read error");
             e.printStackTrace();
