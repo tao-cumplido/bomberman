@@ -32,7 +32,7 @@ public abstract class Player extends Tile {
 
     private int bombs;
     private int bombRange;
-    private int speed = 12;
+    private int speed = 6;
     private boolean kickAbility;
     private boolean remoteControl;
     private int lifes;
@@ -87,14 +87,6 @@ public abstract class Player extends Tile {
     @Override
     public int getY() {
         return (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
-    }
-
-    public void alignX() {
-        setX(getX());
-    }
-
-    public void alignY() {
-        setY(getY());
     }
 
     protected void dropBomb() {

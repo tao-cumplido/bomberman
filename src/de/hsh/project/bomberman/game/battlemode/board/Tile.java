@@ -31,14 +31,14 @@ public abstract class Tile {
     public boolean onCollision(Player player) {
         boolean collides = !bounds.intersection(player.bounds).isEmpty();
 
-        if(collides && this.isSolid() && player.isMoving()) {
+        if (collides && this.isSolid() && player.isMoving()) {
             int delta = player.getSpeed();
             int x = player.getX();
             int y = player.getY();
             int m = GameBoard.TILE_SIZE / 2;
             switch (player.getFacingDirection()) {
                 case LEFT:
-                    if (this.getLeft() < player.getLeft()) {
+                    if (this.getLeft() < player.getLeft() && BOARD.fieldIsBlocked(x - 1, y)) {
                         player.translateX(delta);
                     }
                     if (player.getTop() < this.getTop()) {
@@ -51,7 +51,7 @@ public abstract class Tile {
                     }
                     break;
                 case RIGHT:
-                    if (this.getRight() > player.getRight()) {
+                    if (this.getRight() > player.getRight() && BOARD.fieldIsBlocked(x + 1, y)) {
                         player.translateX(-delta);
                     }
                     if (player.getTop() < this.getTop()) {
@@ -64,7 +64,7 @@ public abstract class Tile {
                     }
                     break;
                 case UP:
-                    if (this.getTop() < player.getTop()) {
+                    if (this.getTop() < player.getTop() && BOARD.fieldIsBlocked(x, y - 1)) {
                         player.translateY(delta);
                     }
                     if (player.getLeft() < this.getLeft()) {
@@ -77,7 +77,7 @@ public abstract class Tile {
                     }
                     break;
                 case DOWN:
-                    if (this.getBottom() > player.getBottom()) {
+                    if (this.getBottom() > player.getBottom() && BOARD.fieldIsBlocked(x, y + 1)) {
                         player.translateY(-delta);
                     }
                     if (player.getLeft() < this.getLeft()) {
