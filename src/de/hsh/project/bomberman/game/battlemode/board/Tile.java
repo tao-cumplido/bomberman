@@ -30,7 +30,7 @@ public abstract class Tile {
 
     public boolean onCollision(Player player) {
         boolean collides = !bounds.intersection(player.bounds).isEmpty();
-
+        // TODO: wall collision doesn't work if player.speed > 16
         if (collides && this.isSolid() && player.isMoving()) {
             int delta = player.getSpeed();
             int x = player.getX();

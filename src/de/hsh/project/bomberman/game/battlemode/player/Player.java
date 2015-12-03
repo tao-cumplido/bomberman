@@ -18,6 +18,9 @@ import java.util.ArrayList;
  */
 public abstract class Player extends Tile {
 
+    public static int MAX_SPEED = 16;
+    public static int MIN_SPEED = 4;
+
     private enum Animation implements AnimationID {
         STAND_DOWN,
         STAND_UP,
@@ -32,7 +35,7 @@ public abstract class Player extends Tile {
 
     private int bombs;
     private int bombRange;
-    private int speed = 6;
+    private int speed = 8;
     private boolean kickAbility;
     private boolean remoteControl;
     private int lifes;
@@ -48,7 +51,7 @@ public abstract class Player extends Tile {
     public Player(int playerNumber) {
         super(false);
 
-        this.sprite = new Sprite("/res/images/bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, 6);
+        this.sprite = new Sprite("/res/images/bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2);
 
         sprite.addAnimation(Animation.STAND_DOWN, 0);
         sprite.addAnimation(Animation.STAND_UP, 3);
@@ -103,19 +106,19 @@ public abstract class Player extends Tile {
         switch (direction) {
             case LEFT:
                 translateX(-speed);
-                sprite.playAnimation(Animation.WALK_LEFT, true);
+                sprite.playAnimation(Animation.WALK_LEFT, 48 / speed, true);
                 break;
             case RIGHT:
                 translateX(speed);
-                sprite.playAnimation(Animation.WALK_RIGHT, true);
+                sprite.playAnimation(Animation.WALK_RIGHT, 48 / speed, true);
                 break;
             case UP:
                 translateY(-speed);
-                sprite.playAnimation(Animation.WALK_UP, true);
+                sprite.playAnimation(Animation.WALK_UP, 48 / speed, true);
                 break;
             case DOWN:
                 translateY(speed);
-                sprite.playAnimation(Animation.WALK_DOWN, true);
+                sprite.playAnimation(Animation.WALK_DOWN, 48 / speed, true);
                 break;
         }
     }

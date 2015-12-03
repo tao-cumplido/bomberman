@@ -26,7 +26,7 @@ public class HardBlock extends Tile {
             }
         }
 
-        this.sprite = new Sprite(spriteSheet, GameBoard.TILE_SIZE, GameBoard.TILE_SIZE, 0);
+        this.sprite = new Sprite(spriteSheet, GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
     }
 
     @Override
