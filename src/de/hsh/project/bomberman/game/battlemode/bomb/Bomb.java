@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
+import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 
@@ -12,7 +13,31 @@ public abstract class Bomb extends Tile {
         DEFAULT
     }
 
+    private int tick;
+
+    protected int range;
+
     public Bomb(int range) {
         super(true);
+        this.tick = 0;
+        this.range = range;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        tick++;
+        if (tick == 4 * Game.FPS) {
+            detonate();
+        }
+    }
+
+    @Override
+    public void burn() {
+        detonate();
+    }
+
+    public void detonate() {
+        BOARD.remove(getX(), getY());
     }
 }

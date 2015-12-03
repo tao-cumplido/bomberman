@@ -1,7 +1,36 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
+import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
+import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 /**
  * Created by taocu on 26.10.2015.
  */
 public class FireBlast extends Blast {
+
+    private static BufferedImage SHEET;
+
+    public FireBlast(int row) {
+        if (SHEET == null) {
+            try {
+                SHEET = ImageIO.read(getClass().getResource("/res/images/fireblast.png"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        Integer frames[] = {0, 1, 2, 3, 4, 3, 4, 3, 4, 3, 2, 1, 0};
+        if (row > 0) {
+            for (int i = 0; i < frames.length; i++) {
+                frames[i] += row * 5;
+            }
+        }
+
+        this.sprite = new Sprite(SHEET, GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
+        this.sprite.addAnimation(Animation.DEFAULT, frames);
+        this.sprite.playAnimation(Animation.DEFAULT, 2, this::removeCallback);
+    }
 }

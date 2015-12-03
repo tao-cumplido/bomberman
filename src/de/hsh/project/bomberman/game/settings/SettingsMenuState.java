@@ -153,7 +153,7 @@ public class SettingsMenuState extends MenuState {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Map<SettingsTyp,Integer> map =sFile.getBasicSetting();
-                map.put(SettingsTyp.LEVEL, Integer.valueOf(1));
+                map.put(SettingsTyp.LEVEL, 1);
                 sFile.setBasicSetting(map);
             }
         });

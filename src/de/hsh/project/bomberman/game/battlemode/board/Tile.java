@@ -149,4 +149,9 @@ public abstract class Tile {
     public BufferedImage getFrame() {
         return sprite.getCurrentFrame();
     }
+
+    // TODO: make abstract
+    public void burn() {}
+
+    public void freeze() {}
 }

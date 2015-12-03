@@ -8,4 +8,9 @@ public class IceBomb extends Bomb {
     public IceBomb(int range) {
         super(range);
     }
+
+    @Override
+    public void detonate() {
+
+    }
 }

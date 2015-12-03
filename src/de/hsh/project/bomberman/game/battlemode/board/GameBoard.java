@@ -85,6 +85,14 @@ public abstract class GameBoard {
         tile.setPosition(x, y);
     }
 
+    public void remove(int x, int y) {
+        grid[x][y] = null;
+    }
+
+    public Tile getTile(int x, int y) {
+        return grid[x][y];
+    }
+
     public boolean fieldIsBlocked(int x, int y) {
         return grid[x][y] != null && grid[x][y].isSolid();
     }

@@ -34,7 +34,7 @@ public abstract class Player extends Tile {
     }
 
     private int bombs;
-    private int bombRange;
+    private int bombRange = 3;
     private int speed = 8;
     private boolean kickAbility;
     private boolean remoteControl;
