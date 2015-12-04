@@ -13,20 +13,11 @@ import java.io.IOException;
  */
 public class HardBlock extends Tile {
 
-    private static BufferedImage spriteSheet;
+    private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/hardblock.png");
 
     public HardBlock() {
         super(true);
-
-        if (spriteSheet == null) {
-            try {
-                spriteSheet = ImageIO.read(getClass().getResource("/res/images/hardblock.png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        this.sprite = new Sprite(spriteSheet, GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
+        this.sprite = new Sprite(spriteSheet);
     }
 
     @Override

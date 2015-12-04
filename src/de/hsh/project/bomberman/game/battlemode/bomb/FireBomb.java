@@ -13,20 +13,12 @@ import java.awt.image.BufferedImage;
  */
 public class FireBomb extends Bomb {
 
-    private static BufferedImage SHEET;
+    private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/firebomb.png");
 
     public FireBomb(int range) {
         super(range);
 
-        if (SHEET == null) {
-            try {
-                SHEET = ImageIO.read(getClass().getResource("/res/images/firebomb.png"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        this.sprite = new Sprite(SHEET, GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
+        this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, 0, 1, 2, 1);
         this.sprite.playAnimation(Animation.DEFAULT, 20, true);
     }

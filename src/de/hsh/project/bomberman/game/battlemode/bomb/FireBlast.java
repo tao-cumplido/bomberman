@@ -11,17 +11,9 @@ import java.awt.image.BufferedImage;
  */
 public class FireBlast extends Blast {
 
-    private static BufferedImage SHEET;
+    private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/fireblast.png");
 
     public FireBlast(int row) {
-        if (SHEET == null) {
-            try {
-                SHEET = ImageIO.read(getClass().getResource("/res/images/fireblast.png"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         Integer frames[] = {0, 1, 2, 3, 4, 3, 4, 3, 4, 3, 2, 1, 0};
         if (row > 0) {
             for (int i = 0; i < frames.length; i++) {
@@ -29,7 +21,7 @@ public class FireBlast extends Blast {
             }
         }
 
-        this.sprite = new Sprite(SHEET, GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
+        this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, frames);
         this.sprite.playAnimation(Animation.DEFAULT, 2, this::removeCallback);
     }
