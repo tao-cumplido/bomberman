@@ -15,8 +15,4 @@ public abstract class Blast extends Tile {
     public Blast() {
         super(false);
     }
-
-    protected void removeCallback() {
-        BOARD.remove(getX(), getY());
-    }
 }

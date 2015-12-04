@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by taocu on 26.10.2015.
@@ -113,6 +114,25 @@ public abstract class GameBoard {
         for (Tile[] row : grid) for (Tile tile : row) if (tile != null) {
             for (int i = 0; i < 1; i++) {
                 tile.onCollision(player[i]);
+            }
+        }
+    }
+
+    protected void fillRandomSoftBlocks() {
+        int p1x = player[0].getX();
+        int p1y = player[0].getY();
+
+        Random generate = new Random();
+
+        for (int x = 1; x < GRID_WIDTH - 1; x++) {
+            for (int y = 1; y < GRID_HEIGHT - 1; y += (x % 2 == 0) ? 2 : 1) {
+                if (x == p1x && y == p1y) continue;
+                if (x == p1x + 1 && y == p1y) continue;
+                if (x == p1x && y == p1y + 1) continue;
+
+                if (generate.nextDouble() > 0.3) {
+                    put(new SoftBlock(), x, y);
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ import de.hsh.project.bomberman.game.battlemode.player.Direction;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  * Created by taocu on 26.10.2015.
@@ -15,8 +16,8 @@ public class FireBomb extends Bomb {
 
     private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/firebomb.png");
 
-    public FireBomb(int range) {
-        super(range);
+    public FireBomb(int range, ArrayList<Bomb> queue) {
+        super(range, queue);
 
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, 0, 1, 2, 1);

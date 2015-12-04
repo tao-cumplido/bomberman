@@ -33,15 +33,15 @@ public abstract class Player extends Tile {
         WALK_RIGHT;
     }
 
-    private int bombs;
+    private int bombs = 3;
     private int bombRange = 3;
-    private int speed = 8;
+    private int speed = 16;
     private boolean kickAbility;
     private boolean remoteControl;
     private int lifes;
     private ArrayList<PowerUp> powerUps;
     private Surprise temporaryAbility;
-    private ArrayList<Bomb> bombQueue;
+    private ArrayList<Bomb> bombQueue = new ArrayList<>();
 
     private BufferedImage frame;
 
@@ -93,7 +93,12 @@ public abstract class Player extends Tile {
     }
 
     protected void dropBomb() {
-        BOARD.put(new FireBomb(bombRange), getX(), getY());
+        int x = getX();
+        int y = getY();
+
+        if (!BOARD.fieldIsBlocked(x, y) && bombQueue.size() < bombs) {
+            BOARD.put(new FireBomb(bombRange, bombQueue), x, y);
+        }
     }
 
     public int getSpeed() {

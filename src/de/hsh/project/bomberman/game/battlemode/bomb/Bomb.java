@@ -5,6 +5,8 @@ import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 
+import java.util.ArrayList;
+
 /**
  * Created by taocu on 26.10.2015.
  */
@@ -18,17 +20,22 @@ public abstract class Bomb extends Tile {
 
     protected int range;
 
-    public Bomb(int range) {
+    private ArrayList<Bomb> queue;
+
+    public Bomb(int range, ArrayList<Bomb> queue) {
         super(true);
         this.tick = 0;
         this.range = range;
+        this.queue = queue;
+
+        queue.add(this);
     }
 
     @Override
     public void update() {
         super.update();
         tick++;
-        if (tick == 4 * Game.FPS) {
+        if (tick == 3 * Game.FPS) {
             detonate();
         }
     }
@@ -51,5 +58,6 @@ public abstract class Bomb extends Tile {
 
     public void detonate() {
         BOARD.remove(getX(), getY());
+        queue.remove(this);
     }
 }

@@ -23,6 +23,6 @@ public class FireBlast extends Blast {
 
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, frames);
-        this.sprite.playAnimation(Animation.DEFAULT, 2, this::removeCallback);
+        this.sprite.playAnimation(Animation.DEFAULT, 2, this::remove);
     }
 }

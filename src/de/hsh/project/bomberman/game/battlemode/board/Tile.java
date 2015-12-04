@@ -154,4 +154,8 @@ public abstract class Tile {
     public void burn() {}
 
     public void freeze() {}
+
+    public void remove() {
+        BOARD.remove(getX(), getY());
+    }
 }
