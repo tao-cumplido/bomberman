@@ -15,8 +15,8 @@ public abstract class GameBoard {
 
     public static final int TILE_SIZE = 48;
 
-    private static final int GRID_WIDTH = 19;
-    private static final int GRID_HEIGHT = 15;
+    protected static final int GRID_WIDTH = 19;
+    protected static final int GRID_HEIGHT = 15;
 
     private BufferedImage staticBuffer;
     private BufferedImage dynamicBuffer;
@@ -70,6 +70,7 @@ public abstract class GameBoard {
 
     public void update() {
         player[0].update();
+        player[1].update();
         for (Tile[] row : grid) for (Tile tile : row) if (tile != null) {
             tile.update();
         }
@@ -106,13 +107,17 @@ public abstract class GameBoard {
             g.drawImage(tile.getFrame(), tile.getLeft(), tile.getTop(), null);
         }
 
-        g.drawImage(player[0].getFrame(), player[0].getLeft(), player[0].getTop() - TILE_SIZE, null);
+        for (int i = 0; i < 2; i++) {
+            if (player[i].isAlive()) {
+                g.drawImage(player[i].getFrame(), player[i].getLeft(), player[i].getTop() - TILE_SIZE, null);
+            }
+        }
         return dynamicBuffer;
     }
 
     private void resolveCollisions() {
         for (Tile[] row : grid) for (Tile tile : row) if (tile != null) {
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 2; i++) {
                 tile.onCollision(player[i]);
             }
         }
@@ -125,10 +130,20 @@ public abstract class GameBoard {
         Random generate = new Random();
 
         for (int x = 1; x < GRID_WIDTH - 1; x++) {
-            for (int y = 1; y < GRID_HEIGHT - 1; y += (x % 2 == 0) ? 2 : 1) {
-                if (x == p1x && y == p1y) continue;
-                if (x == p1x + 1 && y == p1y) continue;
-                if (x == p1x && y == p1y + 1) continue;
+            fill: for (int y = 1; y < GRID_HEIGHT - 1; y += (x % 2 == 0) ? 2 : 1) {
+                for (int i = 0; i < 2; i++) {
+                    int px = player[i].getX();
+                    int py = player[i].getY();
+                    if (x == px && y == py) continue fill;
+                    if (x == px + 1 && y == py) continue fill;
+                    if (x == px - 1 && y == py) continue fill;
+                    if (x == px && y == py + 1) continue fill;
+                    if (x == px && y == py - 1) continue fill;
+                    if (x == px + 1 && y == py + 1) continue fill;
+                    if (x == px + 1 && y == py - 1) continue fill;
+                    if (x == px - 1 && y == py + 1) continue fill;
+                    if (x == px - 1 && y == py - 1) continue fill;
+                }
 
                 if (generate.nextDouble() > 0.3) {
                     put(new SoftBlock(), x, y);

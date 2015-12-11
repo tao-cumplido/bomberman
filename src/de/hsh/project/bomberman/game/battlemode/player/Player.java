@@ -9,8 +9,8 @@ import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.powerup.PowerUp;
 import de.hsh.project.bomberman.game.battlemode.powerup.Surprise;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 
 /**
@@ -30,23 +30,30 @@ public abstract class Player extends Tile {
         WALK_DOWN,
         WALK_UP,
         WALK_LEFT,
-        WALK_RIGHT;
+        WALK_RIGHT,
+
+        DEATH
     }
 
-    private int bombs = 3;
-    private int bombRange = 3;
-    private int speed = 16;
+    private int bombs = 1;
+    private int bombRange = 1;
+    private int speed = 8;
     private boolean kickAbility;
     private boolean remoteControl;
-    private int lifes;
+    private int lifes = 3;
     private ArrayList<PowerUp> powerUps;
     private Surprise temporaryAbility;
     private ArrayList<Bomb> bombQueue = new ArrayList<>();
 
-    private BufferedImage frame;
-
     private Direction facingDirection;
     private boolean moving;
+
+    private boolean alive = true;
+
+    private int invincible = 0;
+
+    private RescaleOp flickerOp = new RescaleOp(0, 0, null);
+    private BufferedImage flicker = new BufferedImage(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, BufferedImage.TYPE_4BYTE_ABGR);
 
     public Player(int playerNumber) {
         super(false);
@@ -62,6 +69,17 @@ public abstract class Player extends Tile {
         sprite.addAnimation(Animation.WALK_UP, 3, 4, 3, 5);
         sprite.addAnimation(Animation.WALK_LEFT, 6, 7, 6, 8);
         sprite.addAnimation(Animation.WALK_RIGHT, 9, 10, 9, 11);
+
+        sprite.addAnimation(Animation.DEATH,
+                12, 13, 14, 15,
+                12, 12, 13, 13, 14, 14, 15, 15,
+                12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15,
+                12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15,
+                12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15,
+                15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+                16, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19,
+                20, 20, 20, 19, 19, 19, 21, 21, 21, 19, 19, 19, 20, 20, 20, 19, 19, 19, 21, 21, 21,
+                19, 19, 19, 19, 19, 19, 19, 19, 19, 19);
 
         stop(Direction.DOWN);
     }
@@ -92,12 +110,60 @@ public abstract class Player extends Tile {
         return (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
     }
 
-    protected void dropBomb() {
-        int x = getX();
-        int y = getY();
+    public int getLifes() {
+        return lifes;
+    }
 
-        if (!BOARD.fieldIsBlocked(x, y) && bombQueue.size() < bombs) {
-            BOARD.put(new FireBomb(bombRange, bombQueue), x, y);
+    public boolean isAlive() {
+        return alive;
+    }
+
+    private void kill() {
+        alive = false;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        if (invincible > 0) {
+            invincible--;
+        }
+    }
+
+    @Override
+    public BufferedImage getFrame() {
+        BufferedImage frame = sprite.getCurrentFrame();
+
+        if (invincible % 3 == 1) {
+            flickerOp.filter(frame, flicker);
+            return flicker;
+        }
+
+        return frame;
+    }
+
+    @Override
+    public void burn() {
+        if (invincible == 0 && lifes > 0) {
+            lifes--;
+
+            if (lifes == 0) {
+                facingDirection = Direction.NONE;
+                sprite.playAnimation(Animation.DEATH, 0, this::kill);
+            } else {
+                invincible = 60;
+            }
+        }
+    }
+
+    protected void dropBomb() {
+        if (lifes > 0) {
+            int x = getX();
+            int y = getY();
+
+            if (BOARD.getTile(x, y) == null && bombQueue.size() < bombs) {
+                BOARD.put(new FireBomb(bombRange, bombQueue), x, y);
+            }
         }
     }
 

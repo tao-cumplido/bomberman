@@ -45,17 +45,6 @@ public abstract class Bomb extends Tile {
         detonate();
     }
 
-    @Override
-    public boolean onCollision(Player player) {
-        boolean collides = super.onCollision(player);
-
-        if (collides) {
-            player.burn();
-        }
-
-        return collides;
-    }
-
     public void detonate() {
         BOARD.remove(getX(), getY());
         queue.remove(this);
