@@ -7,14 +7,8 @@ import de.hsh.project.bomberman.game.help.HelpMenuState;
 import de.hsh.project.bomberman.game.highscore.HighScoreMenuState;
 import de.hsh.project.bomberman.game.settings.SettingsMenuState;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
 
 /**
  * Created by Tao on 24.10.2015.
@@ -27,7 +21,6 @@ public class TitleState extends MenuState {
     private JButton helpButton;
     private JButton highScoreButton;
     private JButton newGameButton;
-    private JLabel illustration;
 
     public TitleState() {
         GridBagLayout layout;
@@ -41,7 +34,6 @@ public class TitleState extends MenuState {
         helpButton = new JButton("Help");
         highScoreButton = new JButton("HighScore");
         newGameButton = new JButton("New Game");
-        illustration = new JLabel();
 
         setTitleLabel(titleLabel);
         setSettingButton(settingButton);
@@ -49,7 +41,6 @@ public class TitleState extends MenuState {
         setHelpButton(helpButton);
         setHighScoreButton(highScoreButton);
         setNewGameButton(newGameButton);
-        //setIllustration(illustration);
 
         this.add(titleLabel);
         this.add(creditsButton);
@@ -57,7 +48,6 @@ public class TitleState extends MenuState {
         this.add(helpButton);
         this.add(highScoreButton);
         this.add(newGameButton);
-        this.add(illustration);
 
         GridBagConstraints bagConstraints = new GridBagConstraints();
         bagConstraints.fill = GridBagConstraints.NORTH;
@@ -69,8 +59,6 @@ public class TitleState extends MenuState {
         addGridBag(layout, highScoreButton, bagConstraints, 1, 8, 1, 1, 0, 1);
         addGridBag(layout, helpButton, bagConstraints, 1, 10, 1, 1, 0, 1);
         addGridBag(layout, creditsButton, bagConstraints, 1, 12, 1, 1, 0, 1);
-        addGridBag(layout, illustration, bagConstraints, 2, 6, 1, 3, 0, 1);
-
     }
 
 
@@ -82,7 +70,6 @@ public class TitleState extends MenuState {
         constraints.weightx = wx;
         constraints.weighty = wy;
         layout.setConstraints(c, constraints);
-
     }
 
 
@@ -91,17 +78,6 @@ public class TitleState extends MenuState {
         String title = "Bomberman";
         this.titleLabel.setText(title);
         this.titleLabel.setFont(new Font(" Arial", Font.BOLD, 60));
-    }
-
-    protected void setIllustration(JLabel illustration) {
-        this.illustration = illustration;
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(getClass().getResource("/res/images/illustration.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //this.illustration.setIcon(new ImageIcon(image.getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
     }
 
     protected void setCreditsButton(JButton creditsButton) {

@@ -27,12 +27,12 @@ public abstract class KeyControl extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
         code = e.getKeyCode();
-        String text = e.getKeyText(code);
+        String text = KeyEvent.getKeyText(code);
         if(setCode(code)){
-            if(code==e.VK_BACK_SPACE){
+            if(code==KeyEvent.VK_BACK_SPACE){
                 text = null;
             }
-            setPlayerWert(code);
+            setPlayerValue(code);
             jTextField.setText(text);
         }
 
@@ -47,7 +47,7 @@ public abstract class KeyControl extends KeyAdapter {
 
     protected abstract boolean setCode(int code);
 
-    protected abstract void setPlayerWert(int code);
+    protected abstract void setPlayerValue(int code);
 
     public int getCode(){
         return code;
