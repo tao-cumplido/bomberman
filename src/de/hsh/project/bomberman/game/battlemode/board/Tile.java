@@ -11,17 +11,24 @@ import java.awt.image.BufferedImage;
  */
 public abstract class Tile {
 
-    protected static GameBoard BOARD;
+    public final static Tile EMPTY = new Tile() {
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+    };
+
+    protected static GameBoard currentBoard;
 
     protected Rectangle bounds;
 
     int x, y;
 
-    private boolean solid;
+    private boolean solid, active;
 
     protected Sprite sprite;
 
-    public Tile() {} // TODO: remove eventually
+    public Tile() {} // TODO: make private
 
     public Tile(boolean solid) {
         this.bounds = new Rectangle(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
@@ -29,70 +36,7 @@ public abstract class Tile {
     }
 
     public boolean onCollision(Player player) {
-        boolean collides = !bounds.intersection(player.bounds).isEmpty();
-        // TODO: wall collision doesn't work if player.speed > 16
-        if (collides && this.isSolid() && player.isMoving()) {
-            int delta = player.getSpeed();
-            int x = player.getX();
-            int y = player.getY();
-            int m = GameBoard.TILE_SIZE / 2;
-            switch (player.getFacingDirection()) {
-                case LEFT:
-                    if (this.getLeft() < player.getLeft() && BOARD.fieldIsBlocked(x - 1, y)) {
-                        player.translateX(delta);
-                    }
-                    if (player.getTop() < this.getTop()) {
-                        if (player.getBottom() >= this.getTop() + m) y -= 1;
-                        if (!BOARD.fieldIsBlocked(x - 1, y)) player.translateY(-delta);
-                    }
-                    if (player.getBottom() > this.getBottom()) {
-                        if (player.getTop() < this.getBottom() - m) y += 1;
-                        if (!BOARD.fieldIsBlocked(x - 1, y)) player.translateY(delta);
-                    }
-                    break;
-                case RIGHT:
-                    if (this.getRight() > player.getRight() && BOARD.fieldIsBlocked(x + 1, y)) {
-                        player.translateX(-delta);
-                    }
-                    if (player.getTop() < this.getTop()) {
-                        if (player.getBottom() >= this.getTop() + m) y -= 1;
-                        if (!BOARD.fieldIsBlocked(x + 1, y)) player.translateY(-delta);
-                    }
-                    if (player.getBottom() > this.getBottom()) {
-                        if (player.getTop() < this.getBottom() - m) y += 1;
-                        if (!BOARD.fieldIsBlocked(x + 1, y)) player.translateY(delta);
-                    }
-                    break;
-                case UP:
-                    if (this.getTop() < player.getTop() && BOARD.fieldIsBlocked(x, y - 1)) {
-                        player.translateY(delta);
-                    }
-                    if (player.getLeft() < this.getLeft()) {
-                        if (player.getRight() >= this.getLeft() + m) x -= 1;
-                        if (!BOARD.fieldIsBlocked(x, y - 1)) player.translateX(-delta);
-                    }
-                    if (player.getRight() > this.getRight()) {
-                        if (player.getLeft() < this.getRight() - m) x += 1;
-                        if (!BOARD.fieldIsBlocked(x, y - 1)) player.translateX(delta);
-                    }
-                    break;
-                case DOWN:
-                    if (this.getBottom() > player.getBottom() && BOARD.fieldIsBlocked(x, y + 1)) {
-                        player.translateY(-delta);
-                    }
-                    if (player.getLeft() < this.getLeft()) {
-                        if (player.getRight() >= this.getLeft() + m) x -= 1;
-                        if (!BOARD.fieldIsBlocked(x, y + 1)) player.translateX(-delta);
-                    }
-                    if (player.getRight() > this.getRight()) {
-                        if (player.getLeft() < this.getRight() - m) x += 1;
-                        if (!BOARD.fieldIsBlocked(x, y + 1)) player.translateX(delta);
-                    }
-                    break;
-            }
-        }
-
-        return collides;
+        return !bounds.intersection(player.bounds).isEmpty();
     }
 
     public boolean isSolid() {
@@ -101,6 +45,10 @@ public abstract class Tile {
 
     public void setSolid(boolean solid) {
         this.solid = solid;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     public void setPosition(int x, int y) {
@@ -135,11 +83,11 @@ public abstract class Tile {
     }
 
     public int getRight() {
-        return bounds.x + bounds.width;
+        return bounds.x + bounds.width - 1;
     }
 
     public int getBottom() {
-        return bounds.y + bounds.height;
+        return bounds.y + bounds.height - 1;
     }
 
     public void update() {
@@ -156,6 +104,26 @@ public abstract class Tile {
     public void freeze() {}
 
     public void remove() {
-        BOARD.remove(getX(), getY());
+        currentBoard.remove(getX(), getY());
+    }
+
+    public boolean isEmpty() {
+        return false;
+    }
+
+    public boolean isBlock() {
+        return false;
+    }
+
+    public boolean isBomb() {
+        return false;
+    }
+
+    public boolean isBlast() {
+        return false;
+    }
+
+    public boolean isPowerUp() {
+        return false;
     }
 }

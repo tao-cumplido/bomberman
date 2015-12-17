@@ -3,7 +3,6 @@ package de.hsh.project.bomberman.game.battlemode.bomb;
 import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
-import de.hsh.project.bomberman.game.battlemode.player.Player;
 
 import java.util.ArrayList;
 
@@ -41,12 +40,17 @@ public abstract class Bomb extends Tile {
     }
 
     @Override
+    public boolean isBomb() {
+        return true;
+    }
+
+    @Override
     public void burn() {
         detonate();
     }
 
     public void detonate() {
-        BOARD.remove(getX(), getY());
+        currentBoard.remove(getX(), getY());
         queue.remove(this);
     }
 }

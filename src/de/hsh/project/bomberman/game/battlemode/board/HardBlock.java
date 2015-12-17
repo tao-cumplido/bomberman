@@ -11,12 +11,11 @@ import java.io.IOException;
 /**
  * Created by taocu on 26.10.2015.
  */
-public class HardBlock extends Tile {
+public class HardBlock extends Block {
 
     private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/hardblock.png");
 
     public HardBlock() {
-        super(true);
         this.sprite = new Sprite(spriteSheet);
     }
 

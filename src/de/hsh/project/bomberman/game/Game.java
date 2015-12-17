@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game;
 
+import de.hsh.project.bomberman.game.battlemode.BattleState;
 import de.hsh.project.bomberman.game.menu.TitleState;
 
 import javax.swing.*;
@@ -28,7 +29,8 @@ public class Game extends JFrame {
 
         setResizable(false);
         setVisible(true);
-        switchState(new TitleState());
+        //switchState(new TitleState());
+        switchState(new BattleState());
 
         // center application window on screen
         int x = (getToolkit().getScreenSize().width - getPreferredSize().width) / 2;

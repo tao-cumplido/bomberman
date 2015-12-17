@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 /**
  * Created by taocu on 26.10.2015.
  */
-public class SoftBlock extends Tile {
+public class SoftBlock extends Block {
 
     private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/softblock.png");
 
@@ -18,7 +18,6 @@ public class SoftBlock extends Tile {
     }
 
     public SoftBlock() {
-        super(true);
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, 0);
         this.sprite.addAnimation(Animation.DISSOLVE, 1, 2, 3, 4, 5, 6);

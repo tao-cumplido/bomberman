@@ -1,11 +1,9 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
-import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.player.Direction;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -27,7 +25,7 @@ public class FireBomb extends Bomb {
     @Override
     public void detonate() {
         super.detonate();
-        BOARD.put(new FireBlast(0), getX(), getY());
+        currentBoard.put(new FireBlast(0), getX(), getY());
         extend(Direction.LEFT);
         extend(Direction.RIGHT);
         extend(Direction.UP);
@@ -48,12 +46,12 @@ public class FireBomb extends Bomb {
         int y = getY();
 
         for (int i = 1; i <= range; i++) {
-            Tile tile = BOARD.getTile(x + dx * i, y + dy * i);
-            if (tile != null) {
+            Tile tile = currentBoard.getTile(x + dx * i, y + dy * i);
+            if (tile != Tile.EMPTY) {
                 tile.burn();
                 return;
             }
-            BOARD.put(new FireBlast((i == range) ? tip : regular), x + dx * i, y + dy * i);
+            currentBoard.put(new FireBlast((i == range) ? tip : regular), x + dx * i, y + dy * i);
         }
     }
 }

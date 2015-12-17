@@ -1,6 +1,10 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
+import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
+import de.hsh.project.bomberman.game.battlemode.board.Tile;
+
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by taocu on 26.10.2015.
@@ -43,10 +47,12 @@ public class HumanPlayer extends Player {
     }
 
     private void pressDirectionAction(Key key) {
+        target = null;
         intendedDirection = key.getDirection();
     }
 
     private void releaseDirectionAction(Key key) {
+        target = null;
         for (Key other : directionKeys) {
             if (other != key && other.isPressed()) {
                 intendedDirection = other.getDirection();
@@ -70,6 +76,28 @@ public class HumanPlayer extends Player {
         return false;
     }
 
+    private int getNextX() {
+        switch (intendedDirection) {
+            case LEFT:
+                return (getLeft() - getSpeed()) / GameBoard.TILE_SIZE;
+            case RIGHT:
+                return (getRight() + getSpeed()) / GameBoard.TILE_SIZE;
+            default:
+                return getLeft() / GameBoard.TILE_SIZE;
+        }
+    }
+
+    private int getNextY() {
+        switch (intendedDirection) {
+            case UP:
+                return (getTop() - getSpeed()) / GameBoard.TILE_SIZE;
+            case DOWN:
+                return (getBottom() + getSpeed()) / GameBoard.TILE_SIZE;
+            default:
+                return getTop() / GameBoard.TILE_SIZE;
+        }
+    }
+
     @Override
     public void update() {
         if (getLifes() > 0) {
@@ -80,5 +108,136 @@ public class HumanPlayer extends Player {
             }
         }
         super.update();
+    }
+
+    // TODO: try to remove redundancy
+    @Override
+    protected void move(Direction direction) {
+        super.move(direction);
+        int x = getX();
+        int y = getY();
+        boolean onBomb = currentBoard.getTile(x, y).isBomb();
+        switch (direction) {
+            case LEFT:
+                if (isYAligned()) {
+                    if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
+                        translateX(-getSpeed());
+                    }
+                } else {
+                    if (target == null) {
+                        if (getTop() < y * GameBoard.TILE_SIZE) {
+                            if (!currentBoard.fieldIsBlocked(x - 1, y - 1)) {
+                                setTarget(x - 1, y - 1);
+                            } else if (!currentBoard.fieldIsBlocked(x - 1, y)) {
+                                setTarget(x - 1, y);
+                            }
+                        } else {
+                            if (!currentBoard.fieldIsBlocked(x - 1, y + 1)) {
+                                setTarget(x - 1, y + 1);
+                            } else if (!currentBoard.fieldIsBlocked(x - 1, y)) {
+                                setTarget(x - 1, y);
+                            }
+                        }
+                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                        if (getTop() > target.y * GameBoard.TILE_SIZE) {
+                            translateY(-getSpeed());
+                        } else {
+                            translateY(getSpeed());
+                        }
+                    }
+                }
+                break;
+            case RIGHT:
+                if (isYAligned()) {
+                    if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
+                        translateX(getSpeed());
+                    }
+                } else {
+                    if (target == null) {
+                        if (getTop() < y * GameBoard.TILE_SIZE) {
+                            if (!currentBoard.fieldIsBlocked(x + 1, y - 1)) {
+                                setTarget(x + 1, y - 1);
+                            } else if (!currentBoard.fieldIsBlocked(x + 1, y)) {
+                                setTarget(x + 1, y);
+                            }
+                        } else {
+                            if (!currentBoard.fieldIsBlocked(x + 1, y + 1)) {
+                                setTarget(x + 1, y + 1);
+                            } else if (!currentBoard.fieldIsBlocked(x + 1, y)) {
+                                setTarget(x + 1, y);
+                            }
+                        }
+                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                        if (getTop() > target.y * GameBoard.TILE_SIZE) {
+                            translateY(-getSpeed());
+                        } else {
+                            translateY(getSpeed());
+                        }
+                    }
+                }
+                break;
+            case UP:
+                if (isXAligned()) {
+                    if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
+                        translateY(-getSpeed());
+                    }
+                } else {
+                    if (target == null) {
+                        if (getLeft() < x * GameBoard.TILE_SIZE) {
+                            if (!currentBoard.fieldIsBlocked(x - 1, y - 1)) {
+                                setTarget(x - 1, y - 1);
+                            } else if (!currentBoard.fieldIsBlocked(x, y - 1)) {
+                                setTarget(x, y - 1);
+                            }
+                        } else {
+                            if (!currentBoard.fieldIsBlocked(x + 1, y - 1)) {
+                                setTarget(x + 1, y - 1);
+                            } else if (!currentBoard.fieldIsBlocked(x, y - 1)) {
+                                setTarget(x, y - 1);
+                            }
+                        }
+                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                        if (getLeft() > target.x * GameBoard.TILE_SIZE) {
+                            translateX(-getSpeed());
+                        } else {
+                            translateX(getSpeed());
+                        }
+                    }
+                }
+                break;
+            case DOWN:
+                if (isXAligned()) {
+                    if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
+                        translateY(getSpeed());
+                    }
+                } else {
+                    if (target == null) {
+                        if (getLeft() < x * GameBoard.TILE_SIZE) {
+                            if (!currentBoard.fieldIsBlocked(x - 1, y + 1)) {
+                                setTarget(x - 1, y + 1);
+                            } else if (!currentBoard.fieldIsBlocked(x, y + 1)) {
+                                setTarget(x, y + 1);
+                            }
+                        } else {
+                            if (!currentBoard.fieldIsBlocked(x + 1, y + 1)) {
+                                setTarget(x + 1, y + 1);
+                            } else if (!currentBoard.fieldIsBlocked(x, y + 1)) {
+                                setTarget(x, y + 1);
+                            }
+                        }
+                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                        if (getLeft() > target.x * GameBoard.TILE_SIZE) {
+                            translateX(-getSpeed());
+                        } else {
+                            translateX(getSpeed());
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private void setTarget(int x, int y) {
+        target = new Point(x, y);
     }
 }

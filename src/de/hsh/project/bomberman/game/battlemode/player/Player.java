@@ -9,6 +9,7 @@ import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.powerup.PowerUp;
 import de.hsh.project.bomberman.game.battlemode.powerup.Surprise;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public abstract class Player extends Tile {
     public static int MAX_SPEED = 16;
     public static int MIN_SPEED = 4;
 
-    private enum Animation implements AnimationID {
+    protected enum Animation implements AnimationID {
         STAND_DOWN,
         STAND_UP,
         STAND_LEFT,
@@ -54,6 +55,8 @@ public abstract class Player extends Tile {
 
     private RescaleOp flickerOp = new RescaleOp(0, 0, null);
     private BufferedImage flicker = new BufferedImage(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, BufferedImage.TYPE_4BYTE_ABGR);
+
+    protected Point target;
 
     public Player(int playerNumber) {
         super(false);
@@ -131,6 +134,12 @@ public abstract class Player extends Tile {
     }
 
     @Override
+    public void setPosition(int x, int y) {
+        super.setPosition(x, y);
+        target = new Point(x, y);
+    }
+
+    @Override
     public BufferedImage getFrame() {
         BufferedImage frame = sprite.getCurrentFrame();
 
@@ -161,8 +170,8 @@ public abstract class Player extends Tile {
             int x = getX();
             int y = getY();
 
-            if (BOARD.getTile(x, y) == null && bombQueue.size() < bombs) {
-                BOARD.put(new FireBomb(bombRange, bombQueue), x, y);
+            if (currentBoard.getTile(x, y).isEmpty() && bombQueue.size() < bombs) {
+                currentBoard.put(new FireBomb(bombRange, bombQueue), x, y);
             }
         }
     }
@@ -171,24 +180,28 @@ public abstract class Player extends Tile {
         return speed;
     }
 
+    public boolean isXAligned() {
+        return bounds.x % GameBoard.TILE_SIZE == 0;
+    }
+
+    public boolean isYAligned() {
+        return bounds.y % GameBoard.TILE_SIZE == 0;
+    }
+
     protected void move(Direction direction) {
         facingDirection = direction;
         moving = true;
         switch (direction) {
             case LEFT:
-                translateX(-speed);
                 sprite.playAnimation(Animation.WALK_LEFT, 48 / speed, true);
                 break;
             case RIGHT:
-                translateX(speed);
                 sprite.playAnimation(Animation.WALK_RIGHT, 48 / speed, true);
                 break;
             case UP:
-                translateY(-speed);
                 sprite.playAnimation(Animation.WALK_UP, 48 / speed, true);
                 break;
             case DOWN:
-                translateY(speed);
                 sprite.playAnimation(Animation.WALK_DOWN, 48 / speed, true);
                 break;
         }
