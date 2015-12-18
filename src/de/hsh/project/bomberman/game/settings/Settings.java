@@ -13,30 +13,18 @@ import java.util.Map;
 public class Settings {
 
 
-    private static Map<SettingsTyp, Integer> basicSetting;
-    private static Map<SettingsTyp, Integer> player1;
-    private static Map<SettingsTyp, Integer> player2;
-    private static Map<SettingsTyp, Integer> player3;
-    private static Map<SettingsTyp, Integer> player4;
-    private static String tempText;
+    private static Map<SettingsTyp, Integer> basicSetting=new HashMap<>();
+    private static Map<SettingsTyp, Integer> player1= new HashMap<>();
+    private static Map<SettingsTyp, Integer> player2=new HashMap<>();
+    private static Map<SettingsTyp, Integer> player3=new HashMap<>();
+    private static Map<SettingsTyp, Integer> player4=new HashMap<>();
+    private static String tempText="";
+    private static boolean temp = false;
 
-
-    public Settings() {
-        player1 = new HashMap<>();
-        player2 = new HashMap<>();
-        player3 = new HashMap<>();
-        player4 = new HashMap<>();
-        basicSetting = new HashMap<>();
-        tempText = "";
-        read("/settings.txt");
-
-
-    }
-
-    private static void read(String filePath) {
+    private static void read() {
 
         try {
-            InputStream read = Settings.class.getResourceAsStream(filePath);
+            InputStream read = Settings.class.getResourceAsStream("/settings.txt");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(read));
             String lineTxt;
             String[] mark;
@@ -195,43 +183,60 @@ public class Settings {
     }
 
     public static Map<SettingsTyp, Integer> getBasicSetting() {
+        checkRead();
         return basicSetting;
     }
 
     public static void setBasicSetting(Map<SettingsTyp, Integer> basicSetting) {
+        checkRead();
         Settings.basicSetting = basicSetting;
     }
 
     public static Map<SettingsTyp, Integer> getPlayer4() {
+        checkRead();
         return player4;
     }
 
     public static void setPlayer4(Map<SettingsTyp, Integer> player4) {
+        checkRead();
         Settings.player4 = player4;
     }
 
     public static Map<SettingsTyp, Integer> getPlayer3() {
+        checkRead();
         return player3;
     }
 
     public static void setPlayer3(Map<SettingsTyp, Integer> player3) {
+        checkRead();
         Settings.player3 = player3;
     }
 
     public static Map<SettingsTyp, Integer> getPlayer2() {
+        checkRead();
         return player2;
     }
 
     public static void setPlayer2(Map<SettingsTyp, Integer> player2) {
+        checkRead();
         Settings.player2 = player2;
     }
 
     public static Map<SettingsTyp, Integer> getPlayer1() {
+        checkRead();
         return player1;
     }
 
     public static void setPlayer1(Map<SettingsTyp, Integer> player1) {
+        checkRead();
         Settings.player1 = player1;
+    }
+
+    private static void checkRead(){
+        if(!temp) {
+            read();
+            temp = true;
+        }
     }
 
 }

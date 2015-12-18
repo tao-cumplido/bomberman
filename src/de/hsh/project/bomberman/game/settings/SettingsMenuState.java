@@ -40,7 +40,6 @@ public class SettingsMenuState extends MenuState {
     public SettingsMenuState() {
         super();
 
-        new Settings();
         tll = new JPanel();
         s_player = new JPanel();
 
