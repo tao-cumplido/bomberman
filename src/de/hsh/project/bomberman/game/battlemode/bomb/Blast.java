@@ -13,8 +13,11 @@ public abstract class Blast extends Tile {
         DEFAULT
     }
 
-    public Blast() {
+    private int row;
+
+    public Blast(int row) {
         super(false);
+        this.row = row;
     }
 
     @Override
@@ -26,5 +29,15 @@ public abstract class Blast extends Tile {
         }
 
         return collides;
+    }
+
+    @Override
+    public boolean isBlast() {
+        return row != 0;
+    }
+
+    @Override
+    public void burn() {
+        if (isBlast()) remove();
     }
 }

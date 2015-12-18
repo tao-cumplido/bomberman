@@ -14,6 +14,7 @@ public class FireBlast extends Blast {
     private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/fireblast.png");
 
     public FireBlast(int row) {
+        super(row);
         Integer frames[] = {0, 1, 2, 3, 4, 3, 4, 3, 4, 3, 2, 1, 0};
         if (row > 0) {
             for (int i = 0; i < frames.length; i++) {

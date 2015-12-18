@@ -36,8 +36,8 @@ public abstract class Player extends Tile {
         DEATH
     }
 
-    private int bombs = 1;
-    private int bombRange = 1;
+    private int bombs = 5;
+    private int bombRange = 5;
     private int speed = 8;
     private boolean kickAbility;
     private boolean remoteControl;

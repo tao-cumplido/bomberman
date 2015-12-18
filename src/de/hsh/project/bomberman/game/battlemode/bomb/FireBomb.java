@@ -49,7 +49,7 @@ public class FireBomb extends Bomb {
             Tile tile = currentBoard.getTile(x + dx * i, y + dy * i);
             if (tile != Tile.EMPTY) {
                 tile.burn();
-                return;
+                if (!tile.isBlast()) return;
             }
             currentBoard.put(new FireBlast((i == range) ? tip : regular), x + dx * i, y + dy * i);
         }
