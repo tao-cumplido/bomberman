@@ -17,7 +17,7 @@ public abstract class MenuState extends GameState {
     public MenuState() {
         if (BACKGROUND == null) {
             try {
-                BACKGROUND = ImageIO.read(getClass().getResource("/res/images/menu-bg.jpg"));
+                BACKGROUND = ImageIO.read(getClass().getResource("/res/images/menu-bg.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

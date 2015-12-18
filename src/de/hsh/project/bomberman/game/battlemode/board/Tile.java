@@ -11,91 +11,32 @@ import java.awt.image.BufferedImage;
  */
 public abstract class Tile {
 
-    protected static GameBoard BOARD;
+    public final static Tile EMPTY = new Tile() {
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+    };
+
+    protected static GameBoard currentBoard;
 
     protected Rectangle bounds;
 
     int x, y;
 
-    private boolean solid;
+    private boolean solid, active;
 
     protected Sprite sprite;
 
-    public Tile() {} // TODO: remove eventually
+    public Tile() {} // TODO: make private
 
     public Tile(boolean solid) {
         this.bounds = new Rectangle(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
         this.solid = solid;
     }
 
-    public Rectangle onCollision(Player player) {
-        Rectangle intersection = bounds.intersection(player.bounds);
-
-        if(!intersection.isEmpty() && this.isSolid()) {
-            /*int x = player.getX();
-            int y = player.getY();
-            switch (player.getFacingDirection()) {
-                case LEFT:
-                    if (this.getLeft() < player.getLeft()) {
-                        player.translateX(player.getSpeed());
-                    }
-                    break;
-                case RIGHT:
-                    if (this.getRight() > player.getRight()) {
-                        player.translateX(-player.getSpeed());
-                    }
-                    break;
-                case UP:
-                    if (this.getTop() < player.getTop()) {
-                        player.translateY(player.getSpeed());
-                    }
-                    break;
-                case DOWN:
-                    if (this.getBottom() > player.getBottom()) {
-                        player.translateY(-player.getSpeed());
-                    }
-                    break;
-            }*/
-
-            int dx = player.getLeft() % GameBoard.TILE_SIZE;
-            int dy = player.getTop() % GameBoard.TILE_SIZE;
-
-            if (intersection.getWidth() < intersection.getHeight()) {
-                // horizontal collision
-                /*if (dx > GameBoard.TILE_SIZE / 2) {
-                    // moving left
-                    player.translateX(GameBoard.TILE_SIZE - dx);
-                } else {
-                    // moving right
-                    player.translateX(-dx);
-                }*/
-                player.alignX();
-
-                if (player.getTop() < intersection.y) {
-                    player.translateY(-player.getSpeed());
-                } else if (player.getBottom() > intersection.getMaxY()) {
-                    player.translateY(player.getSpeed());
-                }
-            } else {
-                // vertical collision
-                /*if (dy > GameBoard.TILE_SIZE / 2) {
-                    // moving up
-                    player.translateY(GameBoard.TILE_SIZE - dy);
-                } else {
-                    // moving down
-                    player.translateY(-dy);
-                }*/
-                player.alignY();
-
-                if (player.getLeft() < intersection.x) {
-                    player.translateX(-player.getSpeed());
-                } else if (player.getRight() > intersection.getMaxX()) {
-                    player.translateX(player.getSpeed());
-                }
-            }
-        }
-
-        return intersection;
+    public boolean onCollision(Player player) {
+        return !bounds.intersection(player.bounds).isEmpty();
     }
 
     public boolean isSolid() {
@@ -104,6 +45,10 @@ public abstract class Tile {
 
     public void setSolid(boolean solid) {
         this.solid = solid;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     public void setPosition(int x, int y) {
@@ -138,11 +83,11 @@ public abstract class Tile {
     }
 
     public int getRight() {
-        return bounds.x + bounds.width;
+        return bounds.x + bounds.width - 1;
     }
 
     public int getBottom() {
-        return bounds.y + bounds.height;
+        return bounds.y + bounds.height - 1;
     }
 
     public void update() {
@@ -151,5 +96,34 @@ public abstract class Tile {
 
     public BufferedImage getFrame() {
         return sprite.getCurrentFrame();
+    }
+
+    // TODO: make abstract
+    public void burn() {}
+
+    public void freeze() {}
+
+    public void remove() {
+        currentBoard.remove(getX(), getY());
+    }
+
+    public boolean isEmpty() {
+        return false;
+    }
+
+    public boolean isBlock() {
+        return false;
+    }
+
+    public boolean isBomb() {
+        return false;
+    }
+
+    public boolean isBlast() {
+        return false;
+    }
+
+    public boolean isPowerUp() {
+        return false;
     }
 }

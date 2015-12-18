@@ -11,6 +11,7 @@ import de.hsh.project.bomberman.game.battlemode.powerup.Surprise;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +19,10 @@ import java.util.ArrayList;
  */
 public abstract class Player extends Tile {
 
-    private enum Animation implements AnimationID {
+    public static int MAX_SPEED = 16;
+    public static int MIN_SPEED = 4;
+
+    protected enum Animation implements AnimationID {
         STAND_DOWN,
         STAND_UP,
         STAND_LEFT,
@@ -27,27 +31,37 @@ public abstract class Player extends Tile {
         WALK_DOWN,
         WALK_UP,
         WALK_LEFT,
-        WALK_RIGHT;
+        WALK_RIGHT,
+
+        DEATH
     }
 
-    private int bombs;
-    private int bombRange;
-    private int speed = 12;
+    private int bombs = 1;
+    private int bombRange = 1;
+    private int speed = 8;
     private boolean kickAbility;
     private boolean remoteControl;
-    private int lifes;
+    private int lifes = 3;
     private ArrayList<PowerUp> powerUps;
     private Surprise temporaryAbility;
-    private ArrayList<Bomb> bombQueue;
-
-    private BufferedImage frame;
+    private ArrayList<Bomb> bombQueue = new ArrayList<>();
 
     private Direction facingDirection;
+    private boolean moving;
+
+    private boolean alive = true;
+
+    private int invincible = 0;
+
+    private RescaleOp flickerOp = new RescaleOp(0, 0, null);
+    private BufferedImage flicker = new BufferedImage(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, BufferedImage.TYPE_4BYTE_ABGR);
+
+    protected Point target;
 
     public Player(int playerNumber) {
         super(false);
 
-        this.sprite = new Sprite("/res/images/bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, 6);
+        this.sprite = new Sprite("/res/images/bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2);
 
         sprite.addAnimation(Animation.STAND_DOWN, 0);
         sprite.addAnimation(Animation.STAND_UP, 3);
@@ -59,12 +73,26 @@ public abstract class Player extends Tile {
         sprite.addAnimation(Animation.WALK_LEFT, 6, 7, 6, 8);
         sprite.addAnimation(Animation.WALK_RIGHT, 9, 10, 9, 11);
 
-        sprite.playAnimation(Animation.STAND_DOWN, true);
-        this.facingDirection = Direction.DOWN;
+        sprite.addAnimation(Animation.DEATH,
+                12, 13, 14, 15,
+                12, 12, 13, 13, 14, 14, 15, 15,
+                12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15,
+                12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15,
+                12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15,
+                15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+                16, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19,
+                20, 20, 20, 19, 19, 19, 21, 21, 21, 19, 19, 19, 20, 20, 20, 19, 19, 19, 21, 21, 21,
+                19, 19, 19, 19, 19, 19, 19, 19, 19, 19);
+
+        stop(Direction.DOWN);
     }
 
     public Direction getFacingDirection() {
         return facingDirection;
+    }
+
+    public boolean isMoving() {
+        return moving;
     }
 
     public void translateX(int delta) {
@@ -85,46 +113,103 @@ public abstract class Player extends Tile {
         return (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
     }
 
-    public void alignX() {
-        setX(getX());
+    public int getLifes() {
+        return lifes;
     }
 
-    public void alignY() {
-        setY(getY());
+    public boolean isAlive() {
+        return alive;
+    }
+
+    private void kill() {
+        alive = false;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        if (invincible > 0) {
+            invincible--;
+        }
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+        super.setPosition(x, y);
+        target = new Point(x, y);
+    }
+
+    @Override
+    public BufferedImage getFrame() {
+        BufferedImage frame = sprite.getCurrentFrame();
+
+        if (invincible % 3 == 1) {
+            flickerOp.filter(frame, flicker);
+            return flicker;
+        }
+
+        return frame;
+    }
+
+    @Override
+    public void burn() {
+        if (invincible == 0 && lifes > 0) {
+            lifes--;
+
+            if (lifes == 0) {
+                facingDirection = Direction.NONE;
+                sprite.playAnimation(Animation.DEATH, 0, this::kill);
+            } else {
+                invincible = 60;
+            }
+        }
     }
 
     protected void dropBomb() {
-        BOARD.put(new FireBomb(bombRange), getX(), getY());
+        if (lifes > 0) {
+            int x = getX();
+            int y = getY();
+
+            if (currentBoard.getTile(x, y).isEmpty() && bombQueue.size() < bombs) {
+                currentBoard.put(new FireBomb(bombRange, bombQueue), x, y);
+            }
+        }
     }
 
     public int getSpeed() {
         return speed;
     }
 
+    public boolean isXAligned() {
+        return bounds.x % GameBoard.TILE_SIZE == 0;
+    }
+
+    public boolean isYAligned() {
+        return bounds.y % GameBoard.TILE_SIZE == 0;
+    }
+
     protected void move(Direction direction) {
         facingDirection = direction;
+        moving = true;
         switch (direction) {
             case LEFT:
-                translateX(-speed);
-                sprite.playAnimation(Animation.WALK_LEFT, true);
+                sprite.playAnimation(Animation.WALK_LEFT, 48 / speed, true);
                 break;
             case RIGHT:
-                translateX(speed);
-                sprite.playAnimation(Animation.WALK_RIGHT, true);
+                sprite.playAnimation(Animation.WALK_RIGHT, 48 / speed, true);
                 break;
             case UP:
-                translateY(-speed);
-                sprite.playAnimation(Animation.WALK_UP, true);
+                sprite.playAnimation(Animation.WALK_UP, 48 / speed, true);
                 break;
             case DOWN:
-                translateY(speed);
-                sprite.playAnimation(Animation.WALK_DOWN, true);
+                sprite.playAnimation(Animation.WALK_DOWN, 48 / speed, true);
                 break;
         }
     }
 
     protected void stop(Direction direction) {
         facingDirection = direction;
+        moving = false;
         switch (direction) {
             case LEFT:
                 sprite.playAnimation(Animation.STAND_LEFT, false);
