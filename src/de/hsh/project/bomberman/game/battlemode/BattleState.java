@@ -6,10 +6,14 @@ import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.player.HumanPlayer;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 import de.hsh.project.bomberman.game.GameState;
+import de.hsh.project.bomberman.game.settings.Settings;
+import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by taocu on 26.10.2015.
@@ -23,10 +27,21 @@ public class BattleState extends GameState implements Runnable {
     private GameBoard board;
 
     public BattleState() {
-        int[] p1Keys = {KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_ENTER};
+        Map<SettingsTyp, Integer> p1Keys = new HashMap<>();
+        p1Keys.put(SettingsTyp.DIRECTION_LEFT, KeyEvent.VK_LEFT);
+        p1Keys.put(SettingsTyp.DIRECTION_RIGHT, KeyEvent.VK_RIGHT);
+        p1Keys.put(SettingsTyp.DIRECTION_UP, KeyEvent.VK_UP);
+        p1Keys.put(SettingsTyp.DIRECTION_DOWN, KeyEvent.VK_DOWN);
+        p1Keys.put(SettingsTyp.SETTINGS_BOMB, KeyEvent.VK_SPACE);
         player[0] = new HumanPlayer(0, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), p1Keys);
 
-        int[] p2Keys = {KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_SPACE};
+
+        Map<SettingsTyp, Integer> p2Keys = new HashMap<>();
+        p2Keys.put(SettingsTyp.DIRECTION_LEFT, KeyEvent.VK_A);
+        p2Keys.put(SettingsTyp.DIRECTION_RIGHT, KeyEvent.VK_D);
+        p2Keys.put(SettingsTyp.DIRECTION_UP, KeyEvent.VK_W);
+        p2Keys.put(SettingsTyp.DIRECTION_DOWN, KeyEvent.VK_S);
+        p2Keys.put(SettingsTyp.SETTINGS_BOMB, KeyEvent.VK_TAB);
         player[1] = new HumanPlayer(1, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), p2Keys);
 
         this.board = new BoardOne(player);

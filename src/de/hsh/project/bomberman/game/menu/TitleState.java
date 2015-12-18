@@ -5,6 +5,7 @@ import de.hsh.project.bomberman.game.battlemode.BattleState;
 import de.hsh.project.bomberman.game.credits.CreditsState;
 import de.hsh.project.bomberman.game.help.HelpMenuState;
 import de.hsh.project.bomberman.game.highscore.HighScoreMenuState;
+import de.hsh.project.bomberman.game.settings.Settings;
 import de.hsh.project.bomberman.game.settings.SettingsMenuState;
 
 import javax.swing.*;

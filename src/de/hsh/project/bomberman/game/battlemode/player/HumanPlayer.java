@@ -2,9 +2,11 @@ package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
+import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 /**
  * Created by taocu on 26.10.2015.
@@ -23,18 +25,18 @@ public class HumanPlayer extends Player {
 
     private Direction intendedDirection = Direction.DOWN;
 
-    public HumanPlayer(int playerNumber, InputMap inputMap, ActionMap actionMap, int[] keyCodes) {
+    public HumanPlayer(int playerNumber, InputMap inputMap, ActionMap actionMap, Map<SettingsTyp, Integer> settings) {
         super(playerNumber);
         directionKeys = new Key[] {
-                new Key(keyCodes[0], Direction.LEFT, this::pressDirectionAction, this::releaseDirectionAction),
-                new Key(keyCodes[1], Direction.RIGHT, this::pressDirectionAction, this::releaseDirectionAction),
-                new Key(keyCodes[2], Direction.UP, this::pressDirectionAction, this::releaseDirectionAction),
-                new Key(keyCodes[3], Direction.DOWN, this::pressDirectionAction, this::releaseDirectionAction)
+                new Key(settings.get(SettingsTyp.DIRECTION_LEFT), Direction.LEFT, this::pressDirectionAction, this::releaseDirectionAction),
+                new Key(settings.get(SettingsTyp.DIRECTION_RIGHT), Direction.RIGHT, this::pressDirectionAction, this::releaseDirectionAction),
+                new Key(settings.get(SettingsTyp.DIRECTION_UP), Direction.UP, this::pressDirectionAction, this::releaseDirectionAction),
+                new Key(settings.get(SettingsTyp.DIRECTION_DOWN), Direction.DOWN, this::pressDirectionAction, this::releaseDirectionAction)
         };
 
         allKeys = new Key[] {
                 directionKeys[0], directionKeys[1], directionKeys[2], directionKeys[3],
-                new Key(keyCodes[4], this::pressDropAction, this::releaseDropAction)
+                new Key(settings.get(SettingsTyp.SETTINGS_BOMB), this::pressDropAction, this::releaseDropAction)
         };
 
         for (Key key : allKeys) {
