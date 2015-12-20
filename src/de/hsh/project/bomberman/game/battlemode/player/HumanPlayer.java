@@ -124,6 +124,8 @@ public class HumanPlayer extends Player {
                 if (isYAligned()) {
                     if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
                         translateX(-getSpeed());
+                    } else {
+                        alignX();
                     }
                 } else if (target == null) {
                     if (getTop() < y * GameBoard.TILE_SIZE) {
@@ -139,6 +141,8 @@ public class HumanPlayer extends Player {
                 if (isYAligned()) {
                     if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
                         translateX(getSpeed());
+                    } else {
+                        alignX();
                     }
                 } else if (target == null) {
                     if (getTop() < y * GameBoard.TILE_SIZE) {
@@ -154,6 +158,8 @@ public class HumanPlayer extends Player {
                 if (isXAligned()) {
                     if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
                         translateY(-getSpeed());
+                    } else {
+                        alignY();
                     }
                 } else if (target == null) {
                     if (getLeft() < x * GameBoard.TILE_SIZE) {
@@ -169,6 +175,8 @@ public class HumanPlayer extends Player {
                 if (isXAligned()) {
                     if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
                         translateY(getSpeed());
+                    } else {
+                        alignY();
                     }
                 } else if (target == null) {
                     if (getLeft() < x * GameBoard.TILE_SIZE) {
@@ -193,10 +201,13 @@ public class HumanPlayer extends Player {
     }
 
     private void moveAroundCorner(int playerCoordinate, int targetCoordinate, Consumer<Integer> action) {
+        int speed = getSpeed();
+        int delta = playerCoordinate % GameBoard.TILE_SIZE;
         if (playerCoordinate > targetCoordinate * GameBoard.TILE_SIZE) {
-            action.accept(-getSpeed());
+            action.accept((delta < speed) ? delta - speed : - speed);
         } else {
-            action.accept(getSpeed());
+            delta = GameBoard.TILE_SIZE - delta;
+            action.accept((delta < speed) ? delta : speed);
         }
     }
 }

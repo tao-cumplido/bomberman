@@ -1,9 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
-import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 /**
@@ -24,6 +22,6 @@ public class FireBlast extends Blast {
 
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, frames);
-        this.sprite.playAnimation(Animation.DEFAULT, 2, this::remove);
+        this.sprite.playAnimation(Animation.DEFAULT, 2, this::removeFromBoard);
     }
 }

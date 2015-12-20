@@ -103,7 +103,7 @@ public abstract class Tile {
 
     public void freeze() {}
 
-    public void remove() {
+    public void removeFromBoard() {
         currentBoard.remove(getX(), getY());
     }
 

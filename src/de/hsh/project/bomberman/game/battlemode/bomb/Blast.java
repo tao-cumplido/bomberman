@@ -38,6 +38,6 @@ public abstract class Blast extends Tile {
 
     @Override
     public void burn() {
-        if (isBlast()) remove();
+        if (isBlast()) removeFromBoard();
     }
 }

@@ -1,6 +1,10 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
 import de.hsh.project.bomberman.game.battlemode.player.Player;
+import de.hsh.project.bomberman.game.battlemode.powerup.BombUp;
+import de.hsh.project.bomberman.game.battlemode.powerup.PowerUp;
+import de.hsh.project.bomberman.game.battlemode.powerup.RangeUp;
+import de.hsh.project.bomberman.game.battlemode.powerup.SpeedUp;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -149,7 +153,20 @@ public abstract class GameBoard {
                 }
 
                 if (generate.nextDouble() > 0.3) {
-                    put(new SoftBlock(), x, y);
+                    PowerUp powerUp = null;
+
+                    if (generate.nextDouble() > 0.3) {
+                        double type = generate.nextDouble();
+                        if (type > 2/3d) {
+                            powerUp = new BombUp();
+                        } else if (type > 1/3d){
+                            powerUp = new RangeUp();
+                        } else {
+                            powerUp = new SpeedUp();
+                        }
+                    }
+
+                    put(new SoftBlock(powerUp), x, y);
                 }
             }
         }

@@ -36,13 +36,13 @@ public abstract class Player extends Tile {
         DEATH
     }
 
-    private int bombs = 5;
-    private int bombRange = 5;
+    private int bombs = 1;
+    private int bombRange = 1;
     private int speed = 8;
     private boolean kickAbility;
     private boolean remoteControl;
     private int lifes = 3;
-    private ArrayList<PowerUp> powerUps;
+    private ArrayList<PowerUp> powerUps = new ArrayList<>();
     private Surprise temporaryAbility;
     private ArrayList<Bomb> bombQueue = new ArrayList<>();
 
@@ -101,6 +101,14 @@ public abstract class Player extends Tile {
 
     public void translateY(int delta) {
         bounds.y += delta;
+    }
+
+    public void alignX() {
+        bounds.x = getX() * GameBoard.TILE_SIZE;
+    }
+
+    public void alignY() {
+        bounds.y = getY() * GameBoard.TILE_SIZE;
     }
 
     @Override
@@ -174,6 +182,23 @@ public abstract class Player extends Tile {
                 currentBoard.put(new FireBomb(bombRange, bombQueue), x, y);
             }
         }
+    }
+
+    public void raiseBombCount() {
+        bombs++;
+    }
+
+    public void raiseBombRange() {
+        bombRange++;
+    }
+
+    public void raiseSpeed() {
+        speed += 2;
+    }
+
+    public void addPowerUp(PowerUp powerUp) {
+        powerUps.add(powerUp);
+        powerUp.affect(this);
     }
 
     public int getSpeed() {
