@@ -104,10 +104,44 @@ public abstract class Player extends Tile {
     }
 
     public void alignX() {
+        int speed = getSpeed();
+        int delta = bounds.x % GameBoard.TILE_SIZE;
+        if (delta != 0) {
+            switch (facingDirection) {
+                case LEFT:
+                    if (delta > speed) {
+                        translateX(-speed);
+                        return;
+                    }
+                    break;
+                case RIGHT:
+                    if (GameBoard.TILE_SIZE - delta > speed) {
+                        translateX(speed);
+                        return;
+                    }
+            }
+        }
         bounds.x = getX() * GameBoard.TILE_SIZE;
     }
 
     public void alignY() {
+        int speed = getSpeed();
+        int delta = bounds.y % GameBoard.TILE_SIZE;
+        if (delta != 0) {
+            switch (facingDirection) {
+                case UP:
+                    if (delta > speed) {
+                        translateY(-speed);
+                        return;
+                    }
+                    break;
+                case DOWN:
+                    if (GameBoard.TILE_SIZE - delta > speed) {
+                        translateY(speed);
+                        return;
+                    }
+            }
+        }
         bounds.y = getY() * GameBoard.TILE_SIZE;
     }
 

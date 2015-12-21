@@ -122,7 +122,7 @@ public class HumanPlayer extends Player {
         switch (direction) {
             case LEFT:
                 if (isYAligned()) {
-                    if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
+                    if (!currentBoard.fieldIsBlocked(getNextX(), y)) {
                         translateX(-getSpeed());
                     } else {
                         alignX();
@@ -139,7 +139,7 @@ public class HumanPlayer extends Player {
 
             case RIGHT:
                 if (isYAligned()) {
-                    if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
+                    if (!currentBoard.fieldIsBlocked(getNextX(), y)) {
                         translateX(getSpeed());
                     } else {
                         alignX();
@@ -156,7 +156,7 @@ public class HumanPlayer extends Player {
 
             case UP:
                 if (isXAligned()) {
-                    if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
+                    if (!currentBoard.fieldIsBlocked(x, getNextY())) {
                         translateY(-getSpeed());
                     } else {
                         alignY();
@@ -173,7 +173,7 @@ public class HumanPlayer extends Player {
 
             case DOWN:
                 if (isXAligned()) {
-                    if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
+                    if (!currentBoard.fieldIsBlocked(x, getNextY())) {
                         translateY(getSpeed());
                     } else {
                         alignY();
