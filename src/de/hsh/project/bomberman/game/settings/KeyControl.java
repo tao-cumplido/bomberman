@@ -29,14 +29,23 @@ public abstract class KeyControl extends KeyAdapter {
         code = e.getKeyCode();
         String text = KeyEvent.getKeyText(code);
         if(setCode(code)){
-            if(code==KeyEvent.VK_BACK_SPACE){
-                text = null;
+            switch (code){
+                case KeyEvent.VK_BACK_SPACE:
+                    jTextField.setText(null);
+                    setPlayerValue(code);
+                    break;
+                case KeyEvent.VK_TAB:
+                    JOptionPane.showMessageDialog(null, "Please do not use this button!", "Warning", JOptionPane.WARNING_MESSAGE);
+                    break;
+                case KeyEvent.VK_SHIFT:
+                    JOptionPane.showMessageDialog(null, "Please do not use this button!", "Warning", JOptionPane.WARNING_MESSAGE);
+                    break;
+                default:
+                    setPlayerValue(code);
+                    jTextField.setText(text);
             }
-            setPlayerValue(code);
-            jTextField.setText(text);
+
         }
-
-
     }
 
     @Override
