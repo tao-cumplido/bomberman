@@ -60,10 +60,10 @@ public class SettingsPlayer extends JPanel{
 
         setSettingTypPicture();
         setPlayerTyp(playerTyp);
-        Border lineBorder = BorderFactory.createLineBorder(Color.BLACK,2);
-        TitledBorder tb= new TitledBorder("PLAYER"+String.valueOf(playerNum));
+        Border lineBorder = BorderFactory.createLineBorder(Color.GRAY,2);
+        TitledBorder tb= new TitledBorder(lineBorder,"PLAYER"+String.valueOf(playerNum));
         //tb.setTitleFont(Font.createFont(Font.BOLD,null));
-        tb.setTitleColor(Color.getHSBColor());
+        tb.setTitleColor(Color.BLUE);
 
         setBorder(tb);
 
@@ -106,7 +106,7 @@ public class SettingsPlayer extends JPanel{
 
     protected void setSettingTypPicture(){
 
-        BufferedImage reContPicture=null, bombPicture=null ,direPicture=null;
+        BufferedImage reContPicture, bombPicture,direPicture;
         try {
             direPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/Direction.png"));
             reContPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/remote_control.png"));
