@@ -14,7 +14,6 @@ public class RangeUp extends PowerUp {
 
     public RangeUp() {
         super(spriteSheet);
-        this.sprite.playAnimation(Animation.DEFAULT, 4, true);
     }
 
     @Override

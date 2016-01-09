@@ -1,7 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
-import de.hsh.project.bomberman.game.battlemode.board.Tile;
+import de.hsh.project.bomberman.game.battlemode.bomb.Trigger;
 import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
 import javax.swing.*;
@@ -13,13 +13,6 @@ import java.util.function.Consumer;
  * Created by taocu on 26.10.2015.
  */
 public class HumanPlayer extends Player {
-
-    private Key keyLeft;
-    private Key keyRight;
-    private Key keyUp;
-    private Key keyDown;
-    private Key keyDropBomb;
-    private Key keyTriggerBomb;
 
     private Key[] directionKeys;
     private Key[] allKeys;
@@ -37,7 +30,8 @@ public class HumanPlayer extends Player {
 
         allKeys = new Key[] {
                 directionKeys[0], directionKeys[1], directionKeys[2], directionKeys[3],
-                new Key(settings.get(SettingsTyp.SETTINGS_BOMB), this::pressDropAction, this::releaseDropAction)
+                new Key(settings.get(SettingsTyp.SETTINGS_BOMB), this::pressDropAction, this::releaseDropAction),
+                new Key(settings.get(SettingsTyp.SETTING_REMOTECONTROL), this::pressRemoteAction, this::releaseRemoteAction)
         };
 
         for (Key key : allKeys) {
@@ -50,26 +44,40 @@ public class HumanPlayer extends Player {
     }
 
     private void pressDirectionAction(Key key) {
-        target = null;
-        intendedDirection = key.getDirection();
+        if (isActive()) {
+            target = null;
+            intendedDirection = key.getDirection();
+        }
     }
 
     private void releaseDirectionAction(Key key) {
-        target = null;
-        for (Key other : directionKeys) {
-            if (other != key && other.isPressed()) {
-                intendedDirection = other.getDirection();
+        if (isActive()) {
+            target = null;
+            for (Key other : directionKeys) {
+                if (other != key && other.isPressed()) {
+                    intendedDirection = other.getDirection();
+                }
             }
         }
     }
 
     private void pressDropAction(Key key) {
-        if (!key.isPressed()) {
+        if (!key.isPressed() && isActive()) {
             dropBomb();
         }
     }
 
     private void releaseDropAction(Key key) {}
+
+    private void pressRemoteAction(Key key) {
+        if (!key.isPressed() && isActive()) {
+            remoteAction();
+        }
+    }
+
+    private void releaseRemoteAction(Key key) {
+
+    }
 
     private boolean anyDirectionPressed() {
         for (Key key : directionKeys) {
@@ -103,11 +111,14 @@ public class HumanPlayer extends Player {
 
     @Override
     public void update() {
-        if (getLifes() > 0) {
+        if (isActive()) {
             if (anyDirectionPressed()) {
                 move(intendedDirection);
             } else {
                 stop(intendedDirection);
+                if (currentBoard.isFrozenFloor(getX(), getY())) {
+                    moveTo(getFacingDirection());
+                }
             }
         }
         super.update();
@@ -116,16 +127,19 @@ public class HumanPlayer extends Player {
     @Override
     protected void move(Direction direction) {
         super.move(direction);
+        moveTo(direction);
+    }
+
+    public void moveTo(Direction direction) {
         int x = getX();
         int y = getY();
-        boolean onBomb = currentBoard.getTile(x, y).isBomb();
         switch (direction) {
             case LEFT:
                 if (isYAligned()) {
                     if (!currentBoard.fieldIsBlocked(getNextX(), y)) {
                         translateX(-getSpeed());
                     } else {
-                        alignX();
+                        alignX(Direction.LEFT);
                     }
                 } else if (target == null) {
                     if (getTop() < y * GameBoard.TILE_SIZE) {
@@ -134,7 +148,7 @@ public class HumanPlayer extends Player {
                         setTarget(x - 1, y, 1, true);
                     }
                 } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                    moveAroundCorner(getTop(), target.y, this::translateY);
+                    moveAroundCorner(getTop(), target.y, this::alignY, Direction.UP, Direction.DOWN);
                 } break;
 
             case RIGHT:
@@ -142,7 +156,7 @@ public class HumanPlayer extends Player {
                     if (!currentBoard.fieldIsBlocked(getNextX(), y)) {
                         translateX(getSpeed());
                     } else {
-                        alignX();
+                        alignX(Direction.RIGHT);
                     }
                 } else if (target == null) {
                     if (getTop() < y * GameBoard.TILE_SIZE) {
@@ -151,7 +165,7 @@ public class HumanPlayer extends Player {
                         setTarget(x + 1, y, 1, true);
                     }
                 } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                    moveAroundCorner(getTop(), target.y, this::translateY);
+                    moveAroundCorner(getTop(), target.y, this::alignY, Direction.UP, Direction.DOWN);
                 } break;
 
             case UP:
@@ -159,7 +173,7 @@ public class HumanPlayer extends Player {
                     if (!currentBoard.fieldIsBlocked(x, getNextY())) {
                         translateY(-getSpeed());
                     } else {
-                        alignY();
+                        alignY(Direction.UP);
                     }
                 } else if (target == null) {
                     if (getLeft() < x * GameBoard.TILE_SIZE) {
@@ -168,7 +182,7 @@ public class HumanPlayer extends Player {
                         setTarget(x, y - 1, 1, false);
                     }
                 } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                    moveAroundCorner(getLeft(), target.x, this::translateX);
+                    moveAroundCorner(getLeft(), target.x, this::alignX, Direction.LEFT, Direction.RIGHT);
                 } break;
 
             case DOWN:
@@ -176,7 +190,7 @@ public class HumanPlayer extends Player {
                     if (!currentBoard.fieldIsBlocked(x, getNextY())) {
                         translateY(getSpeed());
                     } else {
-                        alignY();
+                        alignY(Direction.DOWN);
                     }
                 } else if (target == null) {
                     if (getLeft() < x * GameBoard.TILE_SIZE) {
@@ -185,7 +199,7 @@ public class HumanPlayer extends Player {
                         setTarget(x, y + 1, 1, false);
                     }
                 } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                    moveAroundCorner(getLeft(), target.x, this::translateX);
+                    moveAroundCorner(getLeft(), target.x, this::alignX, Direction.LEFT, Direction.RIGHT);
                 } break;
         }
     }
@@ -200,14 +214,11 @@ public class HumanPlayer extends Player {
         }
     }
 
-    private void moveAroundCorner(int playerCoordinate, int targetCoordinate, Consumer<Integer> action) {
-        int speed = getSpeed();
-        int delta = playerCoordinate % GameBoard.TILE_SIZE;
+    private void moveAroundCorner(int playerCoordinate, int targetCoordinate, Consumer<Direction> align, Direction neg, Direction pos) {
         if (playerCoordinate > targetCoordinate * GameBoard.TILE_SIZE) {
-            action.accept((delta < speed) ? delta - speed : - speed);
+            align.accept(neg);
         } else {
-            delta = GameBoard.TILE_SIZE - delta;
-            action.accept((delta < speed) ? delta : speed);
+            align.accept(pos);
         }
     }
 }

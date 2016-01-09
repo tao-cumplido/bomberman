@@ -14,7 +14,6 @@ public class BombUp extends PowerUp {
 
     public BombUp() {
         super(spriteSheet);
-        this.sprite.playAnimation(Animation.DEFAULT, 4, true);
     }
 
     @Override

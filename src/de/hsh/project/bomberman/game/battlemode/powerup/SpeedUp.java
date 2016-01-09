@@ -14,7 +14,6 @@ public class SpeedUp extends PowerUp {
 
     public SpeedUp() {
         super(spriteSheet);
-        this.sprite.playAnimation(Animation.DEFAULT, 4, true);
     }
 
     @Override

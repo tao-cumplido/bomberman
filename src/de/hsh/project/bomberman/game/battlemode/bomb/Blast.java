@@ -21,17 +21,6 @@ public abstract class Blast extends Tile {
     }
 
     @Override
-    public boolean onCollision(Player player) {
-        boolean collides = super.onCollision(player);
-
-        if (collides) {
-            player.burn();
-        }
-
-        return collides;
-    }
-
-    @Override
     public boolean isBlast() {
         return row != 0;
     }

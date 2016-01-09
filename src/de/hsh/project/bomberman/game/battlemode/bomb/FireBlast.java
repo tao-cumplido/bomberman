@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
+import de.hsh.project.bomberman.game.battlemode.player.Player;
 
 import java.awt.image.BufferedImage;
 
@@ -23,5 +24,21 @@ public class FireBlast extends Blast {
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, frames);
         this.sprite.playAnimation(Animation.DEFAULT, 2, this::removeFromBoard);
+    }
+
+    @Override
+    public boolean onCollision(Player player) {
+        if (super.onCollision(player)) {
+            player.burn();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void removeFromBoard() {
+        super.removeFromBoard();
+        currentBoard.meltFloor(getX(), getY());
     }
 }

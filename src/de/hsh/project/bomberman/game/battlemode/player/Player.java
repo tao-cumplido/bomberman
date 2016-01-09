@@ -1,9 +1,12 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
+import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.bomb.Bomb;
 import de.hsh.project.bomberman.game.battlemode.bomb.FireBomb;
+import de.hsh.project.bomberman.game.battlemode.bomb.IceBomb;
+import de.hsh.project.bomberman.game.battlemode.bomb.Trigger;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.powerup.PowerUp;
@@ -13,13 +16,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by taocu on 26.10.2015.
  */
 public abstract class Player extends Tile {
 
-    public static int MAX_SPEED = 16;
+    public static int MAX_SPEED = 20;
     public static int MIN_SPEED = 4;
 
     protected enum Animation implements AnimationID {
@@ -36,20 +40,28 @@ public abstract class Player extends Tile {
         DEATH
     }
 
-    private int bombs = 1;
-    private int bombRange = 1;
-    private int speed = 8;
-    private boolean kickAbility;
-    private boolean remoteControl;
-    private int lifes = 3;
-    private ArrayList<PowerUp> powerUps = new ArrayList<>();
+    private int bombs;
+    private int bombRange;
+    private int speed;
+    //private boolean kickAbility; // won't implement
+    private Trigger bombTrigger;
+    private boolean dropsIceBombs;
+    private boolean dropsBombs;
+    private boolean dropsRandomBombs;
+    private int lifes;
+    private ArrayList<PowerUp> powerUps;
     private Surprise temporaryAbility;
-    private ArrayList<Bomb> bombQueue = new ArrayList<>();
+    private ArrayList<Bomb> bombQueue;
+
+    private int resetCounter;
 
     private Direction facingDirection;
     private boolean moving;
 
     private boolean alive = true;
+    private int frozen = 0;
+    private BufferedImage frozenFrame = new BufferedImage(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2, BufferedImage.TYPE_4BYTE_ABGR);
+    private RescaleOp frozenOp = new RescaleOp(1, 0, null);
 
     private int invincible = 0;
 
@@ -85,6 +97,27 @@ public abstract class Player extends Tile {
                 19, 19, 19, 19, 19, 19, 19, 19, 19, 19);
 
         stop(Direction.DOWN);
+
+        this.bombQueue = new ArrayList<>();
+        this.powerUps = new ArrayList<>();
+        this.lifes = 3;
+        resetStats();
+    }
+
+    public void resetStats() {
+        bombs = 1;
+        bombRange = 1;
+        speed = 8;
+        bombTrigger = Trigger.TIME;
+
+        dropsBombs = true;
+        dropsIceBombs = false;
+        dropsRandomBombs = false;
+        resetCounter = -1;
+
+        for (PowerUp p : powerUps) {
+            p.affect(this);
+        }
     }
 
     public Direction getFacingDirection() {
@@ -103,11 +136,11 @@ public abstract class Player extends Tile {
         bounds.y += delta;
     }
 
-    public void alignX() {
+    public void alignX(Direction direction) {
         int speed = getSpeed();
         int delta = bounds.x % GameBoard.TILE_SIZE;
         if (delta != 0) {
-            switch (facingDirection) {
+            switch (direction) {
                 case LEFT:
                     if (delta > speed) {
                         translateX(-speed);
@@ -124,11 +157,11 @@ public abstract class Player extends Tile {
         bounds.x = getX() * GameBoard.TILE_SIZE;
     }
 
-    public void alignY() {
+    public void alignY(Direction direction) {
         int speed = getSpeed();
         int delta = bounds.y % GameBoard.TILE_SIZE;
         if (delta != 0) {
-            switch (facingDirection) {
+            switch (direction) {
                 case UP:
                     if (delta > speed) {
                         translateY(-speed);
@@ -147,12 +180,14 @@ public abstract class Player extends Tile {
 
     @Override
     public int getX() {
-        return (getLeft() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
+        //return (getLeft() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
+        return GameBoard.pixel2Grid(getLeft() + GameBoard.TILE_SIZE / 2);
     }
 
     @Override
     public int getY() {
-        return (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
+        //return (getTop() + GameBoard.TILE_SIZE / 2) / GameBoard.TILE_SIZE;
+        return GameBoard.pixel2Grid(getTop() + GameBoard.TILE_SIZE / 2);
     }
 
     public int getLifes() {
@@ -163,15 +198,42 @@ public abstract class Player extends Tile {
         return alive;
     }
 
+    public boolean isFrozen() {
+        return frozen > 0;
+    }
+
     private void kill() {
         alive = false;
+        currentBoard.sprayPowerUps(powerUps);
     }
 
     @Override
     public void update() {
         super.update();
-        if (invincible > 0) {
-            invincible--;
+
+        if (isActive()) {
+            if (invincible > 0) {
+                invincible--;
+            }
+
+            if (resetCounter > 0) {
+                resetCounter--;
+                if (dropsRandomBombs && resetCounter % Game.FPS == 0) {
+                    if (new Random().nextDouble() > 0.75) {
+                        dropBomb(getX(), getY());
+                    }
+                }
+            } else if (resetCounter == 0) {
+                resetStats();
+            }
+        }
+
+        if (frozen > 0) {
+            frozen -= 2;
+        } else if (frozen < 0) {
+            setActive(true);
+            stop(facingDirection);
+            frozen = 0;
         }
     }
 
@@ -183,6 +245,8 @@ public abstract class Player extends Tile {
 
     @Override
     public BufferedImage getFrame() {
+        if (frozen > 0) return frozenFrame;
+
         BufferedImage frame = sprite.getCurrentFrame();
 
         if (invincible % 3 == 1) {
@@ -201,21 +265,43 @@ public abstract class Player extends Tile {
             if (lifes == 0) {
                 facingDirection = Direction.NONE;
                 sprite.playAnimation(Animation.DEATH, 0, this::kill);
+                setActive(false);
+                //alive = false;
             } else {
-                invincible = 60;
+                invincible = 2 * Game.FPS;
             }
         }
     }
 
-    protected void dropBomb() {
-        if (lifes > 0) {
-            int x = getX();
-            int y = getY();
+    @Override
+    public void freeze() {
+        frozen = 479;
+        //frozenOp.filter(sprite.getCurrentFrame(), frozenFrame);
+        frozenFrame = sprite.getCurrentFrame();
+        setActive(false);
+    }
 
-            if (currentBoard.getTile(x, y).isEmpty() && bombQueue.size() < bombs) {
-                currentBoard.put(new FireBomb(bombRange, bombQueue), x, y);
-            }
+    protected void dropBomb() {
+        if (dropsBombs && !dropsRandomBombs) {
+            dropBomb(getX(), getY());
         }
+    }
+
+    private void dropBomb(int x, int y) {
+        if (currentBoard.getTile(x, y).isEmpty() && bombQueue.size() < bombs) {
+            Bomb bomb = dropsIceBombs ? new IceBomb(bombRange, bombQueue, bombTrigger) : new FireBomb(bombRange, bombQueue, bombTrigger);
+            currentBoard.put(bomb, x, y);
+        }
+    }
+
+    protected void remoteAction() {
+        if (bombTrigger == Trigger.REMOTE && !bombQueue.isEmpty()) {
+            bombQueue.get(0).detonate();
+        }
+    }
+
+    public void setBombTrigger(Trigger trigger) {
+        bombTrigger = trigger;
     }
 
     public void raiseBombCount() {
@@ -227,11 +313,53 @@ public abstract class Player extends Tile {
     }
 
     public void raiseSpeed() {
-        speed += 2;
+        if (speed < MAX_SPEED) {
+            speed += 2;
+        }
+    }
+
+    public void maximizeSpeed() {
+        speed = MAX_SPEED + 4;
+        resetCounter = 15 * Game.FPS;
+    }
+
+    public void minimizeSpeed() {
+        speed = MIN_SPEED;
+        resetCounter = 15 * Game.FPS;
+    }
+
+    public void noBombs() {
+        dropsBombs = false;
+        resetCounter = 15 * Game.FPS;
+    }
+
+    public void iceBombs() {
+        dropsIceBombs = true;
+        resetCounter = 20 * Game.FPS;
+    }
+
+    public void randomBombs() {
+        dropsRandomBombs = true;
+        resetCounter = 15 * Game.FPS;
+    }
+
+    public void makeInvincible() {
+        invincible = 5 * Game.FPS;
+    }
+
+    public void maximizeRange() {
+        bombRange = 100;
+        resetCounter = 15 * Game.FPS;
+    }
+
+    public void increaseLifes() {
+        lifes += 1;
     }
 
     public void addPowerUp(PowerUp powerUp) {
-        powerUps.add(powerUp);
+        if (!powerUp.isTemporary()) {
+            powerUps.add(powerUp);
+        }
         powerUp.affect(this);
     }
 
