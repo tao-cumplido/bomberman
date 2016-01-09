@@ -1,16 +1,11 @@
 package de.hsh.project.bomberman.game.highscore;
 
-import de.hsh.project.bomberman.game.Game;
-import de.hsh.project.bomberman.game.GameState;
-import de.hsh.project.bomberman.game.credits.CreditsState;
-import de.hsh.project.bomberman.game.menu.MenuState;
-import de.hsh.project.bomberman.game.menu.TitleState;
 
-import javax.imageio.ImageIO;
+import de.hsh.project.bomberman.game.menu.FontImage;
+import de.hsh.project.bomberman.game.menu.MenuState;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -19,43 +14,44 @@ import java.util.ArrayList;
  */
 public class HighScoreMenuState extends MenuState {
 
-    ImageIcon icon = new ImageIcon(this.getClass().getResource("/res/images/cover.png"));
+
+
+    private FontImage back;
 
     public HighScoreMenuState(){
         super();
 
-        this.setLayout(new BorderLayout());
 
+        FontImage highscore = new FontImage("highscore",7,false);
+        back = new FontImage("back",4,true);
 
         EnterNameState hm = new EnterNameState();
         hm.addScore("Juan",7587587,"Easy",4,5);
         hm.addScore("San",325252434,"Hard",5,7);
 
-
-        JLabel p0 = new JLabel("Bomberman");
+        JPanel title = new JPanel();
         JPanel p1 = new JPanel();
         JPanel p2 = new JPanel();
-        p0.setOpaque(false);
+        title.setOpaque(false);
         p1.setOpaque(false);
         p2.setOpaque(false);
 
-        this.add(p0,BorderLayout.NORTH);
+
+        this.setLayout(new BorderLayout());
+
+        title.add(highscore);
+
+        this.add(title,BorderLayout.NORTH);
         this.add(p1,BorderLayout.CENTER);
+
         p1.setLayout(new GridLayout(10,2));
         this.add(p2,BorderLayout.SOUTH);
 
-        p0.setHorizontalAlignment(JLabel.CENTER);
-        p0.setFont(new Font("",Font.ITALIC,32));
-        show(p1,hm);
 
-        JButton menu = new JButton("<<");
-        menu.setContentAreaFilled(false);
-        menu.setBorderPainted(false);
-        menu.setFont(new Font("",Font.BOLD,32));
-        p2.add(menu);
-        setMenuBut(menu);
+        show(p1, hm);
 
-
+        p2.add(back);
+        setBackButton(back);
 
     }
 
@@ -83,17 +79,15 @@ public class HighScoreMenuState extends MenuState {
             p.add(name);
             p.add(score);
         }
-        System.out.println(pun.size());
+       // System.out.println(pun.size());
     }
 
-    protected void setMenuBut(JButton menuBut) {
-        menuBut.addActionListener((event) -> Game.switchState(new TitleState()));
-    }
+
 
     @Override
-    protected void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.drawImage(icon.getImage(),0,0,getWidth(),getHeight(),null);
+    protected void setPanelPosition(){
+       back.setPanelPoint();
     }
+
 }
 

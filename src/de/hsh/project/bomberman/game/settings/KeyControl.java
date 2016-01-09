@@ -40,6 +40,9 @@ public abstract class KeyControl extends KeyAdapter {
                 case KeyEvent.VK_SHIFT:
                     JOptionPane.showMessageDialog(null, "Please do not use this button!", "Warning", JOptionPane.WARNING_MESSAGE);
                     break;
+                case KeyEvent.VK_ALT:
+                    JOptionPane.showMessageDialog(null, "Please do not use this button!", "Warning", JOptionPane.WARNING_MESSAGE);
+                    break;
                 default:
                     setPlayerValue(code);
                     jTextField.setText(text);

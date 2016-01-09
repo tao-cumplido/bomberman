@@ -1,8 +1,11 @@
 package de.hsh.project.bomberman.game.settings;
 
 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -57,7 +60,12 @@ public class SettingsPlayer extends JPanel{
 
         setSettingTypPicture();
         setPlayerTyp(playerTyp);
-        setBorder(BorderFactory.createTitledBorder("Player"+String.valueOf(playerNum)));
+        Border lineBorder = BorderFactory.createLineBorder(Color.BLACK,2);
+        TitledBorder tb= new TitledBorder("PLAYER"+String.valueOf(playerNum));
+        //tb.setTitleFont(Font.createFont(Font.BOLD,null));
+        tb.setTitleColor(Color.getHSBColor());
+
+        setBorder(tb);
 
         this.setLayout(new GridLayout(7,2));
         this.add(headLabel);
@@ -74,6 +82,8 @@ public class SettingsPlayer extends JPanel{
         this.add(reContField);
         this.add(bombLabel);
         this.add(bombField);
+
+        this.setOpaque(false);
     }
 
     protected JLabel setSuitableLabel(JLabel jLabel,BufferedImage bi,int width,int heigh){
@@ -96,11 +106,11 @@ public class SettingsPlayer extends JPanel{
 
     protected void setSettingTypPicture(){
 
-        BufferedImage reContPicture, bombPicture ,direPicture ;
+        BufferedImage reContPicture=null, bombPicture=null ,direPicture=null;
         try {
-            direPicture = ImageIO.read(getClass().getResource("/res/images/settings/Direction.png"));
-            reContPicture = ImageIO.read(getClass().getResource("/res/images/settings/remote_control.png"));
-            bombPicture = ImageIO.read(getClass().getResource("/res/images/settings/bomb.png"));
+            direPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/Direction.png"));
+            reContPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/remote_control.png"));
+            bombPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/Bomb.png"));
             settingTypPicture.put(SettingsTyp.DIRECTION_UP, direPicture.getSubimage(0,0,208,208));
             settingTypPicture.put(SettingsTyp.DIRECTION_LEFT,direPicture.getSubimage(208,0,208,208));
             settingTypPicture.put(SettingsTyp.DIRECTION_RIGHT,direPicture.getSubimage(416,0,208,208));

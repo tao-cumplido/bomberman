@@ -1,6 +1,8 @@
 package de.hsh.project.bomberman.game;
 
 import de.hsh.project.bomberman.game.battlemode.BattleState;
+import de.hsh.project.bomberman.game.menu.IntroState;
+import de.hsh.project.bomberman.game.menu.LoadingState;
 import de.hsh.project.bomberman.game.menu.TitleState;
 
 import javax.swing.*;
@@ -18,6 +20,7 @@ public class Game extends JFrame {
     public static void switchState(GameState state) {
         THIS.getContentPane().removeAll();
         THIS.add(state, BorderLayout.CENTER);
+        THIS.setVisible(true);
         THIS.pack(); // TODO: possibly move to constructor after first switchState
     }
 
@@ -26,14 +29,15 @@ public class Game extends JFrame {
         THIS = this;
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         setResizable(false);
-        setVisible(true);
+
         switchState(new TitleState());
 
         // center application window on screen
         int x = (getToolkit().getScreenSize().width - getPreferredSize().width) / 2;
         int y = (getToolkit().getScreenSize().height - getPreferredSize().height) / 2;
+
+
         setLocation(x, y);
     }
 }

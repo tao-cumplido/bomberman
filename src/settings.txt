@@ -3,18 +3,18 @@ p1_keyup=38
 p1_keydown=40
 p1_keyleft=37
 p1_keyright=39
-p1_keybomb=16
-p1_keycontrol=32
+p1_keybomb=32
+p1_keycontrol=10
 
 p2_control=0
 p2_keyup=87
 p2_keydown=83
 p2_keyleft=65
 p2_keyright=68
-p2_keybomb=9
+p2_keybomb=20
 p2_keycontrol=17
 
-p3_control=1
+p3_control=0
 p3_keyup=73
 p3_keydown=75
 p3_keyleft=74
@@ -22,12 +22,12 @@ p3_keyright=76
 p3_keybomb=79
 p3_keycontrol=80
 
-p4_control=1
+p4_control=0
 p4_keyup=72
 p4_keydown=78
 p4_keyleft=66
 p4_keyright=77
-p4_keybomb=86
+p4_keybomb=71
 p4_keycontrol=18
 
 time=2
