@@ -57,7 +57,11 @@ public class AIPlayer extends Player {
     }
 
     private void moveToTarget() {
-        move(findPath(getX(), getY()));
+        move(findPath());
+    }
+
+    Direction findPath() {
+        return findPath(getX(), getY());
     }
 
     Direction findPath(int x, int y) {
