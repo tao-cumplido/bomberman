@@ -18,12 +18,6 @@ public class AIPlayer extends Player {
     }
 
     @Override
-    public void setPosition(int x, int y) {
-        super.setPosition(x, y);
-        //target = new Point(27, 14);
-    }
-
-    @Override
     public void update() {
         if (isActive()) {
             checkTarget();
