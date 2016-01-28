@@ -1,11 +1,14 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
+import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
+import de.hsh.project.bomberman.game.battlemode.powerup.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -16,13 +19,21 @@ public abstract class GameBoard {
 
     public static final int TILE_SIZE = 48;
 
-    protected static final int GRID_WIDTH = 19;
-    protected static final int GRID_HEIGHT = 15;
+    public static final int GRID_WIDTH = 25;//29
+    public static final int GRID_HEIGHT = 15;//17
+
+    public static int pixel2Grid(int p) {
+        return p / TILE_SIZE;
+    }
 
     private BufferedImage staticBuffer;
     private BufferedImage dynamicBuffer;
 
+    private BufferedImage iceBlock = Sprite.loadSpriteSheet("/res/images/iceblock.png");
+
     private Tile[] grid;
+    private Tile[] floor;
+    private int frozenFloorCounter;
 
     private Player[] player;
 
@@ -33,6 +44,10 @@ public abstract class GameBoard {
 
         this.grid = new Tile[GRID_WIDTH * GRID_HEIGHT];
         Arrays.fill(grid, Tile.EMPTY);
+
+        this.floor = new Tile[GRID_WIDTH * GRID_HEIGHT];
+        Arrays.fill(floor, Tile.EMPTY);
+        this.frozenFloorCounter = 0;
 
         this.staticBuffer = new BufferedImage(GRID_WIDTH * TILE_SIZE, GRID_HEIGHT * TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
         this.dynamicBuffer = new BufferedImage(GRID_WIDTH * TILE_SIZE, GRID_HEIGHT * TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
@@ -73,10 +88,15 @@ public abstract class GameBoard {
     public void update() {
         player[0].update();
         player[1].update();
+        if (frozenFloorCounter > 0) {
+            for (Tile tile : floor) if (tile != Tile.EMPTY) {
+                tile.update();
+            }
+        }
         for (Tile tile : grid) if (tile != Tile.EMPTY) {
             tile.update();
         }
-        resolveCollisions();
+        applyCollisions();
     }
 
     private int index2D(int x, int y) {
@@ -105,9 +125,38 @@ public abstract class GameBoard {
         return grid[index2D(x, y)].isSolid();
     }
 
+    public void freezeFloor(int x, int y) {
+        int xy = index2D(x, y);
+
+        if (floor[xy] == Tile.EMPTY) {
+            floor[xy] = new FrozenFloor();
+            floor[xy].setPosition(x, y);
+            frozenFloorCounter++;
+        }
+    }
+
+    public void meltFloor(int x, int y) {
+        int xy = index2D(x, y);
+
+        if (floor[xy] != Tile.EMPTY) {
+            floor[xy] = Tile.EMPTY;
+            frozenFloorCounter--;
+        }
+    }
+
+    public boolean isFrozenFloor(int x, int y) {
+        return floor[index2D(x, y)] != Tile.EMPTY;
+    }
+
     public BufferedImage getBuffer() {
         Graphics g = dynamicBuffer.getGraphics();
         g.drawImage(staticBuffer, 0, 0, null);
+
+        if (frozenFloorCounter > 0) {
+            for (Tile tile : floor) if (tile != Tile.EMPTY) {
+                g.drawImage(tile.getFrame(), tile.getLeft(), tile.getTop(), null);
+            }
+        }
 
         for (Tile tile : grid) if (tile != Tile.EMPTY) {
             g.drawImage(tile.getFrame(), tile.getLeft(), tile.getTop(), null);
@@ -116,16 +165,33 @@ public abstract class GameBoard {
         for (int i = 0; i < 2; i++) {
             if (player[i].isAlive()) {
                 g.drawImage(player[i].getFrame(), player[i].getLeft(), player[i].getTop() - TILE_SIZE, null);
+                if(player[i].isFrozen()) {
+                    g.drawImage(iceBlock, player[i].getLeft(), player[i].getTop() - TILE_SIZE, null);
+                }
             }
         }
         return dynamicBuffer;
     }
 
-    private void resolveCollisions() {
+    private void applyCollisions() {
         for (Tile tile : grid) if (tile != Tile.EMPTY) {
             for (int i = 0; i < 2; i++) {
                 tile.onCollision(player[i]);
             }
+        }
+    }
+
+    public void sprayPowerUps(ArrayList<PowerUp> powerUps) {
+        Random r = new Random();
+        for (PowerUp p : powerUps) {
+            int x, y;
+
+            do {
+                x = r.nextInt(GRID_WIDTH - 2) + 1;
+                y = r.nextInt(GRID_HEIGHT - 2) + 1;
+            } while (fieldIsBlocked(x, y));
+
+            put(p, x, y);
         }
     }
 
@@ -149,7 +215,36 @@ public abstract class GameBoard {
                 }
 
                 if (generate.nextDouble() > 0.3) {
-                    put(new SoftBlock(), x, y);
+                    PowerUp powerUp = null;
+
+                    double spf = generate.nextDouble();
+                    if ((x > 5 && x < GRID_WIDTH - 5) && (y > 5 && y < GRID_HEIGHT - 5)) {
+                        if (spf > 0.4) {
+                            double type = generate.nextDouble();
+                            if (type < 0.4) {
+                                powerUp = new BombUp();
+                            } else if (type < 0.6) {
+                                powerUp = new RangeUp();
+                            } else if (type < 0.7) {
+                                powerUp = new SpeedUp();
+                            } else if (type < 0.9) {
+                                powerUp = new Surprise();
+                            } else {
+                                powerUp = new RemoteControl();
+                            }
+                        }
+                    } else if (spf > 0.6) {
+                        double type = generate.nextDouble();
+                        if (type < 0.5) {
+                            powerUp = new BombUp();
+                        } else if (type < 0.8) {
+                            powerUp = new RangeUp();
+                        } else {
+                            powerUp = new SpeedUp();
+                        }
+                    }
+
+                    put(new SoftBlock(powerUp), x, y);
                 }
             }
         }

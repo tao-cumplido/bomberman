@@ -109,8 +109,8 @@ public class SettingsPlayer extends JPanel{
         BufferedImage reContPicture, bombPicture,direPicture;
         try {
             direPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/Direction.png"));
-            reContPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/remote_control.png"));
-            bombPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/Bomb.png"));
+            reContPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/asset-power-up-remote-control.png"));
+            bombPicture = ImageIO.read(SettingsPlayer.class.getResourceAsStream("/res/images/settings/asset-bombe.png"));
             settingTypPicture.put(SettingsTyp.DIRECTION_UP, direPicture.getSubimage(0,0,208,208));
             settingTypPicture.put(SettingsTyp.DIRECTION_LEFT,direPicture.getSubimage(208,0,208,208));
             settingTypPicture.put(SettingsTyp.DIRECTION_RIGHT,direPicture.getSubimage(416,0,208,208));

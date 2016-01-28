@@ -1,24 +1,18 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
-import de.hsh.project.bomberman.game.battlemode.board.Tile;
+import de.hsh.project.bomberman.game.battlemode.bomb.Trigger;
 import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Created by taocu on 26.10.2015.
  */
 public class HumanPlayer extends Player {
-
-    private Key keyLeft;
-    private Key keyRight;
-    private Key keyUp;
-    private Key keyDown;
-    private Key keyDropBomb;
-    private Key keyTriggerBomb;
 
     private Key[] directionKeys;
     private Key[] allKeys;
@@ -36,7 +30,8 @@ public class HumanPlayer extends Player {
 
         allKeys = new Key[] {
                 directionKeys[0], directionKeys[1], directionKeys[2], directionKeys[3],
-                new Key(settings.get(SettingsTyp.SETTINGS_BOMB), this::pressDropAction, this::releaseDropAction)
+                new Key(settings.get(SettingsTyp.SETTINGS_BOMB), this::pressDropAction, this::releaseDropAction),
+                new Key(settings.get(SettingsTyp.SETTING_REMOTECONTROL), this::pressRemoteAction, this::releaseRemoteAction)
         };
 
         for (Key key : allKeys) {
@@ -49,26 +44,40 @@ public class HumanPlayer extends Player {
     }
 
     private void pressDirectionAction(Key key) {
-        target = null;
-        intendedDirection = key.getDirection();
+        if (isActive()) {
+            target = null;
+            intendedDirection = key.getDirection();
+        }
     }
 
     private void releaseDirectionAction(Key key) {
-        target = null;
-        for (Key other : directionKeys) {
-            if (other != key && other.isPressed()) {
-                intendedDirection = other.getDirection();
+        if (isActive()) {
+            target = null;
+            for (Key other : directionKeys) {
+                if (other != key && other.isPressed()) {
+                    intendedDirection = other.getDirection();
+                }
             }
         }
     }
 
     private void pressDropAction(Key key) {
-        if (!key.isPressed()) {
+        if (!key.isPressed() && isActive()) {
             dropBomb();
         }
     }
 
     private void releaseDropAction(Key key) {}
+
+    private void pressRemoteAction(Key key) {
+        if (!key.isPressed() && isActive()) {
+            remoteAction();
+        }
+    }
+
+    private void releaseRemoteAction(Key key) {
+
+    }
 
     private boolean anyDirectionPressed() {
         for (Key key : directionKeys) {
@@ -102,144 +111,114 @@ public class HumanPlayer extends Player {
 
     @Override
     public void update() {
-        if (getLifes() > 0) {
+        if (isActive()) {
             if (anyDirectionPressed()) {
                 move(intendedDirection);
             } else {
                 stop(intendedDirection);
+                if (currentBoard.isFrozenFloor(getX(), getY())) {
+                    moveTo(getFacingDirection());
+                }
             }
         }
         super.update();
     }
 
-    // TODO: try to remove redundancy
     @Override
     protected void move(Direction direction) {
         super.move(direction);
+        moveTo(direction);
+    }
+
+    public void moveTo(Direction direction) {
         int x = getX();
         int y = getY();
-        boolean onBomb = currentBoard.getTile(x, y).isBomb();
         switch (direction) {
             case LEFT:
                 if (isYAligned()) {
-                    if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
+                    if (!currentBoard.fieldIsBlocked(getNextX(), y)) {
                         translateX(-getSpeed());
+                    } else {
+                        alignX(Direction.LEFT);
                     }
-                } else {
-                    if (target == null) {
-                        if (getTop() < y * GameBoard.TILE_SIZE) {
-                            if (!currentBoard.fieldIsBlocked(x - 1, y - 1)) {
-                                setTarget(x - 1, y - 1);
-                            } else if (!currentBoard.fieldIsBlocked(x - 1, y)) {
-                                setTarget(x - 1, y);
-                            }
-                        } else {
-                            if (!currentBoard.fieldIsBlocked(x - 1, y + 1)) {
-                                setTarget(x - 1, y + 1);
-                            } else if (!currentBoard.fieldIsBlocked(x - 1, y)) {
-                                setTarget(x - 1, y);
-                            }
-                        }
-                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                        if (getTop() > target.y * GameBoard.TILE_SIZE) {
-                            translateY(-getSpeed());
-                        } else {
-                            translateY(getSpeed());
-                        }
+                } else if (target == null) {
+                    if (getTop() < y * GameBoard.TILE_SIZE) {
+                        setTarget(x - 1, y, -1, true);
+                    } else {
+                        setTarget(x - 1, y, 1, true);
                     }
-                }
-                break;
+                } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                    moveAroundCorner(getTop(), target.y, this::alignY, Direction.UP, Direction.DOWN);
+                } break;
+
             case RIGHT:
                 if (isYAligned()) {
-                    if (!currentBoard.fieldIsBlocked(getNextX(), y) || (onBomb && !isXAligned())) {
+                    if (!currentBoard.fieldIsBlocked(getNextX(), y)) {
                         translateX(getSpeed());
+                    } else {
+                        alignX(Direction.RIGHT);
                     }
-                } else {
-                    if (target == null) {
-                        if (getTop() < y * GameBoard.TILE_SIZE) {
-                            if (!currentBoard.fieldIsBlocked(x + 1, y - 1)) {
-                                setTarget(x + 1, y - 1);
-                            } else if (!currentBoard.fieldIsBlocked(x + 1, y)) {
-                                setTarget(x + 1, y);
-                            }
-                        } else {
-                            if (!currentBoard.fieldIsBlocked(x + 1, y + 1)) {
-                                setTarget(x + 1, y + 1);
-                            } else if (!currentBoard.fieldIsBlocked(x + 1, y)) {
-                                setTarget(x + 1, y);
-                            }
-                        }
-                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                        if (getTop() > target.y * GameBoard.TILE_SIZE) {
-                            translateY(-getSpeed());
-                        } else {
-                            translateY(getSpeed());
-                        }
+                } else if (target == null) {
+                    if (getTop() < y * GameBoard.TILE_SIZE) {
+                        setTarget(x + 1, y, -1, true);
+                    } else {
+                        setTarget(x + 1, y, 1, true);
                     }
-                }
-                break;
+                } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                    moveAroundCorner(getTop(), target.y, this::alignY, Direction.UP, Direction.DOWN);
+                } break;
+
             case UP:
                 if (isXAligned()) {
-                    if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
+                    if (!currentBoard.fieldIsBlocked(x, getNextY())) {
                         translateY(-getSpeed());
+                    } else {
+                        alignY(Direction.UP);
                     }
-                } else {
-                    if (target == null) {
-                        if (getLeft() < x * GameBoard.TILE_SIZE) {
-                            if (!currentBoard.fieldIsBlocked(x - 1, y - 1)) {
-                                setTarget(x - 1, y - 1);
-                            } else if (!currentBoard.fieldIsBlocked(x, y - 1)) {
-                                setTarget(x, y - 1);
-                            }
-                        } else {
-                            if (!currentBoard.fieldIsBlocked(x + 1, y - 1)) {
-                                setTarget(x + 1, y - 1);
-                            } else if (!currentBoard.fieldIsBlocked(x, y - 1)) {
-                                setTarget(x, y - 1);
-                            }
-                        }
-                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                        if (getLeft() > target.x * GameBoard.TILE_SIZE) {
-                            translateX(-getSpeed());
-                        } else {
-                            translateX(getSpeed());
-                        }
+                } else if (target == null) {
+                    if (getLeft() < x * GameBoard.TILE_SIZE) {
+                        setTarget(x, y - 1, -1, false);
+                    } else {
+                        setTarget(x, y - 1, 1, false);
                     }
-                }
-                break;
+                } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                    moveAroundCorner(getLeft(), target.x, this::alignX, Direction.LEFT, Direction.RIGHT);
+                } break;
+
             case DOWN:
                 if (isXAligned()) {
-                    if (!currentBoard.fieldIsBlocked(x, getNextY()) || (onBomb && !isYAligned())) {
+                    if (!currentBoard.fieldIsBlocked(x, getNextY())) {
                         translateY(getSpeed());
+                    } else {
+                        alignY(Direction.DOWN);
                     }
-                } else {
-                    if (target == null) {
-                        if (getLeft() < x * GameBoard.TILE_SIZE) {
-                            if (!currentBoard.fieldIsBlocked(x - 1, y + 1)) {
-                                setTarget(x - 1, y + 1);
-                            } else if (!currentBoard.fieldIsBlocked(x, y + 1)) {
-                                setTarget(x, y + 1);
-                            }
-                        } else {
-                            if (!currentBoard.fieldIsBlocked(x + 1, y + 1)) {
-                                setTarget(x + 1, y + 1);
-                            } else if (!currentBoard.fieldIsBlocked(x, y + 1)) {
-                                setTarget(x, y + 1);
-                            }
-                        }
-                    } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
-                        if (getLeft() > target.x * GameBoard.TILE_SIZE) {
-                            translateX(-getSpeed());
-                        } else {
-                            translateX(getSpeed());
-                        }
+                } else if (target == null) {
+                    if (getLeft() < x * GameBoard.TILE_SIZE) {
+                        setTarget(x, y + 1, -1, false);
+                    } else {
+                        setTarget(x, y + 1, 1, false);
                     }
-                }
-                break;
+                } else if (!currentBoard.fieldIsBlocked(target.x, target.y)) {
+                    moveAroundCorner(getLeft(), target.x, this::alignX, Direction.LEFT, Direction.RIGHT);
+                } break;
         }
     }
 
-    private void setTarget(int x, int y) {
-        target = new Point(x, y);
+    private void setTarget(int x, int y, int d, boolean horizontal) {
+        int xx = horizontal ? x : x + d;
+        int yy = horizontal ? y + d : y;
+        if (!currentBoard.fieldIsBlocked(xx, yy)) {
+            target = new Point(xx, yy);
+        } else if (!currentBoard.fieldIsBlocked(x, y)) {
+            target = new Point(x, y);
+        }
+    }
+
+    private void moveAroundCorner(int playerCoordinate, int targetCoordinate, Consumer<Direction> align, Direction neg, Direction pos) {
+        if (playerCoordinate > targetCoordinate * GameBoard.TILE_SIZE) {
+            align.accept(neg);
+        } else {
+            align.accept(pos);
+        }
     }
 }

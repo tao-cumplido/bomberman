@@ -3,6 +3,7 @@ package de.hsh.project.bomberman.game.battlemode.board;
 
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
+import de.hsh.project.bomberman.game.battlemode.powerup.PowerUp;
 
 import java.awt.image.BufferedImage;
 
@@ -17,15 +18,27 @@ public class SoftBlock extends Block {
         DEFAULT, DISSOLVE
     }
 
-    public SoftBlock() {
+    private PowerUp powerUp;
+
+    public SoftBlock(PowerUp powerUp) {
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, 0);
         this.sprite.addAnimation(Animation.DISSOLVE, 1, 2, 3, 4, 5, 6);
         this.sprite.playAnimation(Animation.DEFAULT, false);
+
+        this.powerUp = powerUp;
     }
 
     @Override
     public void burn() {
-        this.sprite.playAnimation(Animation.DISSOLVE, 5, this::remove);
+        this.sprite.playAnimation(Animation.DISSOLVE, 5, this::removeFromBoard);
+    }
+
+    @Override
+    public void removeFromBoard() {
+        super.removeFromBoard();
+        if (powerUp != null) {
+            currentBoard.put(powerUp, getX(), getY());
+        }
     }
 }

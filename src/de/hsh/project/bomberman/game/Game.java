@@ -1,6 +1,9 @@
 package de.hsh.project.bomberman.game;
 
 import de.hsh.project.bomberman.game.battlemode.BattleState;
+import de.hsh.project.bomberman.game.highscore.EnterNameState;
+import de.hsh.project.bomberman.game.highscore.HighScore;
+import de.hsh.project.bomberman.game.highscore.HighScoreMenuState;
 import de.hsh.project.bomberman.game.menu.IntroState;
 import de.hsh.project.bomberman.game.menu.LoadingState;
 import de.hsh.project.bomberman.game.menu.TitleState;
@@ -31,6 +34,8 @@ public class Game extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
+
+        //new EnterNameState((new HighScore(null,12,"easy",3,1.2,"one")));
         switchState(new TitleState());
 
         // center application window on screen

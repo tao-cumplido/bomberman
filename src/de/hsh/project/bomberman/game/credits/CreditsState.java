@@ -20,7 +20,7 @@ public class CreditsState extends MenuState {
     public CreditsState(){
         if (credits == null) {
             try {
-                credits = ImageIO.read(getClass().getResource("/res/images/credit3.png"));
+                credits = ImageIO.read(getClass().getResource("/res/images/credit.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -13,18 +13,20 @@ public abstract class Blast extends Tile {
         DEFAULT
     }
 
-    public Blast() {
+    private int row;
+
+    public Blast(int row) {
         super(false);
+        this.row = row;
     }
 
     @Override
-    public boolean onCollision(Player player) {
-        boolean collides = super.onCollision(player);
+    public boolean isBlast() {
+        return row != 0;
+    }
 
-        if (collides) {
-            player.burn();
-        }
-
-        return collides;
+    @Override
+    public void burn() {
+        if (isBlast()) removeFromBoard();
     }
 }

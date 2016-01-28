@@ -33,6 +33,7 @@ public abstract class Tile {
     public Tile(boolean solid) {
         this.bounds = new Rectangle(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
         this.solid = solid;
+        setActive(true);
     }
 
     public boolean onCollision(Player player) {
@@ -49,6 +50,10 @@ public abstract class Tile {
 
     public boolean isActive() {
         return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setPosition(int x, int y) {
@@ -103,7 +108,7 @@ public abstract class Tile {
 
     public void freeze() {}
 
-    public void remove() {
+    public void removeFromBoard() {
         currentBoard.remove(getX(), getY());
     }
 

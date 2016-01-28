@@ -3,6 +3,7 @@ package de.hsh.project.bomberman.game.battlemode;
 import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.battlemode.board.BoardOne;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
+import de.hsh.project.bomberman.game.battlemode.player.AIPlayer;
 import de.hsh.project.bomberman.game.battlemode.player.HumanPlayer;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 import de.hsh.project.bomberman.game.GameState;
@@ -20,8 +21,7 @@ import java.util.Map;
  */
 public class BattleState extends GameState implements Runnable {
 
-    private BufferedImage dynamicBuffer = new BufferedImage(1216, 960, BufferedImage.TYPE_INT_ARGB);
-    private BufferedImage staticBuffer = new BufferedImage(1216, 960, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage dynamicBuffer = new BufferedImage(25*48, 15*48, BufferedImage.TYPE_INT_ARGB);//29*17
 
     private Player[] player = new Player[2];
     private GameBoard board;
@@ -33,6 +33,7 @@ public class BattleState extends GameState implements Runnable {
         p1Keys.put(SettingsTyp.DIRECTION_UP, KeyEvent.VK_UP);
         p1Keys.put(SettingsTyp.DIRECTION_DOWN, KeyEvent.VK_DOWN);
         p1Keys.put(SettingsTyp.SETTINGS_BOMB, KeyEvent.VK_SPACE);
+        p1Keys.put(SettingsTyp.SETTING_REMOTECONTROL, KeyEvent.VK_M);
         player[0] = new HumanPlayer(0, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), p1Keys);
 
 
@@ -42,7 +43,9 @@ public class BattleState extends GameState implements Runnable {
         p2Keys.put(SettingsTyp.DIRECTION_UP, KeyEvent.VK_W);
         p2Keys.put(SettingsTyp.DIRECTION_DOWN, KeyEvent.VK_S);
         p2Keys.put(SettingsTyp.SETTINGS_BOMB, KeyEvent.VK_TAB);
-        player[1] = new HumanPlayer(1, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), p2Keys);
+        p2Keys.put(SettingsTyp.SETTING_REMOTECONTROL, KeyEvent.VK_Q);
+        //player[1] = new HumanPlayer(1, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), p2Keys);
+        player[1] = new AIPlayer(1);
 
         this.board = new BoardOne(player);
 
