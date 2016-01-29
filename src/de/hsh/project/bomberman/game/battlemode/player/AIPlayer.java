@@ -1,9 +1,9 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
+import de.hsh.project.bomberman.game.battlemode.board.Tile;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -11,10 +11,22 @@ import java.util.Random;
  */
 public class AIPlayer extends Player {
 
-    private Point lastStepped;
+    private enum Intent {
+        EXPAND, HIDE, WAIT
+    }
 
-    public AIPlayer(int playerNumber) {
+    private Point lastStepped;
+    private int level;
+
+    private int wait;
+
+    private Intent intent;
+
+    public AIPlayer(int playerNumber, int level) {
         super(playerNumber);
+        this.level = level;
+        this.intent = Intent.EXPAND;
+        this.wait = 0;
     }
 
     @Override
@@ -22,8 +34,45 @@ public class AIPlayer extends Player {
         if (isActive()) {
             checkTarget();
 
+            if (target != null && currentBoard.fieldIsBlocked(target.x, target.y)) target = null;
+
             if (target != null) {
                 moveToTarget();
+
+                if (atTarget()) {
+                    target = null;
+                    stop(getFacingDirection());
+                    switch (intent) {
+                        case EXPAND:
+                            dropBomb();
+                            if (level > 0) intent = Intent.HIDE;
+                            break;
+                        case HIDE:
+                            if (hasRemote()) {
+                                remoteAction();
+                                intent = Intent.EXPAND;
+                            } else {
+                                intent = Intent.WAIT;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            if (intent == Intent.WAIT) {
+                if (wait > 0) {
+                    wait--;
+                    if (wait == 0) {
+                        intent = Intent.EXPAND;
+                        return;
+                    }
+                } else if (queueIsEmpty()) {
+                    wait = 60;
+                }
+            }
+
+            if (level > 0) {
+                //detectBomb();
             }
         }
 
@@ -31,6 +80,14 @@ public class AIPlayer extends Player {
     }
 
     private void checkTarget() {
+        switch (level) {
+            case 0: determineTargetLevel0(); break;
+            case 1: determineTargetLevel1(); break;
+
+        }
+    }
+
+    private void determineTargetLevel0() {
         if (target == null) {
             Random r = new Random();
 
@@ -41,13 +98,135 @@ public class AIPlayer extends Player {
             int y = (getY() + dy + GameBoard.GRID_HEIGHT) % GameBoard.GRID_HEIGHT;
 
             if (!currentBoard.fieldIsBlocked(x, y)) {
-                target = new Point(x, y);
+                if (level == 0 || isSafe(x, y, 0)) {
+                    target = new Point(x, y);
+                }
             }
         } else if (target.x * GameBoard.TILE_SIZE == getLeft() && target.y * GameBoard.TILE_SIZE == getTop()) {
             stop(getFacingDirection());
             dropBomb();
             target = null;
         }
+    }
+
+    private void determineTargetLevel1() {
+        if (target == null) {
+            switch (intent) {
+                case EXPAND:
+                    target = findNearestChest(getX(), getY(), 0);
+                    break;
+                case HIDE:
+                    target = findNearestHarbor(getX(), getY(), 0);
+                    break;
+                case WAIT:
+                    return;
+            }
+
+            if (target == null) determineTargetLevel0();
+        }
+    }
+
+    private boolean atTarget() {
+        return (target != null && getLeft() == target.x * GameBoard.TILE_SIZE && getTop() == target.y * GameBoard.TILE_SIZE);
+    }
+
+    private Point findNearestChest(int x, int y, int i) {
+        if (outOfBounds(x, y) || i > 4 || currentBoard.fieldIsBlocked(x, y)) return null;
+
+        if (isChest(x - 1, y) || isChest(x + 1, y) || isChest(x, y - 1) || isChest(x, y + 1)) {
+            return new Point(x, y);
+        }
+
+        Point p;
+
+        p = findNearestChest(x - 1, y, i + 1);
+        if (p != null) return p;
+
+        p = findNearestChest(x + 1, y, i + 1);
+        if (p != null) return p;
+
+        p = findNearestChest(x, y - 1, i + 1);
+        if (p != null) return p;
+
+        p = findNearestChest(x, y + 1, i + 1);
+        if (p != null) return p;
+
+        return null;
+    }
+
+    private boolean isChest(int x, int y) {
+        return currentBoard.getTile(x, y).isBlock();
+    }
+
+    private Point findNearestHarbor(int x, int y, int i) {
+        if (outOfBounds(x, y) || i > 5 || isIgnorable(x, y)) return null;
+
+        if (isSafe(x, y, 0)) return new Point(x, y);
+
+        Point p;
+
+        p = findNearestHarbor(x - 1, y, i + 1);
+        if (p != null) return p;
+
+        p = findNearestHarbor(x + 1, y, i + 1);
+        if (p != null) return p;
+
+        p = findNearestHarbor(x, y - 1, i + 1);
+        if (p != null) return p;
+
+        p = findNearestHarbor(x, y + 1, i + 1);
+        if (p != null) return p;
+
+        return null;
+    }
+
+    private void detectBomb() {
+        int x = getX();
+        int y = getY();
+
+        for (int i = 1; i <= 3; i++) {
+            if (isDangerous(x - i, y) || isDangerous(x + i, y) || isDangerous(x, y - i) || isDangerous(x, y + i)) {
+                target = null;
+                return;
+            }
+        }
+    }
+
+    private boolean isIgnorable(int x, int y) {
+        return currentBoard.fieldIsBlocked(x, y) && !currentBoard.getTile(x, y).isBomb();
+    }
+
+    private boolean isDangerous(int x, int y) {
+        if (!outOfBounds(x, y)) {
+            Tile here = currentBoard.getTile(x, y);
+            return here.isBomb() || here.isBlast();
+        }
+
+        return false;
+    }
+
+    private boolean isSafe(int x, int y, int i) {
+        if (i == 4 || outOfBounds(x, y)) return true;
+
+        if (isDangerous(x, y)) return false;
+
+        boolean safe = true;
+
+        if (!isIgnorable(x - 1, y)) safe = isSafe(x - 1, y, i + 1);
+        if (!safe) return false;
+
+        if (!isIgnorable(x + 1, y)) safe = isSafe(x + 1, y, i + 1);
+        if (!safe) return false;
+
+        if (!isIgnorable(x, y - 1)) safe = isSafe(x, y - 1, i + 1);
+        if (!safe) return false;
+
+        if (!isIgnorable(x, y + 1)) safe = isSafe(x, y + 1, i + 1);
+        return safe;
+    }
+
+    private boolean outOfBounds(int x, int y) {
+        return x < 1 || x > GameBoard.GRID_WIDTH - 2 || y < 1 || y > GameBoard.GRID_HEIGHT - 2;
     }
 
     private void moveToTarget() {
@@ -59,7 +238,7 @@ public class AIPlayer extends Player {
     }
 
     Direction findPath(int x, int y) {
-        if (currentBoard.fieldIsBlocked(x, y) && !currentBoard.getTile(getX(), getY()).isBomb()) return Direction.NONE;
+        if (isIgnorable(x, y)) return Direction.NONE;
 
         if (target.x == x - 1 && target.y == y) return Direction.LEFT;
         if (target.x == x + 1 && target.y == y) return Direction.RIGHT;

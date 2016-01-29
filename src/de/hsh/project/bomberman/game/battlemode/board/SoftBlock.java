@@ -23,7 +23,7 @@ public class SoftBlock extends Block {
     public SoftBlock(PowerUp powerUp) {
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, 0);
-        this.sprite.addAnimation(Animation.DISSOLVE, 1, 2, 3, 4, 5, 6);
+        this.sprite.addAnimation(Animation.DISSOLVE, 2, 3, 4);
         this.sprite.playAnimation(Animation.DEFAULT, false);
 
         this.powerUp = powerUp;
@@ -31,7 +31,8 @@ public class SoftBlock extends Block {
 
     @Override
     public void burn() {
-        this.sprite.playAnimation(Animation.DISSOLVE, 5, this::removeFromBoard);
+        super.burn();
+        this.sprite.playAnimation(Animation.DISSOLVE, 4, this::removeFromBoard);
     }
 
     @Override
@@ -40,5 +41,15 @@ public class SoftBlock extends Block {
         if (powerUp != null) {
             currentBoard.put(powerUp, getX(), getY());
         }
+    }
+
+    @Override
+    public boolean isBlock() {
+        return true;
+    }
+
+    @Override
+    public BufferedImage getFrame() {
+        return (frozen > 0) ? sprite.getFrame(1) : sprite.getCurrentFrame();
     }
 }

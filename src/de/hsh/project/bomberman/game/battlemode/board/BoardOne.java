@@ -11,6 +11,8 @@ public class BoardOne extends GameBoard {
         super(player);
         player[0].setPosition(1, 1);
         player[1].setPosition(GRID_WIDTH - 3, GRID_HEIGHT - 2);
+        player[2].setPosition(1, GRID_HEIGHT - 2);
+        player[3].setPosition(GRID_WIDTH - 3, 1);
         fillRandomSoftBlocks();
     }
 }

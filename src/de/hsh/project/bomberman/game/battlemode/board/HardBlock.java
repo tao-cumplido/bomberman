@@ -15,12 +15,15 @@ public class HardBlock extends Block {
 
     private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/hardblock.png");
 
-    public HardBlock() {
+    private int type;
+
+    public HardBlock(int type) {
+        this.type = type;
         this.sprite = new Sprite(spriteSheet);
     }
 
     @Override
     public BufferedImage getFrame() {
-        return sprite.getFrame(0);
+        return (frozen > 0 && type == 1) ? sprite.getFrame(2) : sprite.getFrame(type);
     }
 }

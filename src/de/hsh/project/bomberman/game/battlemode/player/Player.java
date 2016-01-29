@@ -2,6 +2,7 @@ package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
+import de.hsh.project.bomberman.game.battlemode.board.HardBlock;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.bomb.Bomb;
 import de.hsh.project.bomberman.game.battlemode.bomb.FireBomb;
@@ -11,6 +12,8 @@ import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.powerup.PowerUp;
 import de.hsh.project.bomberman.game.battlemode.powerup.Surprise;
+import de.hsh.project.bomberman.game.settings.Settings;
+import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -50,7 +53,6 @@ public abstract class Player extends Tile {
     private boolean dropsRandomBombs;
     private int lifes;
     private ArrayList<PowerUp> powerUps;
-    private Surprise temporaryAbility;
     private ArrayList<Bomb> bombQueue;
 
     private int resetCounter;
@@ -70,37 +72,32 @@ public abstract class Player extends Tile {
 
     protected Point target;
 
+    private int playerNumber;
+
     public Player(int playerNumber) {
-        super(false);
+        super(false, GameBoard.TILE_SIZE);
 
         this.sprite = new Sprite("/res/images/bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2);
 
         sprite.addAnimation(Animation.STAND_DOWN, 0);
-        sprite.addAnimation(Animation.STAND_UP, 3);
-        sprite.addAnimation(Animation.STAND_LEFT, 6);
-        sprite.addAnimation(Animation.STAND_RIGHT, 9);
+        sprite.addAnimation(Animation.STAND_UP, 1);
+        sprite.addAnimation(Animation.STAND_LEFT, 2);
+        sprite.addAnimation(Animation.STAND_RIGHT, 3);
 
-        sprite.addAnimation(Animation.WALK_DOWN, 0, 1, 0, 2);
-        sprite.addAnimation(Animation.WALK_UP, 3, 4, 3, 5);
-        sprite.addAnimation(Animation.WALK_LEFT, 6, 7, 6, 8);
-        sprite.addAnimation(Animation.WALK_RIGHT, 9, 10, 9, 11);
+        sprite.addAnimation(Animation.WALK_DOWN, 0);
+        sprite.addAnimation(Animation.WALK_UP, 1);
+        sprite.addAnimation(Animation.WALK_LEFT, 2);
+        sprite.addAnimation(Animation.WALK_RIGHT, 3);
 
-        sprite.addAnimation(Animation.DEATH,
-                12, 13, 14, 15,
-                12, 12, 13, 13, 14, 14, 15, 15,
-                12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15,
-                12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15,
-                12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15,
-                15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-                16, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19,
-                20, 20, 20, 19, 19, 19, 21, 21, 21, 19, 19, 19, 20, 20, 20, 19, 19, 19, 21, 21, 21,
-                19, 19, 19, 19, 19, 19, 19, 19, 19, 19);
+        sprite.addAnimation(Animation.DEATH, 4, 4, 5, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 7, 8, 8, 8, 8, 8);
 
         stop(Direction.DOWN);
 
+        this.playerNumber = playerNumber + 1;
+
         this.bombQueue = new ArrayList<>();
         this.powerUps = new ArrayList<>();
-        this.lifes = 3;
+        this.lifes = Settings.getBasicSetting().get(SettingsTyp.LIFE);
         resetStats();
     }
 
@@ -118,6 +115,10 @@ public abstract class Player extends Tile {
         for (PowerUp p : powerUps) {
             p.affect(this);
         }
+    }
+
+    public int getPlayerNumber() {
+        return playerNumber;
     }
 
     public Direction getFacingDirection() {
@@ -232,20 +233,16 @@ public abstract class Player extends Tile {
             frozen -= 2;
         } else if (frozen < 0) {
             setActive(true);
+            setSolid(false);
             stop(facingDirection);
             frozen = 0;
+            currentBoard.remove(getX(), getY());
         }
     }
 
     @Override
-    public void setPosition(int x, int y) {
-        super.setPosition(x, y);
-        target = new Point(x, y);
-    }
-
-    @Override
     public BufferedImage getFrame() {
-        if (frozen > 0) return frozenFrame;
+        if (frozen > 0) return null; //frozenFrame;
 
         BufferedImage frame = sprite.getCurrentFrame();
 
@@ -260,11 +257,13 @@ public abstract class Player extends Tile {
     @Override
     public void burn() {
         if (invincible == 0 && lifes > 0) {
+            if (frozen > 0) frozen = 1;
+
             lifes--;
 
             if (lifes == 0) {
                 facingDirection = Direction.NONE;
-                sprite.playAnimation(Animation.DEATH, 0, this::kill);
+                sprite.playAnimation(Animation.DEATH, 2, this::kill);
                 setActive(false);
                 //alive = false;
             } else {
@@ -275,10 +274,19 @@ public abstract class Player extends Tile {
 
     @Override
     public void freeze() {
+        int x = getX();
+        int y = getY();
+
+        setX(x);
+        setY(y);
+
+        currentBoard.remove(x, y);
+        currentBoard.put(new IceBlock(this), getX(), getY());
+
         frozen = 479;
-        //frozenOp.filter(sprite.getCurrentFrame(), frozenFrame);
-        frozenFrame = sprite.getCurrentFrame();
+        //frozenFrame = sprite.getCurrentFrame();
         setActive(false);
+        setSolid(true);
     }
 
     protected void dropBomb() {
@@ -290,14 +298,23 @@ public abstract class Player extends Tile {
     private void dropBomb(int x, int y) {
         if (currentBoard.getTile(x, y).isEmpty() && bombQueue.size() < bombs) {
             Bomb bomb = dropsIceBombs ? new IceBomb(bombRange, bombQueue, bombTrigger) : new FireBomb(bombRange, bombQueue, bombTrigger);
+            //Bomb bomb = (playerNumber == 1) ? new IceBomb(bombRange, bombQueue, bombTrigger) : new FireBomb(bombRange, bombQueue, bombTrigger);
             currentBoard.put(bomb, x, y);
         }
+    }
+
+    protected boolean hasRemote() {
+        return bombTrigger == Trigger.REMOTE;
     }
 
     protected void remoteAction() {
         if (bombTrigger == Trigger.REMOTE && !bombQueue.isEmpty()) {
             bombQueue.get(0).detonate();
         }
+    }
+
+    protected boolean queueIsEmpty() {
+        return bombQueue.size() == 0;
     }
 
     public void setBombTrigger(Trigger trigger) {

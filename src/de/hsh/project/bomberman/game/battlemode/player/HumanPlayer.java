@@ -130,6 +130,12 @@ public class HumanPlayer extends Player {
         moveTo(direction);
     }
 
+    @Override
+    public void setPosition(int x, int y) {
+        super.setPosition(x, y);
+        target = new Point(x, y);
+    }
+
     public void moveTo(Direction direction) {
         int x = getX();
         int y = getY();

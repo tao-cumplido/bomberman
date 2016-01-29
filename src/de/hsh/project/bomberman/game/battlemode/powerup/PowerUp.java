@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.powerup;
 
 import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
@@ -20,24 +21,24 @@ public abstract class PowerUp extends Tile {
     private int tick;
 
     public PowerUp(BufferedImage spriteSheet) {
-        super(false);
-        this.sprite = new Sprite(spriteSheet);
-        this.sprite.addAnimation(Animation.DEFAULT, 0, 1);
-        this.sprite.addAnimation(Animation.FROZEN, 2);
+        super(false, GameBoard.TILE_SIZE);
+        this.sprite = new Sprite(spriteSheet, GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2);
+        this.sprite.addAnimation(Animation.DEFAULT, 0);
+        this.sprite.addAnimation(Animation.FROZEN, 1);
         this.sprite.playAnimation(Animation.DEFAULT, 4, true);
 
         this.tick = -1;
     }
 
     @Override
-    public boolean onCollision(Player player) {
-        if (super.onCollision(player)) {
+    public int onCollision(Player player) {
+        if (super.onCollision(player) > 0) {
             removeFromBoard();
             player.addPowerUp(this);
-            return true;
+            return 1;
         }
 
-        return false;
+        return 0;
     }
 
     @Override

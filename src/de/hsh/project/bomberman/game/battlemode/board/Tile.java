@@ -26,18 +26,29 @@ public abstract class Tile {
 
     private boolean solid, active;
 
+    private int vOffset;
     protected Sprite sprite;
 
     public Tile() {} // TODO: make private
 
-    public Tile(boolean solid) {
+    public Tile(boolean solid, int vOffset) {
         this.bounds = new Rectangle(GameBoard.TILE_SIZE, GameBoard.TILE_SIZE);
         this.solid = solid;
+        this.vOffset = vOffset;
         setActive(true);
     }
 
-    public boolean onCollision(Player player) {
-        return !bounds.intersection(player.bounds).isEmpty();
+    public Tile(boolean solid) {
+        this(solid, 0);
+    }
+
+    public int onCollision(Player player) {
+        Rectangle r = bounds.intersection(player.bounds);
+        return r.isEmpty() ? 0 : r.width * r.height;
+    }
+
+    public int getVOffset() {
+        return vOffset;
     }
 
     public boolean isSolid() {

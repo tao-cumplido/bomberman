@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
+import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 
@@ -23,17 +24,17 @@ public class FireBlast extends Blast {
 
         this.sprite = new Sprite(spriteSheet);
         this.sprite.addAnimation(Animation.DEFAULT, frames);
-        this.sprite.playAnimation(Animation.DEFAULT, 2, this::removeFromBoard);
+        this.sprite.playAnimation(Animation.DEFAULT, 0, this::removeFromBoard);
     }
 
     @Override
-    public boolean onCollision(Player player) {
-        if (super.onCollision(player)) {
+    public int onCollision(Player player) {
+        if (super.onCollision(player) > 4 * GameBoard.TILE_SIZE) {
             player.burn();
-            return true;
+            return 1;
         }
 
-        return false;
+        return 0;
     }
 
     @Override
