@@ -110,7 +110,9 @@ public class BattleState extends GameState implements Runnable {
             }
         }
 
-        if (activePlayers() == 1) {
+        int ap = activePlayers();
+
+        if (ap == 1) {
             Player p = null;
 
             for (int i = 0; i < 4; i++) {
@@ -127,6 +129,10 @@ public class BattleState extends GameState implements Runnable {
             } else {
                 Game.switchState(new TitleState());
             }
+        }
+
+        if (ap == 0) {
+            Game.switchState(new TitleState());
         }
     }
 

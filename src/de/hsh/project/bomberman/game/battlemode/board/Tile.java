@@ -3,6 +3,9 @@ package de.hsh.project.bomberman.game.battlemode.board;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -141,5 +144,15 @@ public abstract class Tile {
 
     public boolean isPowerUp() {
         return false;
+    }
+
+    public void playSound(AudioInputStream audioStream) {
+        try {
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

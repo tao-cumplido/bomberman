@@ -63,16 +63,6 @@ public abstract class Bomb extends Tile {
         queue.remove(this);
     }
 
-    public void playSound(AudioInputStream audioStream) {
-        try {
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     protected Tile[] extend(Function<Integer, Blast> blastConstructor) {
         currentBoard.put(blastConstructor.apply(0), getX(), getY());
 
