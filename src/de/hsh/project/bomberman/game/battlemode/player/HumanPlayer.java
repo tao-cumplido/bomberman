@@ -227,4 +227,9 @@ public class HumanPlayer extends Player {
             align.accept(pos);
         }
     }
+
+    @Override
+    public boolean isHuman() {
+        return true;
+    }
 }

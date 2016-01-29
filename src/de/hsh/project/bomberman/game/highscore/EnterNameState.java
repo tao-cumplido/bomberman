@@ -12,19 +12,16 @@ import javax.swing.*;
  */
 
 //  new EnterNameState((new HighScore(null,12,"easy",3,1.2,"one")));
-public class EnterNameState {
-
-    private HighScore hs;
+public class EnterNameState extends MenuState {
 
     public EnterNameState(HighScore highScore) {
-        hs = highScore;
         String name = JOptionPane.showInputDialog("Name: ");
         if(name==null||name.equals(""))
             name ="NN";
         if(name.length()>8)
             name = name.substring(0,8);
-        hs.setName(name);
-        HighScoreFile.addScore(hs);
+        highScore.setName(name);
+        HighScoreFile.addScore(highScore);
     }
 
 }

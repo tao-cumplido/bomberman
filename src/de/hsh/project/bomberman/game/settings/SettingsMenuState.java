@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.settings;
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.menu.FontImage;
 import de.hsh.project.bomberman.game.menu.FontState;
 import de.hsh.project.bomberman.game.menu.MenuState;
@@ -125,11 +126,11 @@ public class SettingsMenuState extends MenuState {
         tll.setLayout(new FlowLayout());
         tll.add(new FontImage("Time:",3,false));
         tll.add(time);
-        tll.add(new FontImage("life:",3,false));
+        tll.add(new FontImage("Lifes:",3,false));
         tll.add(life);
         tll.add(new FontImage("Board:",3,false));
         tll.add(board);
-        tll.add(new FontImage("Difficulty:",3,false));
+        tll.add(new FontImage("AI-Level:",3,false));
         tll.add(levelPanel);
 
         tll.setOpaque(false);
@@ -137,19 +138,15 @@ public class SettingsMenuState extends MenuState {
 
 
     private void buildPlayer() {
-        try {
-            playerHead = ImageIO.read(getClass().getResourceAsStream("/res/images/settings/4Player_Head.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        playerHead = Resource.loadImage("settings/bombers.png");
 
-        player1 = new SettingsPlayer(SettingsTyp.PLAYER1, playerHead.getSubimage(0, 0, 17, 18), 1, Settings.getPlayer1());
+        player1 = new SettingsPlayer(SettingsTyp.PLAYER1, playerHead.getSubimage(0, 0, 500, 500), 1, Settings.getPlayer1());
         Settings.setPlayer1(player1.getPlayerMap());
-        player2 = new SettingsPlayer(SettingsTyp.PLAYER2, playerHead.getSubimage(17, 0, 17, 18), 2, Settings.getPlayer2());
+        player2 = new SettingsPlayer(SettingsTyp.PLAYER2, playerHead.getSubimage(500, 0, 500, 500), 2, Settings.getPlayer2());
         Settings.setPlayer2(player2.getPlayerMap());
-        player3 = new SettingsPlayer(SettingsTyp.PLAYER3, playerHead.getSubimage(34, 0, 17, 18), 3, Settings.getPlayer3());
+        player3 = new SettingsPlayer(SettingsTyp.PLAYER3, playerHead.getSubimage(1000, 0, 500, 500), 3, Settings.getPlayer3());
         Settings.setPlayer3(player3.getPlayerMap());
-        player4 = new SettingsPlayer(SettingsTyp.PLAYER4, playerHead.getSubimage(51, 0, 17, 18), 4, Settings.getPlayer4());
+        player4 = new SettingsPlayer(SettingsTyp.PLAYER4, playerHead.getSubimage(1500, 0, 500, 500), 4, Settings.getPlayer4());
         Settings.setPlayer4(player4.getPlayerMap());
 
     }
@@ -158,9 +155,9 @@ public class SettingsMenuState extends MenuState {
     private void setLevel() {
         levelPanel = new JPanel();
         levelPanel.setOpaque(false);
-        JRadioButton hard = new JRadioButton("HARD");
+        JRadioButton hard = new JRadioButton("2");
         hard.setOpaque(false);
-        JRadioButton easy = new JRadioButton("EASY");
+        JRadioButton easy = new JRadioButton("1");
         easy.setOpaque(false);
         ButtonGroup level = new ButtonGroup();
         level.add(hard);

@@ -51,7 +51,7 @@ public class SettingsPlayer extends JPanel{
         settingTypPicture = new HashMap<>();
 
         JLabel headLabel = new JLabel();
-        setSuitableLabel(headLabel,bufferedImage,30,30);
+        setSuitableLabel(headLabel,bufferedImage,100,100);
 
         this.playerTyp = new JComboBox<>();
         this.playerTyp.addItem("Human");

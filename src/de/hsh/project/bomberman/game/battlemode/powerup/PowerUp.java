@@ -72,5 +72,9 @@ public abstract class PowerUp extends Tile {
         return false;
     }
 
+    public int score() {
+        return 200;
+    }
+
     public void affect(Player player) {}; // TODO: make abstract
 }

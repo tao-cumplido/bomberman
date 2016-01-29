@@ -10,6 +10,9 @@ import de.hsh.project.bomberman.game.battlemode.player.AIPlayer;
 import de.hsh.project.bomberman.game.battlemode.player.HumanPlayer;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 import de.hsh.project.bomberman.game.GameState;
+import de.hsh.project.bomberman.game.highscore.EnterNameState;
+import de.hsh.project.bomberman.game.highscore.HighScore;
+import de.hsh.project.bomberman.game.menu.TitleState;
 import de.hsh.project.bomberman.game.settings.Settings;
 import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
@@ -35,29 +38,33 @@ public class BattleState extends GameState implements Runnable {
 
     private TimeDisplay timeDisplay;
 
+    private boolean timeIsUp = false;
+
+    private boolean gameIsRunning = true;
+
     public BattleState() {
-        Map<SettingsTyp, Integer> p1Keys = new HashMap<>();
-        p1Keys.put(SettingsTyp.DIRECTION_LEFT, KeyEvent.VK_LEFT);
-        p1Keys.put(SettingsTyp.DIRECTION_RIGHT, KeyEvent.VK_RIGHT);
-        p1Keys.put(SettingsTyp.DIRECTION_UP, KeyEvent.VK_UP);
-        p1Keys.put(SettingsTyp.DIRECTION_DOWN, KeyEvent.VK_DOWN);
-        p1Keys.put(SettingsTyp.SETTINGS_BOMB, KeyEvent.VK_SPACE);
-        p1Keys.put(SettingsTyp.SETTING_REMOTECONTROL, KeyEvent.VK_M);
-        player[0] = new HumanPlayer(0, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), p1Keys);
-        //player[0] = new AIPlayer(0, 0);
+        Map<SettingsTyp, Integer> settings = Settings.getBasicSetting();
 
-        Map<SettingsTyp, Integer> p2Keys = new HashMap<>();
-        p2Keys.put(SettingsTyp.DIRECTION_LEFT, KeyEvent.VK_A);
-        p2Keys.put(SettingsTyp.DIRECTION_RIGHT, KeyEvent.VK_D);
-        p2Keys.put(SettingsTyp.DIRECTION_UP, KeyEvent.VK_W);
-        p2Keys.put(SettingsTyp.DIRECTION_DOWN, KeyEvent.VK_S);
-        p2Keys.put(SettingsTyp.SETTINGS_BOMB, KeyEvent.VK_TAB);
-        p2Keys.put(SettingsTyp.SETTING_REMOTECONTROL, KeyEvent.VK_Q);
-        //player[1] = new HumanPlayer(1, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), p2Keys);
-        player[1] = new AIPlayer(1, 1);
-
-        player[2] = new AIPlayer(2, 1);
-        player[3] = new AIPlayer(3, 1);
+        if (settings.get(SettingsTyp.PLAYER1) == 0) {
+            player[0] = new HumanPlayer(0, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), Settings.getPlayer1());
+        } else {
+            player[0] = new AIPlayer(0, settings.get(SettingsTyp.LEVEL));
+        }
+        if (settings.get(SettingsTyp.PLAYER2) == 0) {
+            player[1] = new HumanPlayer(1, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), Settings.getPlayer2());
+        } else {
+            player[1] = new AIPlayer(1, settings.get(SettingsTyp.LEVEL));
+        }
+        if (settings.get(SettingsTyp.PLAYER3) == 0) {
+            player[2] = new HumanPlayer(2, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), Settings.getPlayer3());
+        } else {
+            player[2] = new AIPlayer(2, settings.get(SettingsTyp.LEVEL));
+        }
+        if (settings.get(SettingsTyp.PLAYER4) == 0) {
+            player[3] = new HumanPlayer(3, getInputMap(WHEN_IN_FOCUSED_WINDOW), getActionMap(), Settings.getPlayer4());
+        } else {
+            player[3] = new AIPlayer(3, settings.get(SettingsTyp.LEVEL));
+        }
 
         this.board = new BoardOne(player);
 
@@ -65,7 +72,7 @@ public class BattleState extends GameState implements Runnable {
             lifeDisplays[i] = new LifeDisplay(player[i]);
         }
 
-        timeDisplay = new TimeDisplay(Settings.getBasicSetting().get(SettingsTyp.TIME));
+        timeDisplay = new TimeDisplay(settings.get(SettingsTyp.TIME));
 
         new Thread(this).start();
     }
@@ -74,10 +81,10 @@ public class BattleState extends GameState implements Runnable {
     public void run() {
         long start, elapsed, wait;
 
-        while (true) {
+        while (gameIsRunning) {
             start = System.nanoTime();
 
-            update();
+            update(); if (!gameIsRunning) return;
             draw();
             render();
 
@@ -95,6 +102,32 @@ public class BattleState extends GameState implements Runnable {
 
     private void update() {
         board.update();
+
+        if (timeDisplay.timeIsUp() && !timeIsUp) {
+            timeIsUp = true;
+            for (int i = 0; i < 4; i++) {
+                if (player[i].getLifes() > 1) player[i].setLifes(1);
+            }
+        }
+
+        if (activePlayers() == 1) {
+            Player p = null;
+
+            for (int i = 0; i < 4; i++) {
+                if (player[i].isAlive()) {
+                    p = player[i];
+                    break;
+                }
+            }
+
+            gameIsRunning = false;
+
+            if (p.isHuman()) {
+                Game.switchState(new EnterNameState(new HighScore(p.score() + timeDisplay.remainingSeconds() * 100)));
+            } else {
+                Game.switchState(new TitleState());
+            }
+        }
     }
 
     private void draw() {
@@ -115,6 +148,16 @@ public class BattleState extends GameState implements Runnable {
 
     private void render() {
         getGraphics().drawImage(dynamicBuffer, 0, 0, this);
+    }
+
+    private int activePlayers() {
+        int n = 0;
+
+        for (int i = 0; i < 4; i++) {
+            if (player[i].isAlive()) n++;
+        }
+
+        return n;
     }
 
 }

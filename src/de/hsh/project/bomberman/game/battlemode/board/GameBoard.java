@@ -27,7 +27,7 @@ public abstract class GameBoard {
     private BufferedImage staticBuffer;
     private BufferedImage dynamicBuffer;
 
-    private BufferedImage iceBlock = Sprite.loadSpriteSheet("/res/images/iceblock.png");
+    //private BufferedImage iceBlock = Sprite.loadSpriteSheet("/res/images/iceblock.png");
 
     private Tile[] grid;
     private Tile[] floor;

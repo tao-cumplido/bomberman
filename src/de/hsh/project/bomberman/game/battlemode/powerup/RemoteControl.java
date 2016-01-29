@@ -18,6 +18,11 @@ public class RemoteControl extends PowerUp {
     }
 
     @Override
+    public int score() {
+        return 500;
+    }
+
+    @Override
     public void affect(Player player) {
         player.setBombTrigger(Trigger.REMOTE);
     }

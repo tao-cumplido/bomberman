@@ -45,7 +45,7 @@ public class HelpMenuState extends MenuState{
         Border lineBorder = BorderFactory.createLineBorder(Color.GRAY,2);
         rules.setBorder(new TitledBorder(lineBorder, "RULES"));
         powerup.setBorder(new TitledBorder(lineBorder,"POWERUP"));
-        points.setBorder(new TitledBorder(lineBorder,"POINTS"));
+        points.setBorder(new TitledBorder(lineBorder,"SCORING"));
         rules.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.20)));
         powerup.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.20)));
         points.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.20)));
@@ -89,10 +89,10 @@ public class HelpMenuState extends MenuState{
         pointText.setWrapStyleWord(true);
         pointText.setOpaque(false);
         pointText.setForeground(Color.black);
-        pointText.setText("100 points for collecting Power-Ups: Bombe+1, Feuer+1, Speed+1\n" +
-                "200 points for collecting Power-Ups: Kick, Remote Control\n" +
-                "500 points for each remaining life\n" +
-                "1000 points for killing other player");
+        pointText.setText("200 points for each regular Power-up\n" +
+                "500 points for each Remote Control\n" +
+                "1000 points for each remaining life\n" +
+                "Plus a bonus from the remaining time");
         pointText.setFont(new Font("Arial",1,20));
         pointText.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.5), (int) (getPreferredSize().getHeight()*0.15)));
         points.add(pointText);

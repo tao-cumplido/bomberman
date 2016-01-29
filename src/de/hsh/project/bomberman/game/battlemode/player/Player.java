@@ -195,6 +195,10 @@ public abstract class Player extends Tile {
         return lifes;
     }
 
+    public void setLifes(int lifes) {
+        this.lifes = lifes;
+    }
+
     public boolean isAlive() {
         return alive;
     }
@@ -206,6 +210,20 @@ public abstract class Player extends Tile {
     private void kill() {
         alive = false;
         currentBoard.sprayPowerUps(powerUps);
+    }
+
+    public int score() {
+        int score = getLifes() * 1000;
+
+        for (PowerUp p : powerUps) {
+            score += p.score();
+        }
+
+        return score;
+    }
+
+    public boolean isHuman() {
+        return false;
     }
 
     @Override

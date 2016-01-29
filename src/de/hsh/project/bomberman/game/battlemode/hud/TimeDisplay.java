@@ -50,6 +50,10 @@ public class TimeDisplay {
         return buffer;
     }
 
+    public int remainingSeconds() {
+        return counter / 30;
+    }
+
     public boolean timeIsUp() {
         return counter < 0;
     }

@@ -1,6 +1,10 @@
 package de.hsh.project.bomberman.game.highscore;
 
+import de.hsh.project.bomberman.game.settings.Settings;
+import de.hsh.project.bomberman.game.settings.SettingsTyp;
+
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Created by taocu on 13.11.2015.
@@ -71,6 +75,17 @@ public class HighScore implements Serializable {
         this.lives = lives;
         this.time = time;
         this.board = board;
+    }
+
+    public HighScore(int score) {
+        this.score = score;
+
+        Map<SettingsTyp, Integer> settings = Settings.getBasicSetting();
+
+        this.level = settings.get(SettingsTyp.LEVEL).toString();
+        this.lives = settings.get(SettingsTyp.LIFE);
+        this.time =  settings.get(SettingsTyp.TIME);
+        this.board = settings.get(SettingsTyp.BOARD).toString();
     }
 
 }
