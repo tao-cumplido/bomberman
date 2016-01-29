@@ -29,7 +29,7 @@ public class FireBlast extends Blast {
 
     @Override
     public int onCollision(Player player) {
-        if (super.onCollision(player) > 4 * GameBoard.TILE_SIZE) {
+        if (super.onCollision(player) > 8 * GameBoard.TILE_SIZE) {
             player.burn();
             return 1;
         }

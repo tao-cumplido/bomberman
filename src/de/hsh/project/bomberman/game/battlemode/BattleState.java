@@ -114,8 +114,7 @@ public class BattleState extends GameState implements Runnable {
     }
 
     private void render() {
-        Graphics g = getGraphics();
-        g.drawImage(dynamicBuffer, 0, 0, this);
+        getGraphics().drawImage(dynamicBuffer, 0, 0, this);
     }
 
 }

@@ -1,8 +1,8 @@
 package de.hsh.project.bomberman.game.settings;
 
-import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.menu.FontImage;
+import de.hsh.project.bomberman.game.menu.FontState;
 import de.hsh.project.bomberman.game.menu.MenuState;
-import de.hsh.project.bomberman.game.menu.TitleState;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,7 +17,8 @@ import java.util.Map;
 public class SettingsMenuState extends MenuState {
 
     private JPanel tll;
-    private JPanel s_player;
+
+    private BufferedImage background;
 
     private SettingsPlayer player1;
     private SettingsPlayer player2;
@@ -34,44 +35,83 @@ public class SettingsMenuState extends MenuState {
     private JPanel levelPanel;
 
 
-    private JButton reToGame;
+    private FontImage reToGame;
 
 
     public SettingsMenuState() {
         super();
 
+        if (background == null) {
+            try {
+                background = ImageIO.read(getClass().getResource("/res/images/coverempty.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         tll = new JPanel();
-        s_player = new JPanel();
-
 
         buildTll();
         buildPlayer();
 
-        reToGame = new JButton("Start new Game");
-        setReToGame(reToGame);
+        reToGame = new FontImage("BACK",3,true);
+        setBackButton(reToGame);
 
 
-        this.setLayout(new BorderLayout());
-        this.add(tll, BorderLayout.NORTH);
-        this.add(s_player, BorderLayout.CENTER);
-        this.add(reToGame, BorderLayout.SOUTH);
+        this.add(tll);
+        this.add(reToGame);
+        this.add(player1);
+        this.add(player2);
+        this.add(player3);
+        this.add(player4);
+        this.setLayout(null);
+        tll.setBounds((int)(getPreferredSize().getWidth()*0.1),(int)(getPreferredSize().getHeight()*0.05),
+                (int)(getPreferredSize().getWidth()*0.8),(int)(getPreferredSize().getHeight()*0.1));
+        reToGame.setBounds((int) (getPreferredSize().getWidth()*0.07), (int) (getPreferredSize().getHeight()*0.95),4*8*3,3*8);
+        player1.setBounds((int)(getPreferredSize().getWidth()/4*0.125),(int)(getPreferredSize().getHeight()*0.15),
+                (int)(getPreferredSize().getWidth()/4*0.75),(int)(getPreferredSize().getHeight()*0.75));
+        player2.setBounds((int)(getPreferredSize().getWidth()/4*1.125),(int)(getPreferredSize().getHeight()*0.15),
+                (int)(getPreferredSize().getWidth()/4*0.75),(int)(getPreferredSize().getHeight()*0.75));
+        player3.setBounds((int)(getPreferredSize().getWidth()/4*2.125),(int)(getPreferredSize().getHeight()*0.15),
+                (int)(getPreferredSize().getWidth()/4*0.75),(int)(getPreferredSize().getHeight()*0.75));
+        player4.setBounds((int)(getPreferredSize().getWidth()/4*3.125),(int)(getPreferredSize().getHeight()*0.15),
+                (int)(getPreferredSize().getWidth()/4*0.75),(int)(getPreferredSize().getHeight()*0.75));
+
     }
 
-    private void setReToGame(JButton reToGame) {
-        this.reToGame = reToGame;
-        this.reToGame.addActionListener((event) -> {
-            if (player1.getPlayerTyp().getSelectedItem().equals("Computer") && player2.getPlayerTyp().getSelectedItem().equals("Computer") &&
-                    player3.getPlayerTyp().getSelectedItem().equals("Computer") && player4.getPlayerTyp().getSelectedItem().equals("Computer")) {
-                JOptionPane.showMessageDialog(null, "At least one player", "Warning", JOptionPane.WARNING_MESSAGE);
-            } else {
-                int i = JOptionPane.showConfirmDialog(null, "Do you want to save the settings?", "Save", JOptionPane.YES_NO_OPTION);
-                if (JOptionPane.YES_OPTION == i){
-                    Settings.write();
-                }
 
-                Game.switchState(new TitleState());
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (background != null) {
+            g.drawImage(background, 0, 0, this);
+        }
+    }
+
+    @Override
+    protected void setPanelPosition(){
+        this.reToGame.setPanelPoint();
+    }
+
+    @Override
+    protected boolean setBackCondition(){
+
+        if (player1.getPlayerTyp().getSelectedItem().equals("Computer") && player2.getPlayerTyp().getSelectedItem().equals("Computer") &&
+                player3.getPlayerTyp().getSelectedItem().equals("Computer") && player4.getPlayerTyp().getSelectedItem().equals("Computer")) {
+            JOptionPane.showMessageDialog(null, "At least one player!", "Warning", JOptionPane.WARNING_MESSAGE);
+            return false;
+        } else if(((Settings.getBasicSetting().get(SettingsTyp.PLAYER1)==0)&&Settings.getPlayer1().containsValue(-1))||
+                ((Settings.getBasicSetting().get(SettingsTyp.PLAYER2)==0)&&Settings.getPlayer2().containsValue(-1))||
+                ((Settings.getBasicSetting().get(SettingsTyp.PLAYER3)==0)&&Settings.getPlayer3().containsValue(-1))||(
+                (Settings.getBasicSetting().get(SettingsTyp.PLAYER4)==0)&&Settings.getPlayer4().containsValue(-1))){
+            JOptionPane.showMessageDialog(null, "Please fill in the complete form!", "Warning", JOptionPane.WARNING_MESSAGE);
+            return false;
+        } else{
+            int i = JOptionPane.showConfirmDialog(null, "Do you want to save the settings?", "Save", JOptionPane.YES_NO_OPTION);
+            if (JOptionPane.YES_OPTION == i){
+                Settings.write();
             }
-        });
+        }
+        return true;
     }
 
 
@@ -83,20 +123,22 @@ public class SettingsMenuState extends MenuState {
         setLevel();
 
         tll.setLayout(new FlowLayout());
-        tll.add(new JLabel("Time: "));
+        tll.add(new FontImage("Time:",3,false));
         tll.add(time);
-        tll.add(new JLabel("Life: "));
+        tll.add(new FontImage("life:",3,false));
         tll.add(life);
-        tll.add(new JLabel("Board: "));
+        tll.add(new FontImage("Board:",3,false));
         tll.add(board);
-        tll.add(new JLabel("Difficulty: "));
+        tll.add(new FontImage("Difficulty:",3,false));
         tll.add(levelPanel);
+
+        tll.setOpaque(false);
     }
 
 
     private void buildPlayer() {
         try {
-            playerHead = ImageIO.read(getClass().getResource("/res/images/settings/4Player_Head.png"));
+            playerHead = ImageIO.read(getClass().getResourceAsStream("/res/images/settings/4Player_Head.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,18 +152,16 @@ public class SettingsMenuState extends MenuState {
         player4 = new SettingsPlayer(SettingsTyp.PLAYER4, playerHead.getSubimage(51, 0, 17, 18), 4, Settings.getPlayer4());
         Settings.setPlayer4(player4.getPlayerMap());
 
-        s_player.setLayout(new GridLayout(1, 4));
-        s_player.add(player1);
-        s_player.add(player2);
-        s_player.add(player3);
-        s_player.add(player4);
     }
 
 
     private void setLevel() {
         levelPanel = new JPanel();
+        levelPanel.setOpaque(false);
         JRadioButton hard = new JRadioButton("HARD");
+        hard.setOpaque(false);
         JRadioButton easy = new JRadioButton("EASY");
+        easy.setOpaque(false);
         ButtonGroup level = new ButtonGroup();
         level.add(hard);
         level.add(easy);

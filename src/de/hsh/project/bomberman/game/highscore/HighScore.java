@@ -12,6 +12,7 @@ public class HighScore implements Serializable {
     private int lives;
     private double time;
     private String level;
+    private String board;
 
     public int getScore() {
         return score;
@@ -43,12 +44,33 @@ public class HighScore implements Serializable {
         return name;
     }
 
-    public HighScore(String name, int score, String level, int lives, double time) {
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
+    }
+
+    public HighScore(String name, int score, String level, int lives, double time,String board) {
         this.score = score;
         this.name = name;
         this.level = level;
         this.lives = lives;
         this.time = time;
+        this.board = board;
     }
 
 }

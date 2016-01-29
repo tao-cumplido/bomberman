@@ -19,13 +19,21 @@ public class Settings {
     private static Map<SettingsTyp, Integer> player3=new HashMap<>();
     private static Map<SettingsTyp, Integer> player4=new HashMap<>();
     private static String tempText="";
+    private static String text;
     private static boolean temp = false;
 
     private static void read() {
+        String path = System.getProperty("user.dir");
+        File file = new File(path + "/settings.txt");
+        BufferedReader bufferedReader;
 
         try {
-            InputStream read = Settings.class.getResourceAsStream("/settings.txt");
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(read));
+            if(file.exists()){
+                bufferedReader = new BufferedReader(new FileReader(file));
+            }else{
+                InputStream read = Settings.class.getResourceAsStream("/settings.txt");
+                bufferedReader = new BufferedReader(new InputStreamReader(read));
+            }
             String lineTxt;
             String[] mark;
             while ((lineTxt = bufferedReader.readLine())!=null) {
@@ -68,7 +76,6 @@ public class Settings {
                 }
             }
             bufferedReader.close();
-            read.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,86 +104,97 @@ public class Settings {
     }
 
 
-    private static void writePlayerSetting(Map<SettingsTyp, Integer> map, String text) {
-        if (text.contains("keyup")) {
-            tempText = text + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_UP).intValue());
-        } else if (text.contains("keydown")) {
-            tempText = text + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_DOWN).intValue());
-        } else if (text.contains("keyleft")) {
-            tempText = text + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_LEFT).intValue());
-        } else if (text.contains("keyright")) {
-            tempText = text + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_RIGHT).intValue());
-        } else if (text.contains("keybomb")) {
-            tempText = text + "=" + String.valueOf(map.get(SettingsTyp.SETTINGS_BOMB).intValue());
-        } else if (text.contains("keycontrol")) {
-            tempText = text + "=" + String.valueOf(map.get(SettingsTyp.SETTING_REMOTECONTROL).intValue());
+    private static void writePlayerSetting(Map<SettingsTyp, Integer> map, String s) {
+        if (s.contains("keyup")) {
+            text = s + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_UP).intValue());
+        } else if (s.contains("keydown")) {
+            text = s + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_DOWN).intValue());
+        } else if (s.contains("keyleft")) {
+            text = s + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_LEFT).intValue());
+        } else if (s.contains("keyright")) {
+            text = s + "=" + String.valueOf(map.get(SettingsTyp.DIRECTION_RIGHT).intValue());
+        } else if (s.contains("keybomb")) {
+            text = s+ "=" + String.valueOf(map.get(SettingsTyp.SETTINGS_BOMB).intValue());
+        } else if (s.contains("keycontrol")) {
+            text = s + "=" + String.valueOf(map.get(SettingsTyp.SETTING_REMOTECONTROL).intValue());
         }
 
     }
 
     protected static void write() {
         try {
-            FileOutputStream f = new FileOutputStream(Settings.class.getResource("/settings.txt").getPath());
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(f));
+            String path = System.getProperty("user.dir");
+            File file = new File(path + "/settings.txt");
+          //  FileOutputStream f = new FileOutputStream(Settings.class.getResource("/settings.txt").getPath());
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
             String[] mark = tempText.trim().split("=");
             for (int i = 0; i < mark.length; i++) {
                 if (mark[i].contains("1")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER1).intValue());
-                    bufferedWriter.write(tempText);
-                    bufferedWriter.newLine();
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER1).intValue());
+                   bufferedWriter.write(text);
+                   bufferedWriter.newLine();
+                    //text ="\n";
                     for (int j = i + 1; j <= i + 6; j++) {
                         writePlayerSetting(player1, mark[j]);
-                        bufferedWriter.write(tempText);
+                        bufferedWriter.write(text);
                         bufferedWriter.newLine();
+                        //text +="\n";
                     }
                     i = i + 6;
                 } else if (mark[i].contains("2")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER2).intValue());
-                    bufferedWriter.write(tempText);
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER2).intValue());
+                    bufferedWriter.write(text);
                     bufferedWriter.newLine();
+                    //text +="\n";
                     for (int j = i + 1; j <= i + 6; j++) {
                         writePlayerSetting(player2, mark[j]);
-                        bufferedWriter.write(tempText);
+                        bufferedWriter.write(text);
                         bufferedWriter.newLine();
+                        //text +="\n";
                     }
                     i = i + 6;
                 } else if (mark[i].contains("3")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER3).intValue());
-                    bufferedWriter.write(tempText);
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER3).intValue());
+                    bufferedWriter.write(text);
                     bufferedWriter.newLine();
+                    //text +="\n";
                     for (int j = i + 1; j <= i + 6; j++) {
                         writePlayerSetting(player3, mark[j]);
-                        bufferedWriter.write(tempText);
+                        bufferedWriter.write(text);
                         bufferedWriter.newLine();
+                        //text +="\n";
                     }
                     i = i + 6;
                 } else if (mark[i].contains("4")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER4).intValue());
-                    bufferedWriter.write(tempText);
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.PLAYER4).intValue());
+                    bufferedWriter.write(text);
                     bufferedWriter.newLine();
+                    //text +="\n";
                     for (int j = i + 1; j <= i + 6; j++) {
                         writePlayerSetting(player4, mark[j]);
-                        bufferedWriter.write(tempText);
+                        bufferedWriter.write(text);
                         bufferedWriter.newLine();
+                       // text +="\n";
                     }
                     i = i + 6;
                 } else if (mark[i].equals("life")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.LIFE).intValue());
-                    bufferedWriter.write(tempText);
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.LIFE).intValue());
+                    bufferedWriter.write(text);
                 } else if (mark[i].equals("time")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.TIME).intValue());
-                    bufferedWriter.write(tempText);
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.TIME).intValue());
+                    bufferedWriter.write(text);
                 } else if (mark[i].equals("level")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.LEVEL).intValue());
-                    bufferedWriter.write(tempText);
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.LEVEL).intValue());
+                    bufferedWriter.write(text);
                 } else if (mark[i].equals("board")) {
-                    tempText = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.BOARD).intValue());
-                    bufferedWriter.write(tempText);
+                    text = mark[i] + "=" + String.valueOf(basicSetting.get(SettingsTyp.BOARD).intValue());
+                    bufferedWriter.write(text);
                 }
                 bufferedWriter.newLine();
+               // text +="\n";
             }
+           // bufferedWriter.write(text);
             bufferedWriter.close();
-            f.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
