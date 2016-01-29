@@ -46,6 +46,9 @@ public abstract class KeyControl extends KeyAdapter {
                 case KeyEvent.VK_CAPS_LOCK:
                     JOptionPane.showMessageDialog(null, "Please do not use this button!", "Warning", JOptionPane.WARNING_MESSAGE);
                     break;
+                case KeyEvent.VK_CONTROL:
+                    JOptionPane.showMessageDialog(null, "Please do not use this button!", "Warning", JOptionPane.WARNING_MESSAGE);
+                    break;
                 default:
                     setPlayerValue(code);
                     jTextField.setText(text);

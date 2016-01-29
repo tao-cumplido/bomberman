@@ -2,7 +2,6 @@ package de.hsh.project.bomberman.game.settings;
 
 import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.menu.FontImage;
-import de.hsh.project.bomberman.game.menu.FontState;
 import de.hsh.project.bomberman.game.menu.MenuState;
 
 import javax.imageio.ImageIO;
@@ -44,7 +43,7 @@ public class SettingsMenuState extends MenuState {
 
         if (background == null) {
             try {
-                background = ImageIO.read(getClass().getResource("/res/images/coverempty.png"));
+                background = ImageIO.read(getClass().getResource("/res/images/0cover.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -54,7 +53,7 @@ public class SettingsMenuState extends MenuState {
         buildTll();
         buildPlayer();
 
-        reToGame = new FontImage("BACK",3,true);
+        reToGame = new FontImage("BACK",4,true);
         setBackButton(reToGame);
 
 
@@ -67,7 +66,7 @@ public class SettingsMenuState extends MenuState {
         this.setLayout(null);
         tll.setBounds((int)(getPreferredSize().getWidth()*0.1),(int)(getPreferredSize().getHeight()*0.05),
                 (int)(getPreferredSize().getWidth()*0.8),(int)(getPreferredSize().getHeight()*0.1));
-        reToGame.setBounds((int) (getPreferredSize().getWidth()*0.07), (int) (getPreferredSize().getHeight()*0.95),4*8*3,3*8);
+        reToGame.setBounds((int) (getPreferredSize().getWidth()*0.07), (int) (getPreferredSize().getHeight()*0.95),4*8*4,4*8);
         player1.setBounds((int)(getPreferredSize().getWidth()/4*0.125),(int)(getPreferredSize().getHeight()*0.15),
                 (int)(getPreferredSize().getWidth()/4*0.75),(int)(getPreferredSize().getHeight()*0.75));
         player2.setBounds((int)(getPreferredSize().getWidth()/4*1.125),(int)(getPreferredSize().getHeight()*0.15),
@@ -186,8 +185,8 @@ public class SettingsMenuState extends MenuState {
 
     private void setBoard() {
         board = new JComboBox<>();
-        board.addItem("BoardOne");
-        board.addItem("BoardTwo");
+        board.addItem("One");
+        board.addItem("Two");
         board.setSelectedIndex(Settings.getBasicSetting().get(SettingsTyp.BOARD));
         board.addItemListener(e -> {
             Map<SettingsTyp, Integer> map = Settings.getBasicSetting();

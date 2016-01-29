@@ -12,6 +12,7 @@ import de.hsh.project.bomberman.game.battlemode.player.Player;
 import de.hsh.project.bomberman.game.GameState;
 import de.hsh.project.bomberman.game.highscore.EnterNameState;
 import de.hsh.project.bomberman.game.highscore.HighScore;
+import de.hsh.project.bomberman.game.highscore.HighScoreMenuState;
 import de.hsh.project.bomberman.game.menu.TitleState;
 import de.hsh.project.bomberman.game.settings.Settings;
 import de.hsh.project.bomberman.game.settings.SettingsTyp;
@@ -123,9 +124,11 @@ public class BattleState extends GameState implements Runnable {
             gameIsRunning = false;
 
             if (p.isHuman()) {
-                Game.switchState(new EnterNameState(new HighScore(p.score() + timeDisplay.remainingSeconds() * 100)));
+                new EnterNameState(new HighScore(p.score() + timeDisplay.remainingSeconds() * 100));
+                Game.switchState(new HighScoreMenuState());
             } else {
-                Game.switchState(new TitleState());
+                Game.switchState(new HighScoreMenuState());
+               // Game.switchState(new TitleState());
             }
         }
     }
