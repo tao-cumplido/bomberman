@@ -1,6 +1,5 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
-import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 import de.hsh.project.bomberman.game.battlemode.powerup.*;
 
@@ -8,7 +7,10 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.TreeMap;
 
 /**
  * Created by taocu on 26.10.2015.
@@ -26,8 +28,6 @@ public abstract class GameBoard {
 
     private BufferedImage staticBuffer;
     private BufferedImage dynamicBuffer;
-
-    //private BufferedImage iceBlock = Sprite.loadSpriteSheet("/res/images/iceblock.png");
 
     private Tile[] grid;
     private Tile[] floor;
@@ -185,9 +185,6 @@ public abstract class GameBoard {
 
                 for (Player p : playersToDraw.values()) {
                     g.drawImage(p.getFrame(), p.getLeft(), p.getTop() - p.getVOffset(), null);
-                    /*if(p.isFrozen()) {
-                        g.drawImage(iceBlock, p.getLeft(), p.getTop() - p.getVOffset(), null);
-                    }*/
                 }
             }
         }

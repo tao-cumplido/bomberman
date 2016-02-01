@@ -11,7 +11,7 @@ public class HighScoreFile {
 
     private static ObjectOutputStream outputStream = null;
     private static ObjectInputStream inputStream = null;
-    private static ArrayList<HighScore> scores = new ArrayList<HighScore>();
+    private static ArrayList<HighScore> scores = new ArrayList<>();
     private static final String FILE_SCORE = "scores.dat";
 
 

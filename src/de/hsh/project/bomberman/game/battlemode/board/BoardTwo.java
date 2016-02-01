@@ -9,5 +9,11 @@ public class BoardTwo extends GameBoard {
 
     public BoardTwo(Player[] player) {
         super(player);
+        player[0].setPosition(GRID_WIDTH / 2 - 1, GRID_HEIGHT / 2 - 1);
+        player[1].setPosition(GRID_WIDTH / 2 + 1, GRID_HEIGHT / 2 - 1);
+        player[2].setPosition(GRID_WIDTH / 2 - 1, GRID_HEIGHT / 2 + 1);
+        player[3].setPosition(GRID_WIDTH / 2 + 1, GRID_HEIGHT / 2 + 1);
+        fillRandomSoftBlocks();
     }
+
 }

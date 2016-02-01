@@ -2,7 +2,6 @@ package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
-import de.hsh.project.bomberman.game.battlemode.board.HardBlock;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.bomb.Bomb;
 import de.hsh.project.bomberman.game.battlemode.bomb.FireBomb;
@@ -11,7 +10,6 @@ import de.hsh.project.bomberman.game.battlemode.bomb.Trigger;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.powerup.PowerUp;
-import de.hsh.project.bomberman.game.battlemode.powerup.Surprise;
 import de.hsh.project.bomberman.game.settings.Settings;
 import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
@@ -292,19 +290,21 @@ public abstract class Player extends Tile {
 
     @Override
     public void freeze() {
-        int x = getX();
-        int y = getY();
+        if (invincible == 0 && lifes > 0) {
+            int x = getX();
+            int y = getY();
 
-        setX(x);
-        setY(y);
+            setX(x);
+            setY(y);
 
-        currentBoard.remove(x, y);
-        currentBoard.put(new IceBlock(this), getX(), getY());
+            currentBoard.remove(x, y);
+            currentBoard.put(new IceBlock(this), getX(), getY());
 
-        frozen = 479;
-        //frozenFrame = sprite.getCurrentFrame();
-        setActive(false);
-        setSolid(true);
+            frozen = 479;
+            //frozenFrame = sprite.getCurrentFrame();
+            setActive(false);
+            setSolid(true);
+        }
     }
 
     protected void dropBomb() {

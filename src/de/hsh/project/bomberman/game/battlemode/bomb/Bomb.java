@@ -5,9 +5,6 @@ import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -61,16 +58,6 @@ public abstract class Bomb extends Tile {
     public void detonate() {
         currentBoard.remove(getX(), getY());
         queue.remove(this);
-    }
-
-    public void playSound(AudioInputStream audioStream) {
-        try {
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     protected Tile[] extend(Function<Integer, Blast> blastConstructor) {

@@ -2,7 +2,6 @@ package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.Block;
-import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 
 import java.awt.image.BufferedImage;

@@ -1,7 +1,5 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
-import java.awt.image.BufferedImage;
-
 /**
  * Created by taocu on 11.12.2015.
  */

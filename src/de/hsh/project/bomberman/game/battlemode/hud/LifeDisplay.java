@@ -4,7 +4,6 @@ import de.hsh.project.bomberman.game.battlemode.BattleState;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
-import de.hsh.project.bomberman.game.battlemode.powerup.SpeedUp;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
