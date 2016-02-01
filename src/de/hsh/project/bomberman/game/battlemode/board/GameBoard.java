@@ -29,8 +29,6 @@ public abstract class GameBoard {
     private BufferedImage staticBuffer;
     private BufferedImage dynamicBuffer;
 
-    //private BufferedImage iceBlock = Sprite.loadSpriteSheet("/res/images/iceblock.png");
-
     private Tile[] grid;
     private Tile[] floor;
     private int frozenFloorCounter;
@@ -187,9 +185,6 @@ public abstract class GameBoard {
 
                 for (Player p : playersToDraw.values()) {
                     g.drawImage(p.getFrame(), p.getLeft(), p.getTop() - p.getVOffset(), null);
-                    /*if(p.isFrozen()) {
-                        g.drawImage(iceBlock, p.getLeft(), p.getTop() - p.getVOffset(), null);
-                    }*/
                 }
             }
         }

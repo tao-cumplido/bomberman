@@ -4,6 +4,7 @@ import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.GameState;
 import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.BoardOne;
+import de.hsh.project.bomberman.game.battlemode.board.BoardTwo;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.hud.LifeDisplay;
 import de.hsh.project.bomberman.game.battlemode.hud.TimeDisplay;
@@ -65,7 +66,7 @@ public class BattleState extends GameState implements Runnable {
             player[3] = new AIPlayer(3, settings.get(SettingsTyp.LEVEL));
         }
 
-        this.board = new BoardOne(player);
+        this.board = settings.get(SettingsTyp.BOARD) == 0 ? new BoardOne(player) : new BoardTwo(player);
 
         for (int i = 0; i < 4; i++) {
             lifeDisplays[i] = new LifeDisplay(player[i]);
@@ -91,7 +92,6 @@ public class BattleState extends GameState implements Runnable {
             wait = 1000 / Game.FPS - elapsed / 1000_000;
 
             try {
-                //if (wait < 0) System.out.println("Warning: loop too slow!");
                 Thread.sleep(wait < 0 ? 5 : wait);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -111,7 +111,7 @@ public class BattleState extends GameState implements Runnable {
 
         int ap = activePlayers();
 
-        if (ap == 1) {
+        if (ap == 1) { // definite winner
             Player p = null;
 
             for (int i = 0; i < 4; i++) {
@@ -127,12 +127,11 @@ public class BattleState extends GameState implements Runnable {
                 new EnterNameState(new HighScore(p.score() + timeDisplay.remainingSeconds() * 100));
                 Game.switchState(new HighScoreMenuState());
             } else {
-                Game.switchState(new HighScoreMenuState());
-               // Game.switchState(new TitleState());
+                Game.switchState(new TitleState());
             }
         }
 
-        if (ap == 0) {
+        if (ap == 0) { // draw
             Game.switchState(new TitleState());
         }
     }

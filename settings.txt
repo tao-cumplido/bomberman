@@ -33,4 +33,4 @@ p4_keycontrol=18
 time=2
 life=3
 level=1
-board=0
+board=1
