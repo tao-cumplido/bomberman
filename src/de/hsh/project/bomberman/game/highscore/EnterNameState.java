@@ -12,7 +12,7 @@ import javax.swing.*;
  */
 
 //  new EnterNameState((new HighScore(null,12,"easy",3,1.2,"one")));
-public class EnterNameState extends MenuState {
+public class EnterNameState  {
 
     public EnterNameState(HighScore highScore) {
         String name = JOptionPane.showInputDialog("Name: ");

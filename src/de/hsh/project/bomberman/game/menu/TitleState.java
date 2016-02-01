@@ -36,7 +36,7 @@ public class TitleState extends MenuState {
 
         if (cover == null) {
             try {
-                cover = ImageIO.read(getClass().getResource("/res/images/cover9.png"));
+                cover = ImageIO.read(getClass().getResource("/res/images/1cover.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

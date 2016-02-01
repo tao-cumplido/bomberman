@@ -46,15 +46,15 @@ public class HelpMenuState extends MenuState{
         rules.setBorder(new TitledBorder(lineBorder, "RULES"));
         powerup.setBorder(new TitledBorder(lineBorder,"POWERUP"));
         points.setBorder(new TitledBorder(lineBorder,"SCORING"));
-        rules.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.20)));
+        rules.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.15)));
         powerup.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.20)));
-        points.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.20)));
+        points.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.15)));
         powerup.setBounds((int) (getPreferredSize().getWidth()*0.1), (int) (getPreferredSize().getHeight()*0.2),
-                (int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.20));
+                (int) (getPreferredSize().getWidth()*0.8), (int) (getPreferredSize().getHeight()*0.2));
         rules.setBounds((int) (getPreferredSize().getWidth() * 0.1), (int) (getPreferredSize().getHeight() * 0.45),
-                (int) (getPreferredSize().getWidth() * 0.7), (int) (getPreferredSize().getHeight() * 0.20));
-        points.setBounds((int) (getPreferredSize().getWidth()*0.1), (int) (getPreferredSize().getHeight()*0.7),
-                (int) (getPreferredSize().getWidth()*0.6), (int) (getPreferredSize().getHeight()*0.2));
+                (int) (getPreferredSize().getWidth() * 0.7), (int) (getPreferredSize().getHeight() * 0.15));
+        points.setBounds((int) (getPreferredSize().getWidth()*0.1), (int) (getPreferredSize().getHeight()*0.65),
+                (int) (getPreferredSize().getWidth()*0.6), (int) (getPreferredSize().getHeight()*0.15));
 
         JTextArea ruleText = new JTextArea();
         //ruleText.setEnabled(false);
@@ -80,7 +80,7 @@ public class HelpMenuState extends MenuState{
                 "find remote controls which allow you to detonate your bombs when you want them to. " +
                 "Powerups marked with a question mark contain special abillities but no one knows what will happen.");
         powerupText.setFont(new Font("Arial",1,20));
-        powerupText.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.7), (int) (getPreferredSize().getHeight()*0.15)));
+        powerupText.setPreferredSize(new Dimension((int) (getPreferredSize().getWidth()*0.7), (int) (getPreferredSize().getHeight()*0.25)));
         powerup.add(powerupText);
 
         JTextArea pointText = new JTextArea();
