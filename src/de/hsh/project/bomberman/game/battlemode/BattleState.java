@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode;
 
 import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.GameState;
 import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.BoardOne;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
@@ -9,7 +10,6 @@ import de.hsh.project.bomberman.game.battlemode.hud.TimeDisplay;
 import de.hsh.project.bomberman.game.battlemode.player.AIPlayer;
 import de.hsh.project.bomberman.game.battlemode.player.HumanPlayer;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
-import de.hsh.project.bomberman.game.GameState;
 import de.hsh.project.bomberman.game.highscore.EnterNameState;
 import de.hsh.project.bomberman.game.highscore.HighScore;
 import de.hsh.project.bomberman.game.highscore.HighScoreMenuState;
@@ -18,9 +18,7 @@ import de.hsh.project.bomberman.game.settings.Settings;
 import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

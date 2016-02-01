@@ -1,12 +1,9 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
 
-import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * Created by taocu on 26.10.2015.

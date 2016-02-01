@@ -1,10 +1,6 @@
 package de.hsh.project.bomberman.game.highscore;
 
 
-import de.hsh.project.bomberman.game.Game;
-import de.hsh.project.bomberman.game.GameState;
-import de.hsh.project.bomberman.game.menu.MenuState;
-
 import javax.swing.*;
 
 /**

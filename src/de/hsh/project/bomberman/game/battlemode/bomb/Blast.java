@@ -2,7 +2,6 @@ package de.hsh.project.bomberman.game.battlemode.bomb;
 
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
-import de.hsh.project.bomberman.game.battlemode.player.Player;
 
 /**
  * Created by taocu on 26.10.2015.

@@ -1,7 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
-import de.hsh.project.bomberman.game.battlemode.bomb.Trigger;
 import de.hsh.project.bomberman.game.settings.SettingsTyp;
 
 import javax.swing.*;
