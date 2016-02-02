@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.powerup;
 
 import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
@@ -35,6 +36,7 @@ public abstract class PowerUp extends Tile {
         if (super.onCollision(player) > 0) {
             removeFromBoard();
             player.addPowerUp(this);
+            playSound(Resource.loadAudio("powerup.wav"));
             return 1;
         }
 

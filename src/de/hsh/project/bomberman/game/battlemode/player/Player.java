@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.player;
 
 import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.bomb.Bomb;
@@ -201,10 +202,6 @@ public abstract class Player extends Tile {
         return alive;
     }
 
-    public boolean isFrozen() {
-        return frozen > 0;
-    }
-
     private void kill() {
         alive = false;
         currentBoard.sprayPowerUps(powerUps);
@@ -279,6 +276,7 @@ public abstract class Player extends Tile {
 
             if (lifes == 0) {
                 facingDirection = Direction.NONE;
+                playSound(Resource.loadAudio("death.wav"));
                 sprite.playAnimation(Animation.DEATH, 2, this::kill);
                 setActive(false);
                 //alive = false;
@@ -355,27 +353,27 @@ public abstract class Player extends Tile {
 
     public void maximizeSpeed() {
         speed = MAX_SPEED + 4;
-        resetCounter = 15 * Game.FPS;
+        resetCounter = 10 * Game.FPS;
     }
 
     public void minimizeSpeed() {
         speed = MIN_SPEED;
-        resetCounter = 15 * Game.FPS;
+        resetCounter = 10 * Game.FPS;
     }
 
     public void noBombs() {
         dropsBombs = false;
-        resetCounter = 15 * Game.FPS;
+        resetCounter = 10 * Game.FPS;
     }
 
     public void iceBombs() {
         dropsIceBombs = true;
-        resetCounter = 20 * Game.FPS;
+        resetCounter = 15 * Game.FPS;
     }
 
     public void randomBombs() {
         dropsRandomBombs = true;
-        resetCounter = 15 * Game.FPS;
+        resetCounter = 10 * Game.FPS;
     }
 
     public void makeInvincible() {
@@ -384,7 +382,7 @@ public abstract class Player extends Tile {
 
     public void maximizeRange() {
         bombRange = 100;
-        resetCounter = 15 * Game.FPS;
+        resetCounter = 10 * Game.FPS;
     }
 
     public void increaseLifes() {
