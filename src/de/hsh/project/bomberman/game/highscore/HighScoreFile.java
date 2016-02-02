@@ -33,15 +33,16 @@ public class HighScoreFile {
     }
 
     public static void loadScoreFile() {
+        updateScoreFile();
         try {
             inputStream = new ObjectInputStream(new FileInputStream(FILE_SCORE));
             scores = (ArrayList<HighScore>) inputStream.readObject();
-        } catch (FileNotFoundException e) {
-            System.out.println("[Load] " + e.getMessage());
+        }catch(FileNotFoundException e){
+            System.out.println("[Load0] " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("[Load] " + e.getMessage());
+            System.out.println("[Load1] " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            System.out.println("[Load] " + e.getMessage());
+            System.out.println("[Load2] " + e.getMessage());
         } finally {
             try {
                 if (outputStream != null) {
@@ -49,7 +50,7 @@ public class HighScoreFile {
                     outputStream.close();
                 }
             } catch (IOException e) {
-                System.out.println("[Load] " + e.getMessage());
+                System.out.println("[Load3] " + e.getMessage());
             }
         }
     }
