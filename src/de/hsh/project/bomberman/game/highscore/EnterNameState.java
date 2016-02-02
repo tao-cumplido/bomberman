@@ -11,7 +11,7 @@ import javax.swing.*;
 public class EnterNameState  {
 
     public EnterNameState(HighScore highScore) {
-        String name = JOptionPane.showInputDialog("Name: ");
+        String name = JOptionPane.showInputDialog(null, " Your scored " + highScore.getScore() + " points!", "Please enter your name!", JOptionPane.INFORMATION_MESSAGE);
         if(name==null||name.equals(""))
             name ="NN";
         if(name.length()>8)
