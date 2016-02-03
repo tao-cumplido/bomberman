@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
  */
 public class LifeDisplay {
 
-    private static Sprite HEARTS = new Sprite("/res/images/hud/hearts.png", 96, 96);
+    private static Sprite HEARTS = new Sprite("hud/hearts.png", 96, 96);
 
     private Player player;
     private Sprite digits;

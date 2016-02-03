@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.credits;
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.menu.FontImage;
 import de.hsh.project.bomberman.game.menu.MenuState;
 
@@ -18,13 +19,7 @@ public class CreditsState extends MenuState {
     private BufferedImage credits;
 
     public CreditsState(){
-        if (credits == null) {
-            try {
-                credits = ImageIO.read(getClass().getResource("/res/images/credit.png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        this.credits = Resource.loadImage("credit.png");
 
         FontImage title = new FontImage("bomberman",10,false);
         back = new FontImage("back",5,true);

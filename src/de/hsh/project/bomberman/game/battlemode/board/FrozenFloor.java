@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 
@@ -10,7 +11,7 @@ import java.awt.image.BufferedImage;
  */
 public class FrozenFloor extends Tile {
 
-    private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/frozenfloor.png");
+    private static BufferedImage spriteSheet = Resource.loadImage("frozenfloor.png");
 
     private int tick;
 

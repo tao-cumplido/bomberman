@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 
 import java.awt.image.BufferedImage;
@@ -10,7 +11,7 @@ import java.awt.image.BufferedImage;
  */
 public class HardBlock extends Block {
 
-    private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/hardblock.png");
+    private static BufferedImage spriteSheet = Resource.loadImage("hardblock.png");
 
     private int type;
 

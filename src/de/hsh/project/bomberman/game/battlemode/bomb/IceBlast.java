@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.bomb;
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.gfx.Sprite;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
@@ -10,7 +11,7 @@ import java.awt.image.BufferedImage;
  * Created by taocu on 26.10.2015.
  */
 public class IceBlast extends Blast {
-    private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/iceblast.png");
+    private static BufferedImage spriteSheet = Resource.loadImage("iceblast.png");
 
     public IceBlast(int row) {
         super(row);

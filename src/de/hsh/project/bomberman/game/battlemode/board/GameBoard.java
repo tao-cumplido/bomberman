@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.board;
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.player.Player;
 import de.hsh.project.bomberman.game.battlemode.powerup.*;
 
@@ -50,13 +51,7 @@ public abstract class GameBoard {
         this.staticBuffer = new BufferedImage(GRID_WIDTH * TILE_SIZE, GRID_HEIGHT * TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
         this.dynamicBuffer = new BufferedImage(GRID_WIDTH * TILE_SIZE, GRID_HEIGHT * TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
 
-        BufferedImage floor = null;
-
-        try {
-            floor = ImageIO.read(getClass().getResource("/res/images/floor.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BufferedImage floor = Resource.loadImage("floor.png");
 
         Graphics g = staticBuffer.getGraphics();
 

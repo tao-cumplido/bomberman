@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.powerup;
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 import de.hsh.project.bomberman.game.battlemode.board.Tile;
 import de.hsh.project.bomberman.game.battlemode.gfx.AnimationID;
@@ -12,7 +13,7 @@ import java.awt.image.BufferedImage;
  */
 public class PowerUpExplosion extends Tile {
 
-    private static BufferedImage spriteSheet = Sprite.loadSpriteSheet("/res/images/powerup/dissolve.png");
+    private static BufferedImage spriteSheet = Resource.loadImage("powerup/dissolve.png");
 
     private enum Animation implements AnimationID {
         DEFAULT

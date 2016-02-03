@@ -76,7 +76,7 @@ public abstract class Player extends Tile {
     public Player(int playerNumber) {
         super(false, GameBoard.TILE_SIZE);
 
-        this.sprite = new Sprite("/res/images/bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2);
+        this.sprite = new Sprite("bomberman/bomber" + playerNumber + ".png", GameBoard.TILE_SIZE, GameBoard.TILE_SIZE * 2);
 
         sprite.addAnimation(Animation.STAND_DOWN, 0);
         sprite.addAnimation(Animation.STAND_UP, 1);

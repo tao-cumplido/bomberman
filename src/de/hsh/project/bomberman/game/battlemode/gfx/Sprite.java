@@ -1,5 +1,6 @@
 package de.hsh.project.bomberman.game.battlemode.gfx;
 
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.board.GameBoard;
 
 import javax.imageio.ImageIO;
@@ -12,15 +13,6 @@ import java.util.HashMap;
  * Created by taocu on 30.10.2015.
  */
 public class Sprite {
-
-    public static BufferedImage loadSpriteSheet(String imagePath) {
-        try {
-            return ImageIO.read(Sprite.class.getResource(imagePath));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     private BufferedImage spriteSheet;
     private HashMap<AnimationID, ArrayList<Integer>> animations;
@@ -37,11 +29,7 @@ public class Sprite {
     private Callback callback;
 
     public Sprite(String imagePath, int frameWidth, int frameHeight) {
-        try {
-            this.spriteSheet = ImageIO.read(getClass().getResource(imagePath));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.spriteSheet = Resource.loadImage(imagePath);
 
         init(frameWidth, frameHeight);
     }

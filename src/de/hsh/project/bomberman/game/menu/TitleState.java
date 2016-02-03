@@ -1,6 +1,7 @@
 package de.hsh.project.bomberman.game.menu;
 
 import de.hsh.project.bomberman.game.Game;
+import de.hsh.project.bomberman.game.Resource;
 import de.hsh.project.bomberman.game.battlemode.BattleState;
 import de.hsh.project.bomberman.game.credits.CreditsState;
 import de.hsh.project.bomberman.game.help.HelpMenuState;
@@ -34,13 +35,7 @@ public class TitleState extends MenuState {
 
     public TitleState() {
 
-        if (cover == null) {
-            try {
-                cover = ImageIO.read(getClass().getResource("/res/images/1cover.png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        cover = Resource.loadImage("1cover.png");
 
         GridBagLayout layout;
         layout = new GridBagLayout();

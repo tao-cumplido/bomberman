@@ -41,13 +41,8 @@ public class SettingsMenuState extends MenuState {
     public SettingsMenuState() {
         super();
 
-        if (background == null) {
-            try {
-                background = ImageIO.read(getClass().getResource("/res/images/0cover.png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        background = Resource.loadImage("0cover.png");
+
         tll = new JPanel();
 
         buildTll();

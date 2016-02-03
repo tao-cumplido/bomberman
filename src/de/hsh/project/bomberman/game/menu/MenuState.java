@@ -2,6 +2,7 @@ package de.hsh.project.bomberman.game.menu;
 
 import de.hsh.project.bomberman.game.Game;
 import de.hsh.project.bomberman.game.GameState;
+import de.hsh.project.bomberman.game.Resource;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,16 +16,9 @@ import java.io.IOException;
  */
 public abstract class MenuState extends GameState {
 
-    private static BufferedImage BACKGROUND;
+    private static BufferedImage BACKGROUND = Resource.loadImage("2cover.png");
 
     public MenuState() {
-        if (BACKGROUND == null) {
-            try {
-                BACKGROUND = ImageIO.read(getClass().getResource("/res/images/2cover.png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         setListener();
     }
 

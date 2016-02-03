@@ -1,5 +1,7 @@
 package de.hsh.project.bomberman.game.menu;
 
+import de.hsh.project.bomberman.game.Resource;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -7,14 +9,14 @@ import java.awt.image.BufferedImage;
 /**
  * Created by XER on 2016/1/6 0006.
  */
-public class FontState{
-    private static BufferedImage[][] font = load("/res/images/font.gif", 8, 8);
+public class FontState {
+    private static BufferedImage[][] font = load("font.gif", 8, 8);
     public static BufferedImage[] text;
 
     public static BufferedImage[][] load(String path, int w, int h) {
         BufferedImage[][] ret;
         try {
-            BufferedImage spritesheet = ImageIO.read(FontState.class.getResourceAsStream(path));
+            BufferedImage spritesheet = Resource.loadImage(path);
             int width = spritesheet.getWidth() / w;
             int height = spritesheet.getHeight() / h;
             ret = new BufferedImage[height][width];
