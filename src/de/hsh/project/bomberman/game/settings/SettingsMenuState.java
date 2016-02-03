@@ -90,11 +90,11 @@ public class SettingsMenuState extends MenuState {
     @Override
     protected boolean setBackCondition(){
 
-        if (player1.getPlayerTyp().getSelectedItem().equals("Computer") && player2.getPlayerTyp().getSelectedItem().equals("Computer") &&
+        /*if (player1.getPlayerTyp().getSelectedItem().equals("Computer") && player2.getPlayerTyp().getSelectedItem().equals("Computer") &&
                 player3.getPlayerTyp().getSelectedItem().equals("Computer") && player4.getPlayerTyp().getSelectedItem().equals("Computer")) {
             JOptionPane.showMessageDialog(null, "At least one player!", "Warning", JOptionPane.WARNING_MESSAGE);
             return false;
-        } else if(((Settings.getBasicSetting().get(SettingsTyp.PLAYER1)==0)&&Settings.getPlayer1().containsValue(-1))||
+        } else*/ if(((Settings.getBasicSetting().get(SettingsTyp.PLAYER1)==0)&&Settings.getPlayer1().containsValue(-1))||
                 ((Settings.getBasicSetting().get(SettingsTyp.PLAYER2)==0)&&Settings.getPlayer2().containsValue(-1))||
                 ((Settings.getBasicSetting().get(SettingsTyp.PLAYER3)==0)&&Settings.getPlayer3().containsValue(-1))||(
                 (Settings.getBasicSetting().get(SettingsTyp.PLAYER4)==0)&&Settings.getPlayer4().containsValue(-1))){

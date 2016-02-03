@@ -26,7 +26,7 @@ public class Game extends JFrame {
         THIS = this;
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-         setResizable(false);
+        setResizable(false);
 
 
 

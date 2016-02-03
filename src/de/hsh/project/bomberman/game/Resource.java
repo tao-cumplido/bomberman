@@ -12,7 +12,7 @@ public class Resource {
 
     public static AudioInputStream loadAudio(String file) {
         try {
-            return AudioSystem.getAudioInputStream(Resource.class.getResourceAsStream("/res/sfx/" + file));
+            return AudioSystem.getAudioInputStream(Resource.class.getResource("/res/sfx/" + file));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
